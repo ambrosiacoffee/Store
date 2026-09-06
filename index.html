@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ambrosia Coffee Beans — Store</title>
+<style>
+:root{--ink:#1d1b18;--muted:#77716a;--cream:#f7f4ef;--line:#e5e0d8;--accent:#9a6b3f;--white:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#fff}
+a{text-decoration:none;color:inherit}button{font:inherit}
+.topbar{background:var(--ink);color:#fff;text-align:center;padding:9px 15px;font-size:12px;letter-spacing:.5px}
+header{border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:20}
+.nav{max-width:1180px;margin:auto;height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.logo{font-family:Georgia,serif;font-size:27px;font-weight:bold;letter-spacing:-.5px}
+.logo span{display:block;font-family:Arial;font-size:9px;letter-spacing:3px;text-align:center;font-weight:normal;margin-top:3px}
+.links{display:flex;gap:30px;font-size:13px}
+.links a:hover{color:var(--accent)}
+.cart-btn{border:0;background:none;cursor:pointer;font-size:13px}
+.hero{background:var(--cream);padding:70px 22px 65px;text-align:center}
+.hero h1{font-family:Georgia,serif;font-size:50px;font-weight:500;margin:0 0 14px}
+.hero p{max-width:650px;margin:0 auto;color:var(--muted);line-height:1.7;font-size:15px}
+.wrap{max-width:1180px;margin:auto;padding:65px 22px}
+.section-title{text-align:center;margin-bottom:38px}
+.section-title h2{font-family:Georgia,serif;font-size:34px;font-weight:500;margin:0 0 10px}
+.section-title p{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.product{position:relative}
+.product-img{height:275px;background:#eee;overflow:hidden}
+.product-img img{width:100%;height:100%;object-fit:cover;transition:.35s}
+.product:hover img{transform:scale(1.04)}
+.badge{position:absolute;top:12px;left:12px;background:#fff;padding:7px 10px;font-size:11px;letter-spacing:.5px}
+.info{padding:15px 2px}
+.cat{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px}
+.name{font-family:Georgia,serif;font-size:19px;margin:7px 0}
+.rating{font-size:12px;letter-spacing:2px;margin:5px 0 9px}
+.price{font-size:14px}.old{text-decoration:line-through;color:#aaa;margin-right:7px}.sale{font-weight:bold}
+.add{width:100%;margin-top:14px;padding:12px;border:1px solid var(--ink);background:#fff;cursor:pointer;text-transform:uppercase;font-size:11px;letter-spacing:1.2px}
+.add:hover{background:var(--ink);color:#fff}
+.features{background:var(--ink);color:#fff;display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.feature{padding:25px 18px;border-right:1px solid #444}.feature:last-child{border:0}.feature strong{display:block;font-size:13px;margin-bottom:5px}.feature span{font-size:12px;color:#cfcac4}
+.collection{background:var(--cream)}
+.collection-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.collection-card{height:210px;position:relative;overflow:hidden;background:#ddd}.collection-card img{width:100%;height:100%;object-fit:cover;filter:brightness(.72)}.collection-card div{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-family:Georgia,serif;font-size:27px}
+.help{background:var(--cream);text-align:center;padding:65px 22px}.help h2{font-family:Georgia,serif;font-size:32px;font-weight:500;margin:0 0 12px}.help p{color:var(--muted);max-width:570px;margin:0 auto 24px;line-height:1.7}.help button{padding:13px 24px;border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer}
+footer{background:#171614;color:#fff;padding:50px 22px}.footer-grid{max-width:1180px;margin:auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:35px}.footer-brand{font-family:Georgia,serif;font-size:25px}.footer p,.footer a{color:#aaa;font-size:12px;line-height:1.8}.footer h4{font-size:12px;text-transform:uppercase;letter-spacing:1px}.copy{max-width:1180px;margin:35px auto 0;border-top:1px solid #333;padding-top:18px;color:#777;font-size:11px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50}.drawer{position:absolute;right:0;top:0;height:100%;width:min(430px,100%);background:#fff;padding:25px;overflow:auto}.drawer-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:18px}.drawer h3{font-family:Georgia,serif;font-size:25px;font-weight:500}.close{border:0;background:none;font-size:25px;cursor:pointer}.cart-item{display:flex;gap:13px;padding:18px 0;border-bottom:1px solid var(--line)}.cart-item img{width:72px;height:72px;object-fit:cover}.cart-item h4{margin:0 0 8px;font-family:Georgia,serif;font-weight:500}.qty{display:flex;gap:8px;align-items:center}.qty button{width:24px;height:24px;border:1px solid #ccc;background:#fff}.remove{color:#a33;font-size:11px;cursor:pointer;margin-left:auto}.total{display:flex;justify-content:space-between;font-size:17px;margin:22px 0}.checkout{width:100%;padding:14px;border:0;background:var(--ink);color:#fff;cursor:pointer}
+
+.checkout-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:60;overflow:auto;padding:35px 15px}
+.checkout-box{background:#fff;max-width:1000px;margin:auto;min-height:500px;padding:32px}
+.checkout-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:25px}
+.checkout-head h2{font-family:Georgia,serif;font-size:30px;font-weight:500;margin:0}
+.checkout-layout{display:grid;grid-template-columns:1.35fr .85fr;gap:40px}
+.checkout-form h3,.order-summary h3{font-family:Georgia,serif;font-weight:500;font-size:22px;margin:0 0 18px}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.field{margin-bottom:15px}.field.full{grid-column:1/-1}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid #d8d2ca;background:#fff;outline:none}
+.field textarea{min-height:85px;resize:vertical}
+.order-summary{background:var(--cream);padding:22px;height:max-content}
+.summary-item{display:flex;justify-content:space-between;gap:15px;padding:11px 0;border-bottom:1px solid #ddd6cd;font-size:13px}
+.summary-total{display:flex;justify-content:space-between;padding-top:18px;font-size:18px}
+.payment{margin:20px 0;padding:14px;border:1px solid var(--line);font-size:13px}
+.payment strong{display:block;margin-bottom:4px}
+.place-order{width:100%;padding:15px;background:var(--ink);color:#fff;border:0;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-size:11px}
+.success{text-align:center;max-width:520px;margin:70px auto}.success-icon{width:55px;height:55px;border-radius:50%;background:#eee;margin:auto;display:flex;align-items:center;justify-content:center;font-size:25px}
+.success h2{font-family:Georgia,serif;font-size:34px;font-weight:500}.success p{color:var(--muted);line-height:1.7}.success-total{background:var(--cream);padding:15px;margin:20px 0}.small{font-size:12px!important}
+
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.links{gap:13px}.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.checkout-box{padding:22px}.checkout-layout{grid-template-columns:1fr}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.nav{height:auto;padding:18px 15px;flex-wrap:wrap;gap:14px}.links{order:3;width:100%;justify-content:center;font-size:12px}.hero h1{font-size:37px}.features,.collection-grid{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr;gap:16px}.product-img{height:205px}.footer-grid{grid-template-columns:1fr}.wrap{padding:45px 15px}}
+
+/* === Ambrosia premium glass / luxury storefront layer === */
+:root{
+  --ink:#2b2119;
+  --muted:#74695e;
+  --cream:#f5efe5;
+  --line:#ded1bf;
+  --accent:#96551f;
+  --accent-2:#b57a42;
+  --white:#fffdf9;
+  --glass:rgba(255,250,242,.58);
+  --glass-border:rgba(255,255,255,.72);
+  --shadow:0 18px 50px rgba(73,47,25,.12);
+}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(circle at 15% 5%,rgba(255,255,255,.9),transparent 32%),
+    radial-gradient(circle at 88% 10%,rgba(213,185,151,.22),transparent 28%),
+    linear-gradient(180deg,#f8f4ed 0%,#f4eee5 100%);
+  color:var(--ink);
+}
+body:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.55),transparent 45%);
+}
+
+/* Glass header */
+header,.header,.topbar{
+  background:var(--glass)!important;
+  backdrop-filter:blur(22px) saturate(125%);
+  -webkit-backdrop-filter:blur(22px) saturate(125%);
+  border:1px solid var(--glass-border)!important;
+  box-shadow:0 12px 35px rgba(55,38,22,.08)!important;
+}
+header{
+  margin:14px auto!important;
+  width:min(96%,1400px)!important;
+  border-radius:28px!important;
+}
+nav a{
+  color:#44372c!important;
+  transition:all .25s ease!important;
+}
+nav a:hover{color:var(--accent)!important}
+button,.btn{
+  border-radius:999px!important;
+  transition:transform .25s ease,box-shadow .25s ease,background .25s ease!important;
+}
+button:hover,.btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 25px rgba(92,54,25,.16);
+}
+
+/* Hero */
+.hero{
+  min-height:600px;
+  border-radius:0 0 34px 34px;
+  overflow:hidden;
+  position:relative;
+}
+.hero h1{
+  color:#332117!important;
+  letter-spacing:-.035em!important;
+  line-height:1.02!important;
+}
+.hero p{color:#4f453c!important}
+.hero .btn,.hero button{
+  background:linear-gradient(135deg,#9c5b25,#7f4217)!important;
+  border:0!important;
+  color:#fff!important;
+}
+
+/* Premium cards */
+.product-card,.collection-card,.feature{
+  border:1px solid rgba(180,147,111,.28)!important;
+  background:rgba(255,252,246,.62)!important;
+  box-shadow:0 12px 35px rgba(74,49,29,.07)!important;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease!important;
+}
+.product-card:hover,.collection-card:hover{
+  transform:translateY(-7px);
+  box-shadow:0 22px 45px rgba(74,49,29,.13)!important;
+  border-color:rgba(150,105,63,.4)!important;
+}
+.product-card img,.collection-card img{
+  transition:transform .55s cubic-bezier(.2,.7,.2,1)!important;
+}
+.product-card:hover img,.collection-card:hover img{transform:scale(1.045)}
+
+section h2{
+  color:#39261a!important;
+  letter-spacing:-.025em!important;
+}
+
+/* Cart + checkout glass */
+.cart-drawer,.checkout-modal,.modal,.overlay{
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+.cart-drawer{
+  box-shadow:-20px 0 60px rgba(45,28,16,.16)!important;
+}
+input,select,textarea{
+  border-color:#d9c9b6!important;
+  background:rgba(255,253,249,.82)!important;
+  border-radius:14px!important;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none!important;
+  border-color:#a66b39!important;
+  box-shadow:0 0 0 4px rgba(166,107,57,.11)!important;
+}
+
+/* Soft separators */
+.features{border-top:1px solid rgba(166,131,95,.18)!important}
+footer{
+  background:rgba(57,39,26,.96)!important;
+  color:#f8f0e6!important;
+}
+
+/* Mobile */
+@media(max-width:760px){
+  header{width:calc(100% - 18px)!important;margin:9px auto!important;border-radius:20px!important}
+  .hero{min-height:520px;border-radius:0 0 24px 24px}
+  .hero h1{font-size:clamp(2.4rem,11vw,4rem)!important}
+}
+
+
+/* ===== AMBROSIA LUXURY SMOOTH PREMIUM GLASS ===== */
+:root{
+  --ink:#30251d;
+  --muted:#74685d;
+  --cream:#f6f0e7;
+  --soft:#fbf8f2;
+  --line:rgba(126,91,55,.18);
+  --gold:#b9823f;
+  --gold-light:#d7ad72;
+  --glass:rgba(255,252,246,.48);
+  --glass-strong:rgba(255,253,249,.72);
+  --glass-border:rgba(255,255,255,.78);
+}
+body{
+  font-family:Inter,Arial,Helvetica,sans-serif!important;
+  color:var(--ink)!important;
+  background:
+    linear-gradient(rgba(250,246,239,.74),rgba(246,239,229,.9)),
+    url("https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=2200&q=85") center/cover fixed!important;
+  background-attachment:fixed!important;
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(circle at 18% 12%,rgba(255,255,255,.95),transparent 30%),
+    radial-gradient(circle at 84% 20%,rgba(210,171,126,.18),transparent 27%);
+}
+.topbar{
+  background:rgba(48,37,29,.86)!important;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  letter-spacing:1.4px!important;
+}
+header{
+  margin:14px auto!important;
+  width:min(96%,1400px)!important;
+  border:1px solid var(--glass-border)!important;
+  border-radius:26px!important;
+  background:var(--glass)!important;
+  backdrop-filter:blur(24px) saturate(135%)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(135%)!important;
+  box-shadow:0 15px 45px rgba(75,52,31,.12)!important;
+}
+.nav{height:82px!important}
+.logo{
+  font-family:Georgia,serif!important;
+  color:#39291e!important;
+  letter-spacing:1px!important;
+}
+.logo span{color:#786657!important}
+.links a{
+  position:relative;
+  color:#4b3b2e!important;
+  transition:.25s ease!important;
+}
+.links a:after{
+  content:"";position:absolute;left:0;right:100%;bottom:-9px;height:1px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-light));
+  transition:.28s ease;
+}
+.links a:hover{color:var(--gold)!important}
+.links a:hover:after{right:0}
+.cart-btn{
+  padding:10px 16px!important;
+  border:1px solid rgba(150,110,70,.24)!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.34)!important;
+  backdrop-filter:blur(10px);
+}
+.hero{
+  max-width:1400px!important;
+  margin:0 auto!important;
+  min-height:570px!important;
+  padding:90px 70px 85px!important;
+  text-align:left!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  border-radius:34px!important;
+  overflow:hidden!important;
+  position:relative!important;
+  background:
+    linear-gradient(90deg,rgba(249,245,238,.58) 0%,rgba(249,245,238,.34) 52%,rgba(249,245,238,.06) 100%),
+    url("ambrosia-luxury-hero-background.jpg") center/cover no-repeat!important;
+  box-shadow:0 25px 65px rgba(71,49,30,.10)!important;
+}
+.hero:before{
+  content:"";position:absolute;width:340px;height:340px;right:7%;top:9%;
+  border-radius:50%;background:rgba(255,255,255,.18);
+  filter:blur(3px);border:1px solid rgba(255,255,255,.45);
+}
+.hero h1{
+  max-width:720px!important;
+  font-family:Georgia,serif!important;
+  font-size:clamp(48px,5vw,76px)!important;
+  line-height:1.02!important;
+  letter-spacing:-2px!important;
+  color:#322219!important;
+  position:relative;z-index:1;
+}
+.hero h1:after{
+  content:"";display:block;width:72px;height:2px;margin-top:24px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+}
+.hero p{
+  max-width:620px!important;
+  font-size:16px!important;
+  color:#5e5146!important;
+  position:relative;z-index:1;
+}
+.wrap{
+  max-width:1240px!important;
+  padding:78px 22px!important;
+}
+.section-title h2{
+  font-family:Georgia,serif!important;
+  color:#3b2a1e!important;
+  font-size:40px!important;
+}
+.section-title p{color:#786b60!important}
+.grid{gap:24px!important}
+.product{
+  padding:12px!important;
+  border:1px solid rgba(165,126,84,.2)!important;
+  border-radius:22px!important;
+  background:rgba(255,252,247,.56)!important;
+  backdrop-filter:blur(14px)!important;
+  -webkit-backdrop-filter:blur(14px)!important;
+  box-shadow:0 15px 38px rgba(77,53,31,.07)!important;
+  transition:.35s cubic-bezier(.2,.7,.2,1)!important;
+}
+.product:hover{
+  transform:translateY(-8px)!important;
+  box-shadow:0 25px 55px rgba(77,53,31,.14)!important;
+  border-color:rgba(180,132,75,.4)!important;
+}
+.product-img{
+  height:285px!important;
+  border-radius:16px!important;
+  background:linear-gradient(145deg,#eee6db,#fffdf9)!important;
+}
+.product-img img{transition:transform .6s cubic-bezier(.2,.7,.2,1)!important}
+.product:hover .product-img img{transform:scale(1.06)!important}
+.badge{
+  border-radius:999px!important;
+  background:rgba(255,252,245,.82)!important;
+  border:1px solid rgba(168,124,73,.22)!important;
+  color:#6d4b29!important;
+  backdrop-filter:blur(8px);
+  z-index:2;
+}
+.name{font-family:Georgia,serif!important;color:#3a2a1f!important}
+.rating{color:#b57b35!important}
+.add,.help button,.checkout,.place-order{
+  border-radius:999px!important;
+  background:linear-gradient(135deg,#a96d2e,#c49351)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 10px 24px rgba(155,101,42,.16)!important;
+}
+.add:hover,.help button:hover,.checkout:hover,.place-order:hover{
+  background:linear-gradient(135deg,#8e5724,#b47b39)!important;
+}
+.features{
+  max-width:1240px!important;
+  margin:-32px auto 0!important;
+  position:relative!important;
+  z-index:5!important;
+  border:1px solid var(--glass-border)!important;
+  border-radius:22px!important;
+  background:rgba(255,252,246,.67)!important;
+  color:#3e3025!important;
+  box-shadow:0 18px 45px rgba(74,51,30,.12)!important;
+  backdrop-filter:blur(20px)!important;
+  -webkit-backdrop-filter:blur(20px)!important;
+  overflow:hidden;
+}
+.feature{border-right:1px solid rgba(139,103,64,.16)!important}
+.feature span{color:#7c7066!important}
+.collection{
+  background:rgba(248,242,233,.56)!important;
+  backdrop-filter:blur(8px);
+}
+.collection-card{
+  border-radius:20px!important;
+  border:1px solid rgba(255,255,255,.7)!important;
+  box-shadow:0 15px 40px rgba(68,46,27,.10)!important;
+}
+.help{
+  background:rgba(255,251,245,.62)!important;
+  backdrop-filter:blur(12px);
+}
+footer{
+  background:rgba(47,37,30,.94)!important;
+  backdrop-filter:blur(16px)!important;
+}
+.overlay,.checkout-overlay{
+  background:rgba(44,32,23,.28)!important;
+  backdrop-filter:blur(10px)!important;
+  -webkit-backdrop-filter:blur(10px)!important;
+}
+.drawer,.checkout-box{
+  background:rgba(255,252,247,.86)!important;
+  border:1px solid rgba(255,255,255,.8)!important;
+  box-shadow:0 25px 70px rgba(50,34,21,.2)!important;
+  backdrop-filter:blur(24px)!important;
+  -webkit-backdrop-filter:blur(24px)!important;
+}
+.order-summary{
+  background:rgba(247,240,230,.72)!important;
+  border:1px solid rgba(165,126,84,.15)!important;
+  border-radius:18px!important;
+}
+.field input,.field textarea,.field select{
+  border-radius:13px!important;
+  background:rgba(255,255,255,.7)!important;
+  border-color:rgba(156,119,80,.25)!important;
+}
+.field input:focus,.field textarea:focus,.field select:focus{
+  border-color:#b57b3c!important;
+  box-shadow:0 0 0 4px rgba(181,123,60,.10)!important;
+}
+@media(max-width:760px){
+  .hero{
+    padding:65px 24px!important;
+    min-height:520px!important;
+    background-position:center!important;
+  }
+  .hero h1{font-size:43px!important;letter-spacing:-1px!important}
+  .features{margin:0 12px!important}
+  header{width:calc(100% - 18px)!important}
+}
+
+
+.eyebrow{position:relative;z-index:2;margin:0 0 22px;font-size:13px;font-weight:700;letter-spacing:1.7px;color:#ad7432}
+.hero-shop{position:relative;z-index:2;display:inline-flex;align-items:center;gap:15px;width:max-content;margin-top:22px;padding:13px 24px;border-radius:999px;background:linear-gradient(135deg,#e5ad55,#9b6228);color:#fff!important;font-size:13px;font-weight:700;letter-spacing:.8px;box-shadow:0 12px 28px rgba(145,91,33,.2);transition:.25s ease}
+.hero-shop span{font-size:20px;line-height:1}.hero-shop:hover{transform:translateY(-2px);box-shadow:0 16px 32px rgba(145,91,33,.27)}
+.hero-break{display:block}.hero h1 br{display:block}
+.features{grid-template-columns:repeat(4,1fr)!important}
+.feature{padding:25px 28px!important}.feature strong{letter-spacing:.5px}.feature span{display:block;margin-top:6px}
+@media(max-width:760px){.features{grid-template-columns:1fr 1fr!important}.hero-break{display:none}.hero-shop{margin-top:16px}}
+
+
+/* ===== MOBILE-FIRST POLISH ===== */
+*{ -webkit-tap-highlight-color:transparent; }
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+img{max-width:100%}
+button,a,input,select,textarea{touch-action:manipulation}
+
+@media(max-width:760px){
+  .topbar{
+    padding:8px 10px!important;
+    font-size:10px!important;
+    letter-spacing:.8px!important;
+    line-height:1.35!important;
+  }
+
+  header{
+    position:sticky!important;
+    top:6px!important;
+    width:calc(100% - 12px)!important;
+    margin:6px auto!important;
+    border-radius:18px!important;
+  }
+
+  .nav{
+    min-height:64px!important;
+    height:auto!important;
+    padding:12px 12px!important;
+    gap:10px!important;
+  }
+
+  .logo{
+    font-size:20px!important;
+    line-height:1!important;
+    letter-spacing:.5px!important;
+  }
+  .logo span{
+    font-size:7px!important;
+    letter-spacing:2px!important;
+  }
+
+  .links{
+    order:3!important;
+    width:100%!important;
+    display:flex!important;
+    gap:0!important;
+    justify-content:space-between!important;
+    overflow-x:auto!important;
+    scrollbar-width:none;
+    padding:2px 1px 1px!important;
+  }
+  .links::-webkit-scrollbar{display:none}
+  .links a{
+    flex:0 0 auto!important;
+    font-size:11px!important;
+    padding:7px 6px!important;
+  }
+  .links a:after{bottom:1px!important}
+
+  .cart-btn{
+    padding:9px 12px!important;
+    font-size:11px!important;
+    white-space:nowrap!important;
+  }
+
+  .hero{
+    width:calc(100% - 12px)!important;
+    min-height:520px!important;
+    margin:0 auto!important;
+    padding:70px 22px 55px!important;
+    border-radius:24px!important;
+    background-position:62% center!important;
+  }
+  .hero:before{
+    width:210px!important;
+    height:210px!important;
+    right:-55px!important;
+    top:16%!important;
+  }
+  .eyebrow{
+    font-size:10px!important;
+    letter-spacing:1.25px!important;
+    margin-bottom:15px!important;
+  }
+  .hero h1{
+    max-width:100%!important;
+    font-size:clamp(38px,11vw,50px)!important;
+    line-height:1.03!important;
+    letter-spacing:-1.2px!important;
+    margin-bottom:14px!important;
+  }
+  .hero p{
+    font-size:13px!important;
+    line-height:1.65!important;
+    max-width:95%!important;
+  }
+  .hero-shop{
+    min-height:46px!important;
+    margin-top:18px!important;
+    padding:12px 19px!important;
+    font-size:11px!important;
+  }
+
+  .features{
+    width:calc(100% - 28px)!important;
+    margin:12px auto 0!important;
+    grid-template-columns:1fr 1fr!important;
+    border-radius:18px!important;
+  }
+  .feature{
+    min-height:92px!important;
+    padding:18px 9px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+  }
+  .feature strong{font-size:10px!important;line-height:1.3!important}
+  .feature span{font-size:10px!important;line-height:1.4!important}
+
+  .wrap{
+    width:100%!important;
+    padding:48px 12px!important;
+  }
+  .section-title{
+    margin-bottom:24px!important;
+    padding:0 5px!important;
+  }
+  .section-title h2{
+    font-size:30px!important;
+    line-height:1.1!important;
+  }
+  .section-title p{
+    font-size:12px!important;
+    line-height:1.55!important;
+  }
+
+  .grid{
+    grid-template-columns:1fr 1fr!important;
+    gap:12px!important;
+  }
+  .product{
+    padding:8px!important;
+    border-radius:17px!important;
+    min-width:0!important;
+  }
+  .product-img{
+    height:auto!important;
+    aspect-ratio:1/1.05!important;
+    border-radius:12px!important;
+  }
+  .badge{
+    top:8px!important;
+    left:8px!important;
+    padding:5px 7px!important;
+    font-size:8px!important;
+  }
+  .info{padding:10px 2px 2px!important}
+  .cat{
+    font-size:8px!important;
+    letter-spacing:.8px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .name{
+    font-size:15px!important;
+    line-height:1.18!important;
+    margin:5px 0!important;
+    min-height:35px!important;
+  }
+  .rating{
+    font-size:9px!important;
+    letter-spacing:1px!important;
+    margin:4px 0 7px!important;
+  }
+  .price{font-size:11px!important}
+  .old{margin-right:3px!important}
+  .add{
+    min-height:40px!important;
+    margin-top:10px!important;
+    padding:10px 5px!important;
+    font-size:9px!important;
+    letter-spacing:.7px!important;
+  }
+
+  .collection-grid{
+    grid-template-columns:1fr!important;
+    gap:13px!important;
+  }
+  .collection-card{
+    height:175px!important;
+    border-radius:18px!important;
+  }
+  .collection-card div{font-size:23px!important}
+
+  .help{
+    padding:50px 18px!important;
+  }
+  .help h2{
+    font-size:28px!important;
+    line-height:1.15!important;
+  }
+  .help p{
+    font-size:12px!important;
+    line-height:1.65!important;
+  }
+  .help button{
+    min-height:46px!important;
+    padding:12px 21px!important;
+  }
+
+  footer{padding:42px 18px!important}
+  .footer-grid{
+    grid-template-columns:1fr!important;
+    gap:20px!important;
+  }
+  .footer-brand{font-size:22px!important}
+  .footer p,.footer a{font-size:11px!important}
+  .copy{
+    margin-top:25px!important;
+    line-height:1.5!important;
+  }
+
+  .drawer{
+    width:100%!important;
+    max-width:none!important;
+    padding:18px!important;
+    border-radius:22px 22px 0 0!important;
+  }
+  .drawer-head{padding-bottom:14px!important}
+  .drawer h3{font-size:23px!important}
+  .cart-item{gap:10px!important;padding:14px 0!important}
+  .cart-item img{
+    width:62px!important;
+    height:62px!important;
+    border-radius:10px!important;
+  }
+  .cart-item h4{font-size:15px!important}
+  .qty button{
+    width:34px!important;
+    height:34px!important;
+    border-radius:50%!important;
+  }
+  .remove{font-size:10px!important}
+  .checkout{
+    min-height:48px!important;
+    font-size:11px!important;
+  }
+
+  .checkout-overlay{
+    padding:10px!important;
+  }
+  .checkout-box{
+    width:100%!important;
+    padding:18px!important;
+    border-radius:20px!important;
+    min-height:0!important;
+  }
+  .checkout-head h2{font-size:25px!important}
+  .checkout-layout{
+    grid-template-columns:1fr!important;
+    gap:22px!important;
+  }
+  .checkout-form h3,.order-summary h3{font-size:20px!important}
+  .field-grid{grid-template-columns:1fr!important;gap:0!important}
+  .field.full{grid-column:auto!important}
+  .field{margin-bottom:13px!important}
+  .field label{font-size:9px!important}
+  .field input,.field textarea,.field select{
+    min-height:46px!important;
+    padding:12px!important;
+    font-size:14px!important;
+  }
+  .field textarea{min-height:95px!important}
+  .payment{font-size:12px!important}
+  .place-order{min-height:48px!important}
+
+  .success{
+    margin:35px auto!important;
+    padding:5px!important;
+  }
+  .success h2{font-size:29px!important}
+}
+
+/* Small phones */
+@media(max-width:380px){
+  .logo{font-size:18px!important}
+  .links a{font-size:10px!important;padding-left:4px!important;padding-right:4px!important}
+  .hero{min-height:485px!important;padding-left:18px!important;padding-right:18px!important}
+  .hero h1{font-size:36px!important}
+  .grid{gap:9px!important}
+  .product{padding:7px!important}
+  .name{font-size:14px!important}
+  .add{font-size:8px!important}
+  .feature{padding-left:6px!important;padding-right:6px!important}
+}
+
+</style>
+</head>
+<body class="ambrosia-premium">
+<div class="topbar">FRESHLY ROASTED COFFEE • UAE DELIVERY</div>
+<header>
+<nav class="nav">
+<a class="logo" href="#">AMBROSIA<span>COFFEE BEANS</span></a>
+<div class="links"><a href="#home">Home</a><a href="#store">Store</a><a href="#collections">Collections</a><a href="#about">About Us</a><a href="#contact">Contact</a></div>
+<div style="display:flex;align-items:center;gap:13px"><button class="cart-btn" onclick="openCart()">Cart (<span id="cartCount">0</span>)</button></div>
+</nav>
+</header>
+
+<section class="hero" id="home">
+<div class="eyebrow">SPECIALTY COFFEE, PERFECTLY ROASTED</div>
+<h1>Fresh Coffee Beans<br>Roasted With <span style="color:#b9823f">Passion</span></h1>
+<p>Discover premium single origin and signature blends,<br class="hero-break"> roasted to perfection and delivered fresh to your door.</p>
+<a class="hero-shop" href="#store">SHOP NOW <span>→</span></a>
+</section>
+
+<section class="features">
+<div class="feature"><strong>PREMIUM QUALITY</strong><span>100% Arabica Beans</span></div>
+<div class="feature"><strong>FRESHLY ROASTED</strong><span>Small Batch Roasting</span></div>
+<div class="feature"><strong>FAST DELIVERY</strong><span>Across UAE</span></div>
+<div class="feature"><strong>SATISFACTION</strong><span>Premium Guarantee</span></div>
+</section>
+
+<section class="wrap" id="store">
+<div class="section-title"><h2>Featured Coffee</h2><p>Our most popular coffees, selected for everyday brewing.</p></div>
+<div class="grid" id="productGrid"></div>
+</section>
+
+<section class="collection" id="collections">
+<div class="wrap">
+<div class="section-title"><h2>Our Coffee Collection</h2><p>Choose your favourite style of coffee.</p></div>
+<div class="collection-grid">
+<a class="collection-card" href="#store"><img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80"><div>Single Origin</div></a>
+<a class="collection-card" href="#store"><img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=900&q=80"><div>Signature Blends</div></a>
+<a class="collection-card" href="#store"><img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=900&q=80"><div>Espresso Coffee</div></a>
+</div>
+</div>
+</section>
+
+<section class="help" id="about">
+<h2>Need help choosing your coffee?</h2>
+<p>Tell us how you brew your coffee and what flavour you like. We can help you choose the right Ambrosia beans.</p>
+<button onclick="alert('Please contact Ambrosia Coffee Beans for a recommendation.')">Ask For Help</button>
+</section>
+
+<footer id="contact">
+<div class="footer-grid">
+<div><div class="footer-brand">AMBROSIA COFFEE BEANS</div><p>Freshly roasted coffee beans for homes, cafés and coffee lovers across the UAE.</p></div>
+<div><h4>Shop</h4><p><a href="#store">Coffee Beans</a><br><a href="#collections">Collections</a><br><a href="#store">Best Sellers</a></p></div>
+<div><h4>Information</h4><p><a href="#about">About Us</a><br><a href="#">Delivery</a><br><a href="#">Returns</a></p></div>
+<div><h4>Contact</h4><p>UAE<br>Email: info@windmillcoffee.ae<br>WhatsApp: +971</p></div>
+</div>
+<div class="copy">© 2026 Ambrosia Coffee Beans. All Rights Reserved.</div>
+</footer>
+
+<div class="overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
+<div class="drawer">
+<div class="drawer-head"><h3>Your Cart</h3><button class="close" onclick="closeCart()">×</button></div>
+<div id="cartItems"></div>
+<div class="total"><span>Subtotal</span><strong id="cartTotal">AED 0.00</strong></div>
+<div style="font-size:12px;color:#8a7a6a;margin:8px 0 14px;text-align:right">Delivery Charges: AED 30.00</div>
+<button class="checkout" onclick="checkout()">Proceed to Checkout</button>
+</div>
+</div>
+
+<script>
+const defaultProducts=[
+{id:1,name:"Ethiopia Yirgacheffe",cat:"Single Origin",price:65,img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=80",desc:"Bright and clean single-origin coffee."},
+{id:2,name:"Colombia Supremo",cat:"Single Origin",price:58,old:65,img:"https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=700&q=80",desc:"Smooth, balanced Colombian coffee."},
+{id:3,name:"House Blend",cat:"Signature Blend",price:52,img:"https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80",desc:"Our everyday signature blend."},
+{id:4,name:"Espresso Blend",cat:"Espresso",price:55,old:62,img:"https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&w=700&q=80",desc:"Rich and bold for espresso."},
+{id:5,name:"Kenya AA",cat:"Single Origin",price:72,img:"https://images.unsplash.com/photo-1498804103079-a6351b050096?auto=format&fit=crop&w=700&q=80",desc:"A vibrant specialty coffee."},
+{id:6,name:"Brazil Santos",cat:"Single Origin",price:49,img:"https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=80",desc:"Smooth and approachable."},
+{id:7,name:"Daily Coffee",cat:"Blend",price:45,old:52,img:"https://images.unsplash.com/photo-1497515114629-f71d768fd07c?auto=format&fit=crop&w=700&q=80",desc:"Easy-drinking daily blend."},
+{id:8,name:"Decaf Colombia",cat:"Decaf",price:60,img:"https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=700&q=80",desc:"Full flavour without the caffeine."}
+];
+let products=JSON.parse(localStorage.getItem("ambrosiaProducts")||"null")||defaultProducts;
+let cart=JSON.parse(localStorage.getItem("ambrosiaCart")||"[]");
+const DELIVERY_CHARGE=30;
+const money=n=>"AED "+n.toFixed(2);
+function renderProducts(){
+document.getElementById("productGrid").innerHTML=products.map(p=>`
+<div class="product">
+${p.old?'<span class="badge">SALE!</span>':''}
+<div class="product-img"><img src="${p.img}" alt="${p.name}"></div>
+<div class="info"><div class="cat">${p.cat}</div><div class="name">${p.name}</div><div class="rating">★★★★★</div>
+<div class="price">${p.old?`<span class="old">${money(p.old)}</span>`:''}<span class="${p.old?'sale':''}">${money(p.price)}</span></div>
+<button class="add" onclick="addToCart(${p.id})">Add to Cart</button></div></div>`).join("");
+}
+function save(){localStorage.setItem("ambrosiaCart",JSON.stringify(cart));updateCart()}
+function addToCart(id){let x=cart.find(i=>i.id===id);if(x)x.qty++;else cart.push({id,qty:1});save();openCart()}
+function updateCart(){document.getElementById("cartCount").textContent=cart.reduce((a,b)=>a+b.qty,0)}
+function openCart(){renderCart();document.getElementById("cartOverlay").style.display="block"}
+function closeCart(){document.getElementById("cartOverlay").style.display="none"}
+function renderCart(){
+let box=document.getElementById("cartItems");
+if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}
+let total=0;
+box.innerHTML=cart.map(i=>{let p=products.find(x=>x.id===i.id);total+=p.price*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${p.name}</h4><div>${money(p.price)}</div><div class="qty"><button onclick="changeQty(${p.id},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${p.id},1)">+</button><span class="remove" onclick="removeItem(${p.id})">Remove</span></div></div></div>`}).join("");
+document.getElementById("cartTotal").textContent=money(total);
+}
+function changeQty(id,n){let x=cart.find(i=>i.id===id);if(!x)return;x.qty+=n;if(x.qty<=0)cart=cart.filter(i=>i.id!==id);save();renderCart()}
+function removeItem(id){cart=cart.filter(i=>i.id!==id);save();renderCart()}
+function checkout(){
+if(!cart.length){alert("Your cart is empty.");return}
+closeCart();
+renderCheckout();
+document.getElementById("checkoutOverlay").style.display="block";
+}
+function renderCheckout(){
+let subtotal=cart.reduce((s,i)=>s+products.find(p=>p.id===i.id).price*i.qty,0);
+let total=subtotal+DELIVERY_CHARGE;
+document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{
+let p=products.find(x=>x.id===i.id);
+return `<div class="summary-item"><span>${p.name} × ${i.qty}</span><strong>${money(p.price*i.qty)}</strong></div>`;
+}).join("")+
+`<div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div>
+<div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div>
+<div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`;
+}
+function closeCheckout(){document.getElementById("checkoutOverlay").style.display="none"}
+function placeOrder(e){
+e.preventDefault();
+if(!cart.length)return;
+const form=new FormData(document.getElementById("checkoutForm"));
+const orderNo="AMB"+Date.now().toString().slice(-6);
+const subtotal=cart.reduce((s,i)=>s+products.find(p=>p.id===i.id).price*i.qty,0);
+const total=subtotal+DELIVERY_CHARGE;
+const order={orderNo,customer:Object.fromEntries(form.entries()),items:cart,total,deliveryCharge:DELIVERY_CHARGE,created:new Date().toISOString()};
+localStorage.setItem("ambrosiaLastOrder",JSON.stringify(order));
+document.getElementById("checkoutContent").innerHTML=`
+<div class="success">
+<div class="success-icon">✓</div>
+<h2>Order Confirmed</h2>
+<p>Thank you, ${form.get("fullname")||"Customer"}.</p>
+<p>Your order <strong>#${orderNo}</strong> has been received.</p>
+<div class="success-total">Order Total: <strong>${money(total)}</strong></div>
+<p class="small">Payment Method: Cash on Delivery</p>
+<button class="checkout" onclick="closeCheckout();cart=[];save()">Continue Shopping</button>
+</div>`;
+}
+
+
+renderProducts();updateCart();
+</script>
+
+<div class="checkout-overlay" id="checkoutOverlay">
+<div class="checkout-box" id="checkoutContent">
+<div class="checkout-head"><h2>Checkout</h2><button class="close" onclick="closeCheckout()">×</button></div>
+<div class="checkout-layout">
+<form class="checkout-form" id="checkoutForm" onsubmit="placeOrder(event)">
+<h3>Customer Details</h3>
+<div class="field-grid">
+<div class="field full"><label>Full Name</label><input name="fullname" required placeholder="Your full name"></div>
+<div class="field"><label>Email</label><input type="email" name="email" required placeholder="you@example.com"></div>
+<div class="field"><label>Phone / WhatsApp</label><input name="phone" required placeholder="+971 5X XXX XXXX"></div>
+<div class="field full"><label>Delivery Address</label><textarea name="address" required placeholder="Building, street, area"></textarea></div>
+<div class="field"><label>City</label><input name="city" required placeholder="Al Ain / Abu Dhabi / Dubai"></div>
+<div class="field"><label>Emirate</label><select name="emirate" required><option value="">Select</option><option>Abu Dhabi</option><option>Dubai</option><option>Sharjah</option><option>Ajman</option><option>Umm Al Quwain</option><option>Ras Al Khaimah</option><option>Fujairah</option></select></div>
+</div>
+<div class="payment"><strong>Payment Method</strong>Cash on Delivery</div>
+<button class="place-order" type="submit">Place Order</button>
+</form>
+<div class="order-summary"><h3>Your Order</h3><div id="checkoutSummary"></div></div>
+</div></div></div>
+
+
+
+</body>
+</html>
