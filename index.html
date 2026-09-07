@@ -472,6 +472,28 @@ footer{
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script>
+// ---- Early prefetch ----
+// The rest of this page (all the markup, CSS, images below) takes a moment to
+// parse. Rather than waiting until the main script (further down the page)
+// runs to even START talking to Firebase, we kick the requests off right here,
+// the instant the SDKs are loaded, so they run in parallel with everything
+// else instead of after it. The main script (near the bottom) picks up
+// whatever has already arrived, or waits for it — either way, nothing is
+// fetched twice.
+if(!firebase.apps.length) firebase.initializeApp({apiKey:"AIzaSyCB7aGoKp4LYyMnpflwbtENKRBRfzxWbvE",authDomain:"ambrosiacoffeestore.firebaseapp.com",databaseURL:"https://ambrosiacoffeestore-default-rtdb.firebaseio.com",projectId:"ambrosiacoffeestore"});
+window.__fbdb=firebase.database();
+window.__fbCache={products:undefined,collections:undefined,settings:undefined};
+window.__fbHandlers={};
+window.__fbdb.ref("products").on("value",s=>{window.__fbCache.products=s.val();window.__fbHandlers.products&&window.__fbHandlers.products(s.val());});
+window.__fbdb.ref("collections").on("value",s=>{window.__fbCache.collections=s.val();window.__fbHandlers.collections&&window.__fbHandlers.collections(s.val());});
+window.__fbdb.ref("settings").on("value",s=>{window.__fbCache.settings=s.val();window.__fbHandlers.settings&&window.__fbHandlers.settings(s.val());});
+firebase.auth().onAuthStateChanged(user=>{
+ if(user){window.__fbUid=user.uid;window.__fbHandlers.authReady&&window.__fbHandlers.authReady(user.uid);}
+ else{firebase.auth().signInAnonymously().catch(e=>console.error("Anonymous sign-in failed:",e));}
+});
+</script>
 <style>#sizeOptions button{width:100%;display:flex;justify-content:space-between;align-items:center;padding:15px 18px;border:1px solid #ddccb8;border-radius:15px;background:rgba(255,253,249,.9);color:#30251d;cursor:pointer;font-size:15px}#sizeOptions button:hover{border-color:#b9823f}.size-name{font-weight:700}.size-price{font-weight:700;color:#9a642b}</style><style>
 .product-detail-drawer{max-width:none!important;width:100vw!important;max-height:none!important;height:100vh!important;overflow:auto;padding:38px 36px!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;transform:none!important;border-radius:0!important;box-shadow:none!important;border:none!important}
 .product-detail-drawer-inner{max-width:900px;margin:0 auto}
@@ -596,9 +618,7 @@ footer{
 </div>
 
 <script>
-const firebaseConfig={apiKey:"AIzaSyCB7aGoKp4LYyMnpflwbtENKRBRfzxWbvE",authDomain:"ambrosiacoffeestore.firebaseapp.com",databaseURL:"https://ambrosiacoffeestore-default-rtdb.firebaseio.com",projectId:"ambrosiacoffeestore"};
-if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
+const db=window.__fbdb;
 const defaultProducts=[
 {id:1,name:"Ethiopia Yirgacheffe",cat:"Single Origin",price:65,img:"https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=700&q=80"},
 {id:2,name:"Colombia Supremo",cat:"Single Origin",price:52,old:58,img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=80"},
@@ -612,8 +632,26 @@ const defaultCollections=[
 {id:"col1",name:"Single Origin",img:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80",link:"#store"},
 {id:"col2",name:"Signature Blends",img:"https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=900&q=80",link:"#store"},
 {id:"col3",name:"Espresso Coffee",img:"https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=900&q=80",link:"#store"}];
-let products=[...defaultProducts],collections=[...defaultCollections],cart=JSON.parse(localStorage.getItem("ambrosiaCart")||"[]");
+let products=[],collections=[...defaultCollections],cart=[];
 const DELIVERY_CHARGE=30,money=n=>"AED "+Number(n||0).toFixed(2);
+let productsLoaded=false;
+
+// ---- Cart persistence: Firebase Realtime Database only, no localStorage. ----
+// Each visitor gets a stable identity via Firebase Anonymous Auth (Firebase
+// itself manages that session — our code never touches browser storage
+// directly). The cart lives at carts/{uid} and stays in sync in real time,
+// so the same customer's cart follows them across tabs/reloads.
+let cartUid=null,cartReady=false;
+function attachCartListener(uid){
+ cartUid=uid;
+ db.ref("carts/"+cartUid).on("value",s=>{
+  cart=s.val()||[];
+  cartReady=true;
+  pruneCart();renderCart();updateCart();
+ });
+}
+if(window.__fbUid){attachCartListener(window.__fbUid);}
+else{window.__fbHandlers.authReady=attachCartListener;}
 
 function applySettings(s){
  if(!s)return;
@@ -669,12 +707,42 @@ function renderSearchResults(q){
  if(!list.length){box.innerHTML=`<div class="search-empty">${q?`No products found for "${q}".`:"Start typing to search our coffee collection."}</div>`;return}
  box.innerHTML=list.map(p=>`<div class="search-result-item" onclick="closeSearch();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><img src="${p.img}" alt="${p.name}"><div><div class="sr-name">${p.name}</div><div class="sr-cat">${p.cat||""}</div></div><div class="sr-price">${money(p.price)}</div></div>`).join("");
 }
-db.ref("products").on("value",s=>{let v=s.val();products=Array.isArray(v)?v.filter(Boolean):(v?Object.values(v):[...defaultProducts]);pruneCart();renderProducts();renderCart();updateCart()});
-db.ref("collections").on("value",s=>{let v=s.val();collections=Array.isArray(v)?v.filter(Boolean):(v?Object.values(v):[...defaultCollections]);renderCollections()});
-db.ref("settings").on("value",s=>applySettings(s.val()));
+function handleProductsSnapshot(v){
+ if(v&&typeof v==="object"&&!Array.isArray(v)){
+  products=Object.entries(v).map(([id,p])=>({...p,id})).sort((a,b)=>(a.order??0)-(b.order??0));
+ }else if(Array.isArray(v)){
+  products=v.filter(Boolean);
+ }else{
+  products=[...defaultProducts];
+ }
+ productsLoaded=true;
+ pruneCart();renderProducts();renderCart();updateCart();
+}
+function handleCollectionsSnapshot(v){
+ if(v&&typeof v==="object"&&!Array.isArray(v)){
+  collections=Object.entries(v).map(([id,c])=>({...c,id})).sort((a,b)=>(a.order??0)-(b.order??0));
+ }else if(Array.isArray(v)){
+  collections=v.filter(Boolean);
+ }else{
+  collections=[...defaultCollections];
+ }
+ renderCollections();
+}
+// Pick up whatever the early <head> prefetch already received, then keep
+// getting updates through the same single listener (no second network round trip).
+if(window.__fbCache.products!==undefined)handleProductsSnapshot(window.__fbCache.products);
+window.__fbHandlers.products=handleProductsSnapshot;
+if(window.__fbCache.collections!==undefined)handleCollectionsSnapshot(window.__fbCache.collections);
+window.__fbHandlers.collections=handleCollectionsSnapshot;
+if(window.__fbCache.settings!==undefined)applySettings(window.__fbCache.settings);
+window.__fbHandlers.settings=applySettings;
 function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<a class="collection-card" href="${c.link||'#store'}"><img src="${c.img}"><div>${c.name}</div></a>`).join("")}
 
-function save(){localStorage.setItem("ambrosiaCart",JSON.stringify(cart));updateCart()}
+function save(){
+ updateCart();
+ if(!cartUid)return; // auth still resolving — the cart is only in memory for a moment
+ db.ref("carts/"+cartUid).set(cart).catch(err=>console.error("Cart save failed:",err));
+}
 let selectedProduct=null;
 function getSizes(p){let s=p.sizes;if(!s)return [{key:"kg1",label:"1 Kg",price:Number(p.price||0),old:Number(p.old||0)}];let out=[];if(s.g200?.enabled!==false&&Number(s.g200?.price)>0)out.push({key:"g200",label:"200g",price:Number(s.g200.price),old:Number(s.g200.old||0)});if(s.g250?.enabled!==false&&Number(s.g250?.price)>0)out.push({key:"g250",label:"250g",price:Number(s.g250.price),old:Number(s.g250.old||0)});if(s.kg1?.enabled!==false&&Number(s.kg1?.price)>0)out.push({key:"kg1",label:"1 Kg",price:Number(s.kg1.price),old:Number(s.kg1.old||0)});return out}
 function addToCart(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;let sizes=getSizes(p);if(sizes.length<=1){addVariantToCart(p,sizes[0]);return}selectedProduct=p;document.getElementById("sizePickerProduct").innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img src="${p.img}" style="width:72px;height:72px;object-fit:cover;border-radius:14px"><div><b style="font-size:18px">${p.name}</b><div style="color:#7a6b5d;margin-top:4px">Select your pack size</div></div></div>`;document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button onclick="addVariantAndClose('${s.key}')"><span class="size-name">${s.label}</span><span class="size-price">${s.old?`<del style="color:#999;font-weight:400">${money(s.old)}</del> `:""}${money(s.price)}</span></button>`).join("");document.getElementById("sizeOverlay").style.display="block"}
@@ -685,7 +753,7 @@ function pruneCart(){if(!products.length)return;let before=cart.length;cart=cart
 function updateCart(){let e=document.getElementById("cartCount");if(!e)return;let n=cart.filter(i=>!products.length||products.some(p=>String(p.id)===String(i.id))).reduce((a,b)=>a+b.qty,0);e.textContent=n;e.classList.toggle("hide",n===0)}
 function openCart(){renderCart();document.getElementById("cartOverlay").style.display="block"}
 function closeCart(){document.getElementById("cartOverlay").style.display="none"}
-function renderProducts(){let grid=document.getElementById("productsGrid")||document.getElementById("productGrid");if(!grid)return;grid.innerHTML=products.map(p=>`<article class="product" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}<img src="${p.img}" alt="${p.name}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${p.name}</div><div class="rating">★★★★★ <span>(${p.reviewCount||p.reviews||0})</span></div><div class="price">${p.old?`<del>${money(p.old)}</del> `:""}<strong>${money(p.price)}</strong></div><button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button></div></article>`).join("")}
+function renderProducts(){let grid=document.getElementById("productsGrid")||document.getElementById("productGrid");if(!grid)return;if(!productsLoaded){grid.innerHTML='<div style="padding:40px;text-align:center;color:#9a8a78">Loading products…</div>';return}grid.innerHTML=products.map(p=>`<article class="product" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}<img src="${p.img}" alt="${p.name}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${p.name}</div><div class="rating">★★★★★ <span>(${p.reviewCount||p.reviews||0})</span></div><div class="price">${p.old?`<del>${money(p.old)}</del> `:""}<strong>${money(p.price)}</strong></div><button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button></div></article>`).join("")}
 function openProductDetail(id){
  let p=products.find(x=>String(x.id)===String(id));if(!p)return;
  let sizes=getSizes(p);let first=sizes[0]||{key:"kg1",label:"1 Kg",price:p.price,old:p.old||0};
@@ -748,9 +816,12 @@ async function placeOrder(e){
  const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",price:Number(i.price||p.price),qty:i.qty}:null}).filter(Boolean);
  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0),total=subtotal+DELIVERY_CHARGE;
  const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,status:"New",created:new Date().toISOString()};
- try{await db.ref("orders").push(order);localStorage.setItem("ambrosiaLastOrder",JSON.stringify(order));document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>Thank you, ${form.get("fullname")||"Customer"}.</p><p>Your order <strong>#${orderNo}</strong> has been received.</p><div class="cod-badge">💵&nbsp; Cash on Delivery</div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><button class="checkout" onclick="closeCheckout();cart=[];save()">Continue Shopping</button></div>`}catch(err){alert("Order could not be sent. Please try again.");console.error(err)}
+ try{await db.ref("orders").push(order);document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>Thank you, ${form.get("fullname")||"Customer"}.</p><p>Your order <strong>#${orderNo}</strong> has been received.</p><div class="cod-badge">💵&nbsp; Cash on Delivery</div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><button class="checkout" onclick="closeCheckout();cart=[];save()">Continue Shopping</button></div>`}catch(err){alert("Order could not be sent. Please try again.");console.error(err)}
 }
 renderProducts();renderCollections();updateCart();
+// (renderProducts() above will show a "Loading products…" placeholder until the
+// first real Firebase snapshot arrives — this prevents any flash of fake demo
+// data being replaced a moment later by the real product list.)
 </script>
 
 <div class="checkout-overlay" id="checkoutOverlay">
