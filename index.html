@@ -477,7 +477,7 @@ firebase.auth().onAuthStateChanged(user=>{
 </div>
 </div>
 <div><h4>Shop</h4><p><a href="#store">Coffee Beans</a><br><a href="#collections">Collections</a><br><a href="#best-sellers">Best Sellers</a></p></div>
-<div><h4>Information</h4><p><a href="#" onclick="openFullPage('about');return false;">About Us</a><br><a href="#" onclick="openPolicy('delivery');return false;">Delivery</a><br><a href="#" onclick="openPolicy('returns');return false;">Returns</a></p></div>
+<div><h4>Information</h4><p><a href="#" onclick="openFullPage('about');return false;">About Us</a><br><a href="#" onclick="openPolicy('delivery');return false;">Delivery Policy</a><br><a href="#" onclick="openPolicy('returns');return false;">Returns Policy</a></p></div>
 <div><h4>Customer Care</h4><p><a href="#" onclick="openPolicy('shipping');return false;">Shipping</a><br><a href="#" onclick="openPolicy('refund');return false;">Refund Policy</a><br><a href="#" onclick="openPolicy('privacy');return false;">Privacy Policy</a><br><a href="#" onclick="openPolicy('terms');return false;">Terms &amp; Conditions</a></p></div>
 </div>
 <div class="copy">© 2026 Ambrosia Coffee Beans. All Rights Reserved.</div>
@@ -568,7 +568,7 @@ function applySettings(s){
  let fc=document.querySelectorAll("footer .footer-grid>div");
  if(fc[0]){q(".footer-brand",s.footerbrand);let p=fc[0].querySelector("p");if(p)p.textContent=s.footerdesc}
  if(fc[1])fc[1].querySelector("p").innerHTML=`<a href="#store">${s.coffee}</a><br><a href="#collections">${s.collections}</a><br><a href="#best-sellers">${s.best}</a>`;
- if(fc[2])fc[2].querySelector("p").innerHTML=`<a href="#" onclick="openFullPage('about');return false;">${s.aboutnav}</a><br><a href="#" onclick="openPolicy('delivery');return false;">${s.deliverytitle}</a><br><a href="#" onclick="openPolicy('returns');return false;">${s.returnstitle}</a>`;
+ if(fc[2])fc[2].querySelector("p").innerHTML=`<a href="#" onclick="openFullPage('about');return false;">${s.aboutnav}</a><br><a href="#" onclick="openPolicy('delivery');return false;">Delivery Policy</a><br><a href="#" onclick="openPolicy('returns');return false;">Returns Policy</a>`;
  let cVisit=document.getElementById("contactVisit");
  if(cVisit)cVisit.innerHTML=`Ambrosia Speciality Coffee<br>${s.uae||"United Arab Emirates"}`;
  let cEmail=document.getElementById("contactEmail");
@@ -711,6 +711,20 @@ function openCart(){renderCart();document.getElementById("cartOverlay").style.di
 function closeCart(){document.getElementById("cartOverlay").style.display="none"}
 
 const POLICIES={
+ delivery:{title:"Delivery Policy",body:`
+  <p>We currently deliver across the United Arab Emirates.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">Delivery Time</h4>
+  <p>Orders are processed within 1–2 business days and typically delivered within 2–4 business days.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">Delivery Charges</h4>
+  <ul style="padding-left:18px;margin:0"><li>Standard delivery: AED 30</li></ul>
+  <h4 style="margin:18px 0 8px;color:#2c2115">Payment</h4>
+  <p>We currently accept Cash on Delivery for all orders.</p>`},
+ returns:{title:"Returns Policy",body:`
+  <p>We want you to love your coffee. If something isn't right, we're here to help.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">Eligibility</h4>
+  <p>Unopened products may be returned within 14 days of delivery for a full refund.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">How to Request a Return</h4>
+  <p>Contact us at <a href="mailto:ambrosiaspecialitycoffee@gmail.com">ambrosiaspecialitycoffee@gmail.com</a> or on WhatsApp at <a href="https://wa.me/971568115042" target="_blank" rel="noopener">+971 56 811 5042</a> with your order number and we'll guide you through the next steps.</p>`},
  shipping:{title:"Shipping Policy",body:`
   <p>We currently ship across the United Arab Emirates.</p>
   <h4 style="margin:18px 0 8px;color:#2c2115">Delivery Times</h4>
@@ -781,15 +795,6 @@ function shopThisCollection(){
 }
 window.openImageView=openImageView;window.closeImageView=closeImageView;window.shopThisCollection=shopThisCollection;
 function openPolicy(key){
- if(key==="delivery"||key==="returns"){
-  let s=(window.__fbCache&&window.__fbCache.settings)||{};
-  let title=key==="delivery"?(s.deliverytitle||"Delivery"):(s.returnstitle||"Returns");
-  let body=key==="delivery"?s.delivery:s.returns;
-  document.getElementById("policyTitle").textContent=title;
-  document.getElementById("policyContent").innerHTML=body?`<p>${String(body).replace(/\n/g,"<br>")}</p>`:`<p style="color:#9a8a78">No ${title.toLowerCase()} information has been added yet.</p>`;
-  document.getElementById("policyOverlay").style.display="block";
-  return;
- }
  const p=POLICIES[key];if(!p)return;
  document.getElementById("policyTitle").textContent=p.title;
  document.getElementById("policyContent").innerHTML=p.body;
