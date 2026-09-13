@@ -820,7 +820,13 @@ function renderStoreFilterBar(){
  let pills=[{name:null,label:"All"}].concat(collections.map(c=>({name:c.name,label:c.name})));
  bar.innerHTML=pills.map(p=>`<button class="store-filter-pill${activeStoreFilter===p.name?" active":""}" onclick="setStoreFilter(${p.name?`'${String(p.name).replace(/'/g,"\\'")}'`:"null"})">${p.label}</button>`).join("");
 }
-function setStoreFilter(name){activeStoreFilter=name;renderStoreFilterBar();renderProducts()}
+function setStoreFilter(name){
+ activeStoreFilter=name;
+ renderStoreFilterBar();
+ renderProducts();
+ let storeSection=document.getElementById("store");
+ if(storeSection)storeSection.scrollIntoView({behavior:"smooth",block:"start"});
+}
 window.setStoreFilter=setStoreFilter;
 function openProductDetail(id){
  let p=products.find(x=>String(x.id)===String(id));if(!p)return;
