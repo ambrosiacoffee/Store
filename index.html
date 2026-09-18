@@ -830,14 +830,14 @@ function setStoreFilter(name){
  if(storeSection)storeSection.scrollIntoView({behavior:"smooth",block:"start"});
 }
 window.setStoreFilter=setStoreFilter;
+let fullImageCache={};
 function openProductDetail(id){
  let p=products.find(x=>String(x.id)===String(id));if(!p)return;
  let sizes=getSizes(p);let first=sizes[0]||{key:"kg1",label:"1 Kg",price:p.price,old:p.old||0};
- selectedDetail={product:p,size:first,qty:1};
- let gallery=[p.img,...(p.gallery||[])].filter(Boolean);
+ selectedDetail={product:p,size:first,qty:1,gallery:[p.imgThumb||p.img].filter(Boolean)};
  document.getElementById("detailName").textContent=p.name;
- document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${gallery[0]}" alt="${p.name}" decoding="async">
- ${gallery.length>1?`<div class="detail-thumbs">${gallery.map((g,i)=>`<img src="${g}" class="${i===0?"active":""}" onclick="selectDetailImage(${i})">`).join("")}</div>`:""}
+ document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${p.imgThumb||p.img||""}" alt="${p.name}" decoding="async">
+ <div class="detail-thumbs" id="detailThumbs" style="display:none"></div>
  <div class="detail-eyebrow">${[p.cat,p.origin].filter(Boolean).join(" · ")}</div>
  <h1 class="detail-title">${p.name}</h1>
  <div class="detail-rating">★★★★★ &nbsp; ${p.rating||"5.0"} (${p.reviewCount||p.reviews||0} reviews)</div>
@@ -858,11 +858,30 @@ function openProductDetail(id){
  <div id="panel-tasting" class="detail-panel">${p.tastingNotes||p.tastingShort||"Chocolate, hazelnut and caramel."}</div>
  <div id="panel-brewing" class="detail-panel">${p.brewingGuide||"Use your preferred brewing method and adjust grind size, dose and extraction time to taste."}</div>`;
  document.getElementById("productDetailOverlay").style.display="block";
+ loadFullDetailImages(p,id);
+}
+// Full-size images are kept out of the "products" listing every visitor
+// downloads up front — they live under productImages/{id} instead, and are
+// only fetched here, the moment a shopper opens this one product. Older
+// records saved before this change still carry img/gallery inline; those
+// need no extra fetch and are used as-is.
+async function loadFullDetailImages(p,id){
+ let full=(p.img||(p.gallery&&p.gallery.length))?{img:p.img,gallery:p.gallery}:(fullImageCache[id]||(await db.ref("productImages/"+id).once("value")).val()||{});
+ fullImageCache[id]=full;
+ if(!selectedDetail||String(selectedDetail.product.id)!==String(id))return;
+ let gallery=[full.img||p.imgThumb,...(full.gallery||[])].filter(Boolean);
+ selectedDetail.gallery=gallery;
+ let main=document.getElementById("detailMainImg");if(main&&gallery[0])main.src=gallery[0];
+ let thumbs=document.getElementById("detailThumbs");
+ if(thumbs){
+  if(gallery.length>1){thumbs.style.display="flex";thumbs.innerHTML=gallery.map((g,i)=>`<img src="${g}" class="${i===0?"active":""}" onclick="selectDetailImage(${i})">`).join("");}
+  else{thumbs.style.display="none";thumbs.innerHTML="";}
+ }
 }
 let selectedDetail=null;
 function selectDetailImage(idx){
  if(!selectedDetail)return;
- let gallery=[selectedDetail.product.img,...(selectedDetail.product.gallery||[])].filter(Boolean);
+ let gallery=selectedDetail.gallery||[];
  let img=gallery[idx];if(!img)return;
  document.getElementById("detailMainImg").src=img;
  document.querySelectorAll(".detail-thumbs img").forEach((t,i)=>t.classList.toggle("active",i===idx));
