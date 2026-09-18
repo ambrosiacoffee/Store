@@ -6,8 +6,6 @@
 <title>Ambrosia Coffee Beans — Store</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://ambrosiaweb-default-rtdb.firebaseio.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#1d1b18;--muted:#77716a;--cream:#f7f4ef;--line:#e5e0d8;--accent:#9a6b3f;--white:#fff}
@@ -599,7 +597,7 @@ function renderSearchResults(q){
  q=(q||"").trim().toLowerCase();
  let list=!q?products:products.filter(p=>(p.name||"").toLowerCase().includes(q)||(p.cat||"").toLowerCase().includes(q)||(p.origin||"").toLowerCase().includes(q));
  if(!list.length){box.innerHTML=`<div class="search-empty">${q?`No products found for "${q}".`:"Start typing to search our coffee collection."}</div>`;return}
- box.innerHTML=list.map(p=>`<div class="search-result-item" onclick="closeSearch();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><img src="${p.imgThumb||p.img}" alt="${p.name}" loading="lazy" decoding="async"><div><div class="sr-name">${p.name}</div><div class="sr-cat">${p.cat||""}</div></div><div class="sr-price">${money(p.price)}</div></div>`).join("");
+ box.innerHTML=list.map(p=>`<div class="search-result-item" onclick="closeSearch();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><img src="${p.img}" alt="${p.name}" loading="lazy"><div><div class="sr-name">${p.name}</div><div class="sr-cat">${p.cat||""}</div></div><div class="sr-price">${money(p.price)}</div></div>`).join("");
 }
 function handleProductsSnapshot(v){
  if(v&&typeof v==="object"&&!Array.isArray(v)){
@@ -703,7 +701,7 @@ function save(){
 }
 let selectedProduct=null;
 function getSizes(p){let s=p.sizes;if(!s)return [{key:"kg1",label:"1 Kg",price:Number(p.price||0),old:Number(p.old||0)}];let out=[];if(s.g200?.enabled!==false&&Number(s.g200?.price)>0)out.push({key:"g200",label:"200g",price:Number(s.g200.price),old:Number(s.g200.old||0)});if(s.g250?.enabled!==false&&Number(s.g250?.price)>0)out.push({key:"g250",label:"250g",price:Number(s.g250.price),old:Number(s.g250.old||0)});if(s.kg1?.enabled!==false&&Number(s.kg1?.price)>0)out.push({key:"kg1",label:"1 Kg",price:Number(s.kg1.price),old:Number(s.kg1.old||0)});return out}
-function addToCart(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;let sizes=getSizes(p);if(sizes.length<=1){addVariantToCart(p,sizes[0]);return}selectedProduct=p;document.getElementById("sizePickerProduct").innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img src="${p.imgThumb||p.img}" loading="lazy" decoding="async" style="width:72px;height:72px;object-fit:cover;border-radius:14px"><div><b style="font-size:18px">${p.name}</b><div style="color:#7a6b5d;margin-top:4px">Select your pack size</div></div></div>`;document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button onclick="addVariantAndClose('${s.key}')"><span class="size-name">${s.label}</span><span class="size-price">${s.old?`<del style="color:#999;font-weight:400">${money(s.old)}</del> `:""}${money(s.price)}</span></button>`).join("");document.getElementById("sizeOverlay").style.display="block"}
+function addToCart(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;let sizes=getSizes(p);if(sizes.length<=1){addVariantToCart(p,sizes[0]);return}selectedProduct=p;document.getElementById("sizePickerProduct").innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img src="${p.img}" style="width:72px;height:72px;object-fit:cover;border-radius:14px"><div><b style="font-size:18px">${p.name}</b><div style="color:#7a6b5d;margin-top:4px">Select your pack size</div></div></div>`;document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button onclick="addVariantAndClose('${s.key}')"><span class="size-name">${s.label}</span><span class="size-price">${s.old?`<del style="color:#999;font-weight:400">${money(s.old)}</del> `:""}${money(s.price)}</span></button>`).join("");document.getElementById("sizeOverlay").style.display="block"}
 function addVariantToCart(p,s){if(!s)return;let x=cart.find(i=>String(i.id)===String(p.id)&&i.size===s.key);if(x)x.qty++;else cart.push({id:p.id,size:s.key,sizeLabel:s.label,price:s.price,qty:1});save();openCart()}
 function addVariantAndClose(key){let s=getSizes(selectedProduct).find(x=>x.key===key);addVariantToCart(selectedProduct,s);closeSizePicker()}
 function closeSizePicker(){document.getElementById("sizeOverlay").style.display="none";selectedProduct=null}
@@ -814,7 +812,7 @@ function closeFullPage(key){
  document.body.classList.remove("no-scroll");
 }
 window.openFullPage=openFullPage;window.closeFullPage=closeFullPage;
-function productCardHTML(p){return `<article class="product" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}<img src="${p.imgThumb||p.img}" alt="${p.name}" loading="lazy" decoding="async"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${p.name}</div><div class="rating">★★★★★ <span>(${p.reviewCount||p.reviews||0})</span></div><div class="price">${p.old?`<del>${money(p.old)}</del> `:""}<strong>${money(p.price)}</strong></div><button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button></div></article>`}
+function productCardHTML(p){return `<article class="product" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}<img src="${p.img}" alt="${p.name}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${p.name}</div><div class="rating">★★★★★ <span>(${p.reviewCount||p.reviews||0})</span></div><div class="price">${p.old?`<del>${money(p.old)}</del> `:""}<strong>${money(p.price)}</strong></div><button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button></div></article>`}
 function renderProducts(){let grid=document.getElementById("productsGrid")||document.getElementById("productGrid");if(!grid)return;if(!productsLoaded){grid.innerHTML='<div style="padding:40px;text-align:center;color:#9a8a78">Loading products…</div>';return}if(!products.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found yet.</div>`;return}let list=activeStoreFilter?products.filter(p=>(p.cat||"")===activeStoreFilter):products;if(!list.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found in "${activeStoreFilter}" yet.</div>`;return}grid.innerHTML=list.map(productCardHTML).join("")}
 function renderStoreFilterBar(){
  let bar=document.getElementById("storeFilterBar");if(!bar)return;
@@ -830,14 +828,14 @@ function setStoreFilter(name){
  if(storeSection)storeSection.scrollIntoView({behavior:"smooth",block:"start"});
 }
 window.setStoreFilter=setStoreFilter;
-let fullImageCache={};
 function openProductDetail(id){
  let p=products.find(x=>String(x.id)===String(id));if(!p)return;
  let sizes=getSizes(p);let first=sizes[0]||{key:"kg1",label:"1 Kg",price:p.price,old:p.old||0};
- selectedDetail={product:p,size:first,qty:1,gallery:[p.imgThumb||p.img].filter(Boolean)};
+ selectedDetail={product:p,size:first,qty:1};
+ let gallery=[p.img,...(p.gallery||[])].filter(Boolean);
  document.getElementById("detailName").textContent=p.name;
- document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${p.imgThumb||p.img||""}" alt="${p.name}" decoding="async">
- <div class="detail-thumbs" id="detailThumbs" style="display:none"></div>
+ document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${gallery[0]}" alt="${p.name}">
+ ${gallery.length>1?`<div class="detail-thumbs">${gallery.map((g,i)=>`<img src="${g}" class="${i===0?"active":""}" onclick="selectDetailImage(${i})">`).join("")}</div>`:""}
  <div class="detail-eyebrow">${[p.cat,p.origin].filter(Boolean).join(" · ")}</div>
  <h1 class="detail-title">${p.name}</h1>
  <div class="detail-rating">★★★★★ &nbsp; ${p.rating||"5.0"} (${p.reviewCount||p.reviews||0} reviews)</div>
@@ -858,30 +856,11 @@ function openProductDetail(id){
  <div id="panel-tasting" class="detail-panel">${p.tastingNotes||p.tastingShort||"Chocolate, hazelnut and caramel."}</div>
  <div id="panel-brewing" class="detail-panel">${p.brewingGuide||"Use your preferred brewing method and adjust grind size, dose and extraction time to taste."}</div>`;
  document.getElementById("productDetailOverlay").style.display="block";
- loadFullDetailImages(p,id);
-}
-// Full-size images are kept out of the "products" listing every visitor
-// downloads up front — they live under productImages/{id} instead, and are
-// only fetched here, the moment a shopper opens this one product. Older
-// records saved before this change still carry img/gallery inline; those
-// need no extra fetch and are used as-is.
-async function loadFullDetailImages(p,id){
- let full=(p.img||(p.gallery&&p.gallery.length))?{img:p.img,gallery:p.gallery}:(fullImageCache[id]||(await db.ref("productImages/"+id).once("value")).val()||{});
- fullImageCache[id]=full;
- if(!selectedDetail||String(selectedDetail.product.id)!==String(id))return;
- let gallery=[full.img||p.imgThumb,...(full.gallery||[])].filter(Boolean);
- selectedDetail.gallery=gallery;
- let main=document.getElementById("detailMainImg");if(main&&gallery[0])main.src=gallery[0];
- let thumbs=document.getElementById("detailThumbs");
- if(thumbs){
-  if(gallery.length>1){thumbs.style.display="flex";thumbs.innerHTML=gallery.map((g,i)=>`<img src="${g}" class="${i===0?"active":""}" onclick="selectDetailImage(${i})">`).join("");}
-  else{thumbs.style.display="none";thumbs.innerHTML="";}
- }
 }
 let selectedDetail=null;
 function selectDetailImage(idx){
  if(!selectedDetail)return;
- let gallery=selectedDetail.gallery||[];
+ let gallery=[selectedDetail.product.img,...(selectedDetail.product.gallery||[])].filter(Boolean);
  let img=gallery[idx];if(!img)return;
  document.getElementById("detailMainImg").src=img;
  document.querySelectorAll(".detail-thumbs img").forEach((t,i)=>t.classList.toggle("active",i===idx));
@@ -892,7 +871,7 @@ function detailQty(n){if(!selectedDetail)return;selectedDetail.qty=Math.max(1,se
 function detailAdd(){if(!selectedDetail)return;for(let n=0;n<selectedDetail.qty;n++)addVariantToCart(selectedDetail.product,selectedDetail.size);closeProductDetail()}
 function detailBuy(){if(!selectedDetail)return;cart.push({id:selectedDetail.product.id,size:selectedDetail.size.key,sizeLabel:selectedDetail.size.label,price:selectedDetail.size.price,qty:selectedDetail.qty});save();closeProductDetail();checkout()}
 function showDetailTab(id,btn){document.querySelectorAll(".detail-panel").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".detail-tab").forEach(x=>x.classList.remove("active"));document.getElementById("panel-"+id).classList.add("active");btn.classList.add("active")}
-function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=Number(i.price||size.price||p.price);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.imgThumb||p.img}" loading="lazy" decoding="async"><div style="flex:1"><h4>${p.name}</h4><div style="color:#7a6b5d">${size.label}</div><div>${money(unit)}</div><div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal)}
+function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=Number(i.price||size.price||p.price);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${p.name}</h4><div style="color:#7a6b5d">${size.label}</div><div>${money(unit)}</div><div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal)}
 function changeQty(index,n){let x=cart[index];if(!x)return;x.qty+=n;if(x.qty<=0)cart.splice(index,1);save();renderCart()}
 function removeItem(index){cart.splice(index,1);save();renderCart()}
 function checkout(){if(!cart.length){alert("Your cart is empty.");return}closeCart();renderCheckout();document.getElementById("checkoutOverlay").style.display="block"}
