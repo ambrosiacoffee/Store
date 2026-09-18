@@ -19,6 +19,12 @@ header{border-bottom:1px solid var(--line);background:var(--glass)!important;pos
 .nav{max-width:1180px;margin:auto;height:82px!important;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
 .logo{display:flex;align-items:center;gap:12px;text-decoration:none}
 .logo-icon{height:44px;width:auto;display:block;flex-shrink:0}
+#siteLoader{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:#fffaf4;transition:opacity .4s ease,visibility .4s ease}
+#siteLoader.hide{opacity:0;visibility:hidden;pointer-events:none}
+#siteLoader img{height:56px;width:auto}
+#siteLoader .loader-spinner{width:34px;height:34px;border:3px solid #e6dbca;border-top-color:#49392c;border-radius:50%;animation:siteLoaderSpin .8s linear infinite}
+#siteLoader .loader-text{font-family:'Poppins',Arial,sans-serif;font-size:12px;letter-spacing:1px;color:#8a7968;text-transform:uppercase}
+@keyframes siteLoaderSpin{to{transform:rotate(360deg)}}
 .logo-text{display:flex;flex-direction:column;line-height:1.1}
 .logo-text b{font-family:Georgia,serif!important;font-size:24px;font-weight:bold;letter-spacing:1px!important;color:#39291e!important}
 .logo-text small{font-family:Arial;font-size:9px;letter-spacing:3px;font-weight:normal;margin-top:3px;color:#786657!important}
@@ -352,6 +358,7 @@ firebase.auth().onAuthStateChanged(user=>{
 @media(max-width:900px){.quick-view-btn{opacity:1;transform:translate(-50%,0);bottom:10px;padding:8px 16px;font-size:11px}}
 </style></head>
 <body class="ambrosia-premium">
+<div id="siteLoader"><img src="ambrosia_logo.webp" alt="Ambrosia"><div class="loader-spinner"></div><div class="loader-text">Loading…</div></div>
 <div class="topbar">FRESHLY ROASTED COFFEE • UAE DELIVERY</div>
 <header>
 <nav class="nav">
@@ -617,7 +624,14 @@ function handleProductsSnapshot(v){
  pruneCart();renderProducts();renderCart();updateCart();
  renderBestSellers();renderNewArrivals();
  if(activeCollectionCategory)renderCollectionProducts();
+ hideSiteLoader();
 }
+// Shows while the store's first batch of data (and the hero background)
+// arrives, so shoppers see something moving instead of a blank/frozen page.
+// Hidden as soon as products actually load — or after 6s regardless, so a
+// slow or failed connection never leaves someone staring at a stuck loader.
+function hideSiteLoader(){let el=document.getElementById("siteLoader");if(el)el.classList.add("hide");}
+setTimeout(hideSiteLoader,6000);
 function handleCollectionsSnapshot(v){
  if(v&&typeof v==="object"&&!Array.isArray(v)){
   collections=Object.entries(v).map(([id,c])=>({...c,id})).sort((a,b)=>(a.order??0)-(b.order??0));
