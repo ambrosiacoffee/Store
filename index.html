@@ -3,7 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ambrosia Coffee Beans — Store</title>
+<title>Ambrosia Speciality Coffee — Fresh Roasted Coffee Beans | UAE Delivery</title>
+<!-- ===== Search & share preview (Google, WhatsApp, Instagram, Facebook, X) ===== -->
+<meta name="description" content="Speciality single-origin coffee beans, freshly roasted in small batches. Whole bean or ground for espresso, filter or French press. Cash on delivery across the UAE.">
+<link rel="canonical" href="https://ambrosiacoffee.site/">
+<meta name="theme-color" content="#0f3434">
+<link rel="icon" type="image/webp" href="ambrosia_logo.webp">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ambrosia Speciality Coffee">
+<meta property="og:title" content="Ambrosia Speciality Coffee — Freshly Roasted Beans, UAE Delivery">
+<meta property="og:description" content="Single-origin coffee beans, roasted in small batches. Whole bean or ground to order. Cash on delivery across the UAE.">
+<meta property="og:url" content="https://ambrosiacoffee.site/">
+<meta property="og:image" content="https://ambrosiacoffee.site/og-image.jpg">
+<meta property="og:image:secure_url" content="https://ambrosiacoffee.site/og-image.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ambrosia Speciality Coffee — freshly roasted beans, delivered to your door">
+<meta property="og:locale" content="en_AE">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ambrosia Speciality Coffee — Freshly Roasted Beans, UAE Delivery">
+<meta name="twitter:description" content="Single-origin coffee beans, roasted in small batches. Cash on delivery across the UAE.">
+<meta name="twitter:image" content="https://ambrosiacoffee.site/og-image.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","name":"Ambrosia Speciality Coffee","url":"https://ambrosiacoffee.site/","image":"https://ambrosiacoffee.site/og-image.jpg","description":"Speciality single-origin coffee beans, freshly roasted in small batches, delivered across the UAE.","telephone":"+971568115042","email":"ambrosiaspecialitycoffee@gmail.com","address":{"@type":"PostalAddress","addressCountry":"AE"},"areaServed":"AE","paymentAccepted":"Cash"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -42,6 +65,12 @@ header{border-bottom:1px solid var(--line);background:var(--glass)!important;pos
 .section-title h2{font-family:Georgia,serif!important;font-size:40px!important;font-weight:500;margin:0 0 10px;color:#3b2a1e!important}
 .section-title p{color:#786b60!important;font-size:14px}
 .category-filter-bar{display:none;align-items:center;justify-content:center;gap:14px;margin:-16px 0 30px;flex-wrap:wrap}
+.store-filter-note{display:none;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:-18px 0 26px;font-size:13px;color:var(--muted)}
+.store-filter-note.show{display:flex}
+.store-filter-note b{color:var(--ink)}
+.store-filter-note button{border:1px solid rgba(154,107,63,.35);background:#fff;padding:8px 16px;border-radius:999px;font-size:12px;cursor:pointer;color:var(--ink);min-height:0}
+.collection-card{cursor:pointer}
+.collection-item.is-active .collection-name{color:var(--accent,#96551f)}
 .store-filter-bar{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;margin:0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .store-filter-bar::-webkit-scrollbar{display:none}
 .store-filter-pill{flex-shrink:0;border:1px solid rgba(154,107,63,.4);background:var(--cream);padding:9px 18px;border-radius:999px;font-size:13px;color:var(--ink);cursor:pointer;white-space:nowrap;transition:.2s ease}
@@ -354,6 +383,29 @@ firebase.auth().onAuthStateChanged(user=>{
 .wa-float svg{width:30px;height:30px}
 @media(max-width:600px){.wa-float{right:16px;bottom:16px;width:52px;height:52px}.wa-float svg{width:26px;height:26px}}
 
+.grind-title{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:#4a3c2e;margin:16px 0 8px}
+.grind-options{display:flex;flex-wrap:wrap;gap:8px}
+.grind-options button{padding:10px 16px;border:1px solid #ddccb8;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#2d211a;min-height:0}
+.grind-options button:hover{border-color:#b9823f}
+.grind-options button.active{background:#211710;border-color:#211710;color:#fff}
+.detail-grinds{margin-bottom:26px}
+@media(max-width:760px){.grind-options{display:grid;grid-template-columns:1fr 1fr}.grind-options button{min-height:44px}}
+.card-flavour{font-size:12.5px;color:#8a7866;margin:-2px 0 8px;line-height:1.35;height:2.7em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.product .rating.empty{visibility:hidden}
+.card-sizes{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 14px}
+/* Buttons line up at the bottom of every card, however much text is above */
+.product{display:flex!important;flex-direction:column;min-width:0}
+.grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.product .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+.product-info{flex:1;display:flex;flex-direction:column;padding-top:12px}
+.product-info .add{margin-top:auto!important}
+.card-sizes span{font-size:11px;padding:3px 8px;border-radius:999px;border:1px solid #e3d5c3;background:rgba(255,255,255,.7);color:#5b4c3d}
+.card-sizes span.off{text-decoration:line-through;color:#b3a594;border-style:dashed}
+.price-from{font-size:12px;color:#8a7866;font-weight:400;margin-right:3px}
+.wa-confirm{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;margin:0 0 12px;border-radius:999px;background:#25D366;color:#fff!important;font-weight:700;font-size:14px;letter-spacing:.3px;box-shadow:0 10px 24px rgba(37,211,102,.25)}
+.wa-confirm:hover{background:#1ebe5a}
+.wa-confirm svg{width:20px;height:20px}
 .oos-badge{position:absolute;top:12px;right:12px;z-index:2;background:#2b2119;color:#fff;padding:7px 10px;font-size:11px;letter-spacing:.5px;border-radius:999px;font-weight:600}
 .product.oos .product-img img{filter:grayscale(.6);opacity:.65}
 .add:disabled,.add:disabled:hover{background:#dcd0c1!important;color:#6d5f52!important;box-shadow:none!important;cursor:not-allowed;transform:none!important}
@@ -361,7 +413,7 @@ firebase.auth().onAuthStateChanged(user=>{
 .detail-actions button:disabled{opacity:.5;cursor:not-allowed}
 .stock-note{color:#a3452f;font-size:12px;font-weight:600;margin:0 0 14px}
 .stock-warn{color:#a3452f;font-size:12px;margin:6px 0 2px}
-@media(max-width:760px){.oos-badge{top:7px;right:7px;padding:5px 7px;font-size:8px}}
+@media(max-width:760px){.product .name{min-height:0!important;white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;height:2.4em}.product-info{padding-top:9px}.card-sizes{margin-bottom:10px!important}.oos-badge{top:7px;right:7px;padding:5px 7px;font-size:8px}.card-flavour{font-size:11px;margin-bottom:5px}.card-sizes{gap:4px}.card-sizes span{font-size:9.5px;padding:2px 6px}.price-from{font-size:10.5px}}
 .quick-view-btn{position:absolute;left:50%;bottom:14px;transform:translate(-50%,10px);opacity:0;background:rgba(33,23,16,.88);color:#fff;border:0;padding:10px 20px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .25s ease,transform .25s ease;backdrop-filter:blur(6px);z-index:3}
 .product:hover .quick-view-btn{opacity:1;transform:translate(-50%,0)}
 @media(max-width:900px){.quick-view-btn{opacity:1;transform:translate(-50%,0);bottom:10px;padding:8px 16px;font-size:11px}}
@@ -375,7 +427,6 @@ firebase.auth().onAuthStateChanged(user=>{
 <div class="links"><a href="#home">Home</a><a href="#store">Store</a><a href="#collections">Collections</a><a href="#" onclick="openFullPage('about');return false;">About Us</a><a href="#" onclick="openFullPage('contact');return false;">Contact</a></div>
 <div class="nav-icons">
 <button class="icon-btn" onclick="openSearch()" aria-label="Search" title="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
-<button class="icon-btn" aria-label="Account" title="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path></svg></button>
 <button class="icon-btn" onclick="openCart()" aria-label="Cart" title="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"></circle><circle cx="19" cy="21" r="1.4"></circle><path d="M2.5 3h2.4l2.1 11.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"></path></svg><span class="cart-badge" id="cartCount">0</span></button>
 </div>
 </nav>
@@ -395,21 +446,17 @@ firebase.auth().onAuthStateChanged(user=>{
 <div class="feature"><span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6z"></path><path d="M9 12l2 2 4-4"></path></svg></span><div class="feature-text"><strong>SATISFACTION</strong><span>Premium Guarantee</span></div></div>
 </section>
 
-<div class="wrap" style="padding-top:6px;padding-bottom:0"><div class="store-filter-bar" id="storeFilterBar"></div></div>
 
 <section class="collection" id="collections">
 <div class="wrap">
 <div class="section-title"><h2>Our Coffee Collection</h2><p>Choose your favourite style of coffee.</p></div>
 <div class="collection-grid" id="collectionsGrid"></div>
-<div id="collectionProductsWrap" class="collection-products-wrap hide">
-<div class="category-filter-bar show"><span id="collectionProductsLabel"></span><button class="category-filter-clear" onclick="closeCollectionPanel()">Close ✕</button></div>
-<div class="grid" id="collectionProductsGrid"></div>
-</div>
 </div>
 </section>
 
 <section class="wrap" id="store">
 <div class="section-title"><h2>Featured Coffee</h2><p>Our most popular coffees, selected for everyday brewing.</p></div>
+<div class="store-filter-note" id="storeFilterBar"></div>
 <div class="grid" id="productsGrid"></div>
 </section>
 
@@ -621,8 +668,10 @@ function applySettings(s){
  let links=document.querySelectorAll(".links a");[s.home,s.shop,s.collections,s.aboutnav,s.contactnav].forEach((x,i)=>{if(links[i])links[i].textContent=x});
  setWhatsAppLink(s.whatsapp);
 }
+let waDigits="971568115042"; // replaced by the WhatsApp number from Store Content
 function setWhatsAppLink(num){
  let digits=String(num||"").replace(/[^0-9]/g,"");
+ if(digits.length>=7)waDigits=digits;
  let link=document.getElementById("waFloat");
  if(!link)return;
  if(digits.length>=7){link.href="https://wa.me/"+digits+"?text="+encodeURIComponent("Hi Ambrosia Coffee, I'd like to ask about your products.");link.style.display="flex";}
@@ -652,7 +701,7 @@ function handleProductsSnapshot(v){
   products=[];
  }
  productsLoaded=true;
- pruneCart();renderProducts();renderCart();updateCart();
+ pruneCart();renderProducts();renderStoreFilterBar();renderCart();updateCart();
  renderBestSellers();renderNewArrivals();
  if(activeCollectionCategory)renderCollectionProducts();
  hideSiteLoader();
@@ -701,7 +750,9 @@ function submitContactForm(e){
  .finally(()=>{if(btn){btn.disabled=false;btn.textContent=oldLabel}});
  return false;
 }
-function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<div class="collection-item"><a class="collection-card${activeCollectionCategory===c.name?" active":""}" href="#" onclick="event.preventDefault();openImageView('${String(c.img).replace(/'/g,"\\'")}','${String(c.name).replace(/'/g,"\\'")}')"><img src="${c.img}" loading="lazy"></a><div class="collection-name">${c.name}</div></div>`).join("")}
+// Tapping a collection shows just its coffees in the Featured list below.
+// Tap the same collection again (or "Show all") to see everything.
+function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<div class="collection-item${activeStoreFilter===c.name?" is-active":""}"><a class="collection-card${activeStoreFilter===c.name?" active":""}" href="#store" onclick="event.preventDefault();setStoreFilter(activeStoreFilter==='${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}'?null:'${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}')"><img src="${c.img}" loading="lazy" alt="${esc(c.name)}"></a><div class="collection-name">${esc(c.name)}</div></div>`).join("")}
 // Clicking a collection card opens an inline panel with just that category's
 // products, directly below the collection cards. The main store grid above
 // is never touched by this.
@@ -755,16 +806,31 @@ function save(){
  db.ref("carts/"+cartUid).set(cart).catch(err=>console.error("Cart save failed:",err));
 }
 let selectedProduct=null;
+// Grind options. "Whole Bean" is the default (and what older cart items are).
+const GRINDS=["Whole Bean","Espresso","Filter / V60","French Press"];
+const DEFAULT_GRIND=GRINDS[0];
+let pickerGrind=DEFAULT_GRIND;
+function grindOf(i){return i&&GRINDS.includes(i.grind)?i.grind:DEFAULT_GRIND}
+function grindButtonsHTML(current,fn){return GRINDS.map(g=>`<button type="button" class="${g===current?"active":""}" onclick="${fn}('${g}')">${g}</button>`).join("")}
 function getSizes(p){let s=p.sizes;if(!s)return [{key:"kg1",label:"1 Kg",price:Number(p.price||0),old:Number(p.old||0)}];let out=[];if(s.g200?.enabled!==false&&Number(s.g200?.price)>0)out.push({key:"g200",label:"200g",price:Number(s.g200.price),old:Number(s.g200.old||0)});if(s.g250?.enabled!==false&&Number(s.g250?.price)>0)out.push({key:"g250",label:"250g",price:Number(s.g250.price),old:Number(s.g250.old||0)});if(s.kg1?.enabled!==false&&Number(s.kg1?.price)>0)out.push({key:"kg1",label:"1 Kg",price:Number(s.kg1.price),old:Number(s.kg1.old||0)});return out}
-function addToCart(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;if(isOutOfStock(p)){noStockMsg(p);return}let sizes=getSizes(p);if(sizes.length<=1){addVariantToCart(p,sizes[0]);return}selectedProduct=p;document.getElementById("sizePickerProduct").innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img src="${p.img}" style="width:72px;height:72px;object-fit:cover;border-radius:14px"><div><b style="font-size:18px">${p.name}</b><div style="color:#7a6b5d;margin-top:4px">Select your pack size</div></div></div>`;document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button ${sizeInStock(p,s)?"":"disabled"} onclick="addVariantAndClose('${s.key}')"><span class="size-name">${s.label}</span><span class="size-price">${sizeInStock(p,s)?`${s.old?`<del style="color:#999;font-weight:400">${money(s.old)}</del> `:""}${money(s.price)}`:"Out of Stock"}</span></button>`).join("");document.getElementById("sizeOverlay").style.display="block"}
-function addVariantToCart(p,s,qty=1){if(!s)return false;if(!canAddPacks(p.id,s.key,qty)){noStockMsg(p,s.label);return false}let x=cart.find(i=>String(i.id)===String(p.id)&&i.size===s.key);if(x)x.qty+=qty;else cart.push({id:p.id,size:s.key,sizeLabel:s.label,price:s.price,qty});save();openCart();return true}
-function addVariantAndClose(key){let s=getSizes(selectedProduct).find(x=>x.key===key);addVariantToCart(selectedProduct,s);closeSizePicker()}
+function addToCart(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;if(isOutOfStock(p)){noStockMsg(p);return}let sizes=getSizes(p);selectedProduct=p;pickerGrind=DEFAULT_GRIND;document.getElementById("sizePickerTitle").textContent="Choose Grind & Size";document.getElementById("sizePickerProduct").innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img src="${p.img}" style="width:72px;height:72px;object-fit:cover;border-radius:14px"><div><b style="font-size:18px">${p.name}</b><div style="color:#7a6b5d;margin-top:4px">1. Pick a grind · 2. Tap a pack size</div></div></div><div class="grind-title">Grind</div><div class="grind-options" id="pickerGrinds">${grindButtonsHTML(pickerGrind,"setPickerGrind")}</div><div class="grind-title" style="margin-top:14px">Pack size</div>`;document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button ${sizeInStock(p,s)?"":"disabled"} onclick="addVariantAndClose('${s.key}')"><span class="size-name">${s.label}</span><span class="size-price">${sizeInStock(p,s)?`${s.old?`<del style="color:#999;font-weight:400">${money(s.old)}</del> `:""}${money(s.price)}`:"Out of Stock"}</span></button>`).join("");document.getElementById("sizeOverlay").style.display="block"}
+function setPickerGrind(g){pickerGrind=g;let box=document.getElementById("pickerGrinds");if(box)box.innerHTML=grindButtonsHTML(pickerGrind,"setPickerGrind")}
+window.setPickerGrind=setPickerGrind;
+// Same coffee + same size + same grind = one cart line. Stock is per size,
+// whatever the grind.
+function addVariantToCart(p,s,qty=1,grind=DEFAULT_GRIND){if(!s)return false;if(!canAddPacks(p.id,s.key,qty)){noStockMsg(p,s.label);return false}let x=cart.find(i=>String(i.id)===String(p.id)&&i.size===s.key&&grindOf(i)===grind);if(x)x.qty+=qty;else cart.push({id:p.id,size:s.key,sizeLabel:s.label,price:s.price,qty,grind});save();openCart();return true}
+function addVariantAndClose(key){let s=getSizes(selectedProduct).find(x=>x.key===key);addVariantToCart(selectedProduct,s,1,pickerGrind);closeSizePicker()}
 function closeSizePicker(){document.getElementById("sizeOverlay").style.display="none";selectedProduct=null}
 // Always charge the product's CURRENT price for that size (the cart may have
 // been filled days ago, before a price change in the admin).
 function linePrice(i,p){p=p||products.find(x=>String(x.id)===String(i.id));if(!p)return Number(i.price||0);let s=getSizes(p).find(z=>z.key===i.size);return s?Number(s.price):Number(i.price||p.price||0)}
 function pruneCart(){if(!products.length)return;let before=cart.length;cart=cart.filter(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p&&getSizes(p).some(z=>z.key===i.size)});if(cart.length!==before)save()}
-function updateCart(){let e=document.getElementById("cartCount");if(!e)return;let n=cart.filter(i=>!products.length||products.some(p=>String(p.id)===String(i.id))).reduce((a,b)=>a+b.qty,0);e.textContent=n;e.classList.toggle("hide",n===0)}
+function updateCart(){let e=document.getElementById("cartCount");if(!e)return;let live=cart.filter(i=>!products.length||products.some(p=>String(p.id)===String(i.id)));let n=live.reduce((a,b)=>a+b.qty,0);e.textContent=n;e.classList.toggle("hide",n===0);
+ // Phone-only bar at the bottom of the screen while the cart has something in it.
+ let bar=document.getElementById("mCartBar");
+ if(bar){bar.classList.toggle("show",n>0);document.body.classList.toggle("has-cart-bar",n>0);
+  if(n>0){document.getElementById("mcbCount").textContent=n+(n===1?" item":" items");document.getElementById("mcbTotal").textContent=money(live.reduce((a,i)=>a+linePrice(i)*i.qty,0));}}
+}
 function openCart(){renderCart();document.getElementById("cartOverlay").style.display="block"}
 function closeCart(){document.getElementById("cartOverlay").style.display="none"}
 
@@ -870,17 +936,32 @@ function closeFullPage(key){
  document.body.classList.remove("no-scroll");
 }
 window.openFullPage=openFullPage;window.closeFullPage=closeFullPage;
-function productCardHTML(p){let oos=isOutOfStock(p);return `<article class="product${oos?" oos":""}" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}${oos?`<span class="oos-badge">Out of Stock</span>`:""}<img src="${p.img}" alt="${p.name}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${p.name}</div><div class="rating">${stars(p.rating)} <span>(${p.reviewCount||p.reviews||0})</span></div><div class="price">${p.old?`<del>${money(p.old)}</del> `:""}<strong>${money(p.price)}</strong></div>${oos?`<button class="add" disabled>Out of Stock</button>`:`<button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button>`}</div></article>`}
+// ---- Product card extras ----
+function reviewCount(p){return Number(p.reviewCount||p.reviews||0)}
+// Flavour line from the admin ("Chocolate · Hazelnut · Caramel"), one line only.
+function cardFlavourHTML(p){let f=p.tastingShort||p.shortDescription||"";return `<div class="card-flavour" title="${esc(f)}">${esc(f)}</div>`}
+// Cheapest size that's in stock. "From" only when there's more than one size.
+function cardPriceHTML(p){
+ let sizes=getSizes(p);if(!sizes.length)return `<div class="price"><strong>${money(p.price)}</strong></div>`;
+ let pool=sizes.filter(s=>sizeInStock(p,s));if(!pool.length)pool=sizes;
+ let low=pool.reduce((a,b)=>b.price<a.price?b:a);
+ return `<div class="price">${sizes.length>1?`<span class="price-from">From</span>`:""}${low.old>low.price?`<del>${money(low.old)}</del> `:""}<strong>${money(low.price)}</strong></div>`;
+}
+// Size chips; a sold-out size is crossed out.
+function cardSizesHTML(p){let sizes=getSizes(p);if(sizes.length<2&&!(p.sizes))return "";return `<div class="card-sizes">${sizes.map(s=>`<span class="${sizeInStock(p,s)?"":"off"}" title="${sizeInStock(p,s)?"":"Out of stock"}">${s.label}</span>`).join("")}</div>`}
+function productCardHTML(p){let oos=isOutOfStock(p);return `<article class="product${oos?" oos":""}" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}${oos?`<span class="oos-badge">Out of Stock</span>`:""}<img src="${p.img}" alt="${p.name}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${p.name}</div>${cardFlavourHTML(p)}<div class="rating${reviewCount(p)?"":" empty"}">${stars(p.rating)} <span>(${reviewCount(p)})</span></div>${cardPriceHTML(p)}${cardSizesHTML(p)}${oos?`<button class="add" disabled>Out of Stock</button>`:`<button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button>`}</div></article>`}
 function renderProducts(){let grid=document.getElementById("productsGrid")||document.getElementById("productGrid");if(!grid)return;if(!productsLoaded){grid.innerHTML='<div style="padding:40px;text-align:center;color:#9a8a78">Loading products…</div>';return}if(!products.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found yet.</div>`;return}let list=activeStoreFilter?products.filter(p=>(p.cat||"")===activeStoreFilter):products;if(!list.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found in "${activeStoreFilter}" yet.</div>`;return}grid.innerHTML=list.map(productCardHTML).join("")}
 function renderStoreFilterBar(){
  let bar=document.getElementById("storeFilterBar");if(!bar)return;
- if(!collections.length){bar.innerHTML="";return}
- let pills=[{name:null,label:"All"}].concat(collections.map(c=>({name:c.name,label:c.name})));
- bar.innerHTML=pills.map(p=>`<button class="store-filter-pill${activeStoreFilter===p.name?" active":""}" onclick="setStoreFilter(${p.name?`'${String(p.name).replace(/'/g,"\\'")}'`:"null"})">${p.label}</button>`).join("");
+ if(!activeStoreFilter){bar.innerHTML="";bar.classList.remove("show");return}
+ let n=products.filter(p=>(p.cat||"")===activeStoreFilter).length;
+ bar.classList.add("show");
+ bar.innerHTML=`<span>Showing <b>${esc(activeStoreFilter)}</b> · ${n} coffee${n===1?"":"s"}</span><button type="button" onclick="setStoreFilter(null)">Show all ✕</button>`;
 }
 function setStoreFilter(name){
  activeStoreFilter=name;
  renderStoreFilterBar();
+ renderCollections();
  renderProducts();
  let storeSection=document.getElementById("store");
  if(storeSection)storeSection.scrollIntoView({behavior:"smooth",block:"start"});
@@ -889,19 +970,21 @@ window.setStoreFilter=setStoreFilter;
 function openProductDetail(id){
  let p=products.find(x=>String(x.id)===String(id));if(!p)return;
  let sizes=getSizes(p);let oos=isOutOfStock(p);let first=sizes.find(s=>sizeInStock(p,s))||sizes[0]||{key:"kg1",label:"1 Kg",price:p.price,old:p.old||0};
- selectedDetail={product:p,size:first,qty:1};
+ selectedDetail={product:p,size:first,qty:1,grind:DEFAULT_GRIND};
  let gallery=[p.img,...(p.gallery||[])].filter(Boolean);
  document.getElementById("detailName").textContent=p.name;
  document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${gallery[0]}" alt="${p.name}">
  ${gallery.length>1?`<div class="detail-thumbs">${gallery.map((g,i)=>`<img src="${g}" class="${i===0?"active":""}" onclick="selectDetailImage(${i})">`).join("")}</div>`:""}
  <div class="detail-eyebrow">${[p.cat,p.origin].filter(Boolean).join(" · ")}</div>
  <h1 class="detail-title">${p.name}</h1>
- <div class="detail-rating">${stars(p.rating)} &nbsp; ${p.rating||"5.0"} (${p.reviewCount||p.reviews||0} reviews)</div>
+ ${reviewCount(p)?`<div class="detail-rating">${stars(p.rating)} &nbsp; ${p.rating||"5.0"} (${reviewCount(p)} reviews)</div>`:""}
  <div id="detailPrice" class="detail-price">${money(first.price)}</div>
  <div class="detail-notes">${p.tastingShort||p.shortDescription||p.notes||""}</div>
  ${oos?`<div class="stock-note">Out of Stock — please check back soon.</div>`:""}
  <div class="detail-size-title">Weight</div>
  <div class="detail-size-options">${sizes.map(s=>`<button data-key="${s.key}" class="${s.key===first.key&&!oos?"active":""}" ${sizeInStock(p,s)?"":"disabled title=\"Out of stock\""} onclick="selectDetailSize('${s.key}')">${s.label}</button>`).join("")}</div>
+ <div class="detail-size-title">Grind</div>
+ <div class="grind-options detail-grinds" id="detailGrinds">${grindButtonsHTML(DEFAULT_GRIND,"selectDetailGrind")}</div>
  <div class="detail-qty-title">Quantity</div>
  <div class="detail-qty"><button onclick="detailQty(-1)">−</button><span id="detailQty">1</span><button onclick="detailQty(1)">+</button></div>
  <div class="detail-actions">${oos?`<button class="detail-add" disabled>Out of Stock</button><button class="detail-buy" disabled>Buy Now</button>`:`<button class="detail-add" onclick="detailAdd()">Add to Cart</button><button class="detail-buy" onclick="detailBuy()">Buy Now</button>`}</div>
@@ -928,15 +1011,17 @@ function closeProductDetail(){document.getElementById("productDetailOverlay").st
 function detailMaxQty(){let d=selectedDetail;if(!d)return 1;return Math.max(0,packsLeft(d.product.id,d.size.key)-cartPacks(d.product.id,d.size.key))}
 function selectDetailSize(key){if(!selectedDetail)return;let s=getSizes(selectedDetail.product).find(x=>x.key===key);if(!s||!sizeInStock(selectedDetail.product,s))return;selectedDetail.size=s;document.getElementById("detailPrice").textContent=money(s.price);document.querySelectorAll(".detail-size-options button").forEach(b=>b.classList.toggle("active",b.dataset.key===s.key));let mx=detailMaxQty();if(selectedDetail.qty>mx){selectedDetail.qty=Math.max(1,mx);document.getElementById("detailQty").textContent=selectedDetail.qty}}
 function detailQty(n){if(!selectedDetail)return;let q=Math.max(1,selectedDetail.qty+n);if(n>0&&q>detailMaxQty()){noStockMsg(selectedDetail.product,selectedDetail.size.label);return}selectedDetail.qty=q;document.getElementById("detailQty").textContent=q}
-function detailAdd(){if(!selectedDetail)return;if(addVariantToCart(selectedDetail.product,selectedDetail.size,selectedDetail.qty))closeProductDetail()}
-function detailBuy(){if(!selectedDetail)return;let d=selectedDetail;if(!canAddPacks(d.product.id,d.size.key,d.qty)){noStockMsg(d.product,d.size.label);return}{let x=cart.find(i=>String(i.id)===String(d.product.id)&&i.size===d.size.key);if(x)x.qty+=d.qty;else cart.push({id:d.product.id,size:d.size.key,sizeLabel:d.size.label,price:d.size.price,qty:d.qty});}save();closeProductDetail();checkout()}
+function selectDetailGrind(g){if(!selectedDetail)return;selectedDetail.grind=g;let box=document.getElementById("detailGrinds");if(box)box.innerHTML=grindButtonsHTML(g,"selectDetailGrind")}
+window.selectDetailGrind=selectDetailGrind;
+function detailAdd(){if(!selectedDetail)return;if(addVariantToCart(selectedDetail.product,selectedDetail.size,selectedDetail.qty,selectedDetail.grind))closeProductDetail()}
+function detailBuy(){if(!selectedDetail)return;let d=selectedDetail;if(!canAddPacks(d.product.id,d.size.key,d.qty)){noStockMsg(d.product,d.size.label);return}{let g=d.grind||DEFAULT_GRIND;let x=cart.find(i=>String(i.id)===String(d.product.id)&&i.size===d.size.key&&grindOf(i)===g);if(x)x.qty+=d.qty;else cart.push({id:d.product.id,size:d.size.key,sizeLabel:d.size.label,price:d.size.price,qty:d.qty,grind:g});}save();closeProductDetail();checkout()}
 function showDetailTab(id,btn){document.querySelectorAll(".detail-panel").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".detail-tab").forEach(x=>x.classList.remove("active"));document.getElementById("panel-"+id).classList.add("active");btn.classList.add("active")}
-function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=linePrice(i,p);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${p.name}</h4><div style="color:#7a6b5d">${size.label}</div><div>${money(unit)}</div>${cartPacks(p.id,i.size)>packsLeft(p.id,i.size)?`<div class="stock-warn">${packsLeft(p.id,i.size)<1?"Now out of stock — please remove":"Not enough stock — please reduce quantity"}</div>`:""}<div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal)}
+function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=linePrice(i,p);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${p.name}</h4><div style="color:#7a6b5d">${size.label} · ${esc(grindOf(i))}</div><div>${money(unit)}</div>${cartPacks(p.id,i.size)>packsLeft(p.id,i.size)?`<div class="stock-warn">${packsLeft(p.id,i.size)<1?"Now out of stock — please remove":"Not enough stock — please reduce quantity"}</div>`:""}<div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal)}
 function changeQty(index,n){let x=cart[index];if(!x)return;if(n>0&&!canAddPacks(x.id,x.size,n)){noStockMsg(products.find(p=>String(p.id)===String(x.id)),x.sizeLabel);return}x.qty+=n;if(x.qty<=0)cart.splice(index,1);save();renderCart()}
 function removeItem(index){cart.splice(index,1);save();renderCart()}
 let CHECKOUT_TEMPLATE=null;
 function checkout(){if(!cart.length){alert("Your cart is empty.");return}let bad=cartStockProblems();if(bad.length){alert("Sorry, not enough stock for: "+bad.join(", ")+". Please update your cart.");openCart();return}let box=document.getElementById("checkoutContent");if(CHECKOUT_TEMPLATE===null)CHECKOUT_TEMPLATE=box.innerHTML;else if(!document.getElementById("checkoutForm"))box.innerHTML=CHECKOUT_TEMPLATE;closeCart();renderCheckout();document.getElementById("checkoutOverlay").style.display="block"}
-function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0),total=subtotal+DELIVERY_CHARGE;document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${p.name} — ${i.sizeLabel||"1 Kg"} × ${i.qty}</span><strong>${money(linePrice(i,p)*i.qty)}</strong></div>`:""}).join("")+`<div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
+function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0),total=subtotal+DELIVERY_CHARGE;document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${p.name} — ${i.sizeLabel||"1 Kg"}, ${esc(grindOf(i))} × ${i.qty}</span><strong>${money(linePrice(i,p)*i.qty)}</strong></div>`:""}).join("")+`<div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
 function closeCheckout(){document.getElementById("checkoutOverlay").style.display="none"}
 function backToCart(){closeCheckout();openCart()}
 function goShopping(target){closeCart();closeCheckout();let el=document.getElementById(target);if(el)el.scrollIntoView({behavior:"smooth"})}
@@ -947,13 +1032,18 @@ async function returnStock(taken){
  if(failed.length){try{await db.ref("stockReturns").push({items:failed,created:new Date().toISOString()})}catch(e){console.error("Could not file stock return note:",e)}}
 }
 let placingOrder=false;
+// Pre-filled WhatsApp message so the customer can confirm with one tap.
+function orderWhatsAppLink(orderNo,items,total,form){
+ let lines=[`Hi Ambrosia Coffee! I just placed order #${orderNo}.`,"",...items.map(i=>`• ${i.name} ${i.size} (${i.grind}) × ${i.qty}`),"",`Total: ${money(total)} (Cash on Delivery)`,`Name: ${form.get("fullname")||""}`,`Area: ${[form.get("city"),form.get("emirate")].filter(Boolean).join(", ")}`,"","Please confirm my order. Thank you!"];
+ return "https://wa.me/"+waDigits+"?text="+encodeURIComponent(lines.join("\n"));
+}
 // e.g. AMB-260924-7K3Q  (date + 4 random characters). The old number was the
 // last 6 digits of the clock, which repeats every ~17 minutes.
 function makeOrderNo(){let d=new Date(),p=n=>String(n).padStart(2,"0"),chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",r="";for(let i=0;i<4;i++)r+=chars[Math.floor(Math.random()*chars.length)];return `AMB-${String(d.getFullYear()).slice(2)}${p(d.getMonth()+1)}${p(d.getDate())}-${r}`}
 async function placeOrder(e){
  e.preventDefault();if(!cart.length||placingOrder)return;
  const form=new FormData(document.getElementById("checkoutForm")),orderNo=makeOrderNo();
- const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",sizeKey:i.size||"kg1",price:linePrice(i,p),qty:i.qty}:null}).filter(Boolean);
+ const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",sizeKey:i.size||"kg1",grind:grindOf(i),price:linePrice(i,p),qty:i.qty}:null}).filter(Boolean);
  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0),total=subtotal+DELIVERY_CHARGE;
  const btn=document.querySelector("#checkoutForm .place-order");
  placingOrder=true;if(btn){btn.disabled=true;btn.textContent="Placing order…"}
@@ -984,7 +1074,7 @@ async function placeOrder(e){
   await returnStock(taken);taken=[];
  }
  const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,status:"New",created:new Date().toISOString(),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
- try{await db.ref("orders").push(order);done();cart=[];save();document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>Thank you, ${esc(form.get("fullname")||"Customer")}.</p><p>Your order <strong>#${orderNo}</strong> has been received.</p><div class="cod-badge">💵&nbsp; Cash on Delivery</div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert("Order could not be sent. Please try again.");console.error(err)}
+ try{await db.ref("orders").push(order);done();cart=[];save();document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>Thank you, ${esc(form.get("fullname")||"Customer")}.</p><p>Your order <strong>#${orderNo}</strong> has been received.</p><div class="cod-badge">💵&nbsp; Cash on Delivery</div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><a class="wa-confirm" href="${orderWhatsAppLink(orderNo,items,total,form)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Z"/></svg>Confirm on WhatsApp</a><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert("Order could not be sent. Please try again.");console.error(err)}
 }
 renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 // (renderProducts() above will show a "Loading products…" placeholder until the
@@ -1020,12 +1110,14 @@ renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 <div class="search-results" id="searchResults"></div>
 </div>
 
+<button type="button" id="mCartBar" class="m-cart-bar" onclick="openCart()" aria-label="View cart"><span class="mcb-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"></circle><circle cx="19" cy="21" r="1.4"></circle><path d="M2.5 3h2.4l2.1 11.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"></path></svg><span><b id="mcbCount">0 items</b><span id="mcbTotal">AED 0.00</span></span></span><span class="mcb-go">View Cart →</span></button>
 <a id="waFloat" class="wa-float" href="#" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp">
 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Zm0 18.06h-.01a8.19 8.19 0 0 1-4.17-1.14l-.3-.18-3.05.8.81-2.96-.2-.31a8.02 8.02 0 0 1-1.27-4.37c0-4.44 3.65-8.05 8.15-8.05 2.18 0 4.22.84 5.76 2.37a8 8 0 0 1 2.39 5.68c0 4.44-3.65 8.16-8.11 8.16Z"/></svg>
 </a>
 
 
 <style id="mobile-friendly-final">
+.m-cart-bar{display:none}
 /* ===== MOBILE-FIRST UX POLISH ===== */
 html{overflow-x:hidden}
 body{overflow-x:hidden;-webkit-text-size-adjust:100%;touch-action:pan-y}
@@ -1312,6 +1404,44 @@ button{min-height:44px}
   .search-top{padding:25px 15px 15px!important}
   .search-top input{font-size:20px!important;min-width:0}
   .search-results{padding:5px 15px 30px!important}
+}
+/* ===== 10 · products sooner on phones ===== */
+@media (max-width:760px){
+  .hero{min-height:0!important;padding:38px 22px 34px!important}
+  .hero h1{font-size:clamp(32px,9vw,40px)!important}
+  .hero h1:after{margin-top:12px!important}
+  .hero p{margin-top:12px!important;font-size:13px!important}
+  .eyebrow{margin-bottom:10px!important}
+  .hero-shop{margin-top:16px!important;min-height:44px!important}
+  .features{grid-template-columns:repeat(4,1fr)!important;margin:10px 8px 0!important}
+  .feature{min-height:0!important;padding:11px 4px!important;flex-direction:column!important;gap:5px!important;text-align:center!important;border-top:0!important;border-right:1px solid rgba(139,103,64,.16)!important}
+  .feature:last-child{border-right:0!important}
+  .feature-icon{width:20px;height:20px}
+  .feature-icon svg{width:18px;height:18px}
+  .feature strong{font-size:8.5px!important;letter-spacing:.2px!important;margin:0!important;line-height:1.25}
+  .feature span:not(.feature-icon){display:none!important}
+  /* collections: one swipeable row instead of three tall cards */
+  .collection .wrap{padding-top:28px!important;padding-bottom:6px!important}
+  .collection .section-title{margin-bottom:14px!important}
+  .collection-grid{display:flex!important;overflow-x:auto;gap:10px!important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:6px;margin:0 -12px;padding-left:12px;padding-right:12px}
+  .collection-grid::-webkit-scrollbar{display:none}
+  .collection-item{flex:0 0 42%;scroll-snap-align:start}
+  .collection-card{height:96px!important;border-radius:14px!important}
+  .collection-name{font-size:14px!important;margin-top:7px}
+  #store{padding-top:26px!important}
+  /* ===== 12 · cart bar ===== */
+  .m-cart-bar{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:45;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 16px;min-height:56px;border:0;border-radius:18px!important;background:#2b2119;color:#fff;box-shadow:0 14px 34px rgba(30,20,12,.35);transform:translateY(140%);transition:transform .3s ease!important;cursor:pointer;font:inherit;text-align:left}
+  .m-cart-bar.show{transform:translateY(0)}
+  .m-cart-bar:hover{transform:translateY(0)}
+  .mcb-left{display:flex;align-items:center;gap:11px}
+  .mcb-left svg{width:22px;height:22px;flex-shrink:0;color:#d7ad72}
+  .mcb-left b{display:block;font-size:13px;font-weight:600}
+  #mcbTotal{display:block;font-size:12px;color:#cbb89e}
+  .mcb-go{background:linear-gradient(135deg,#a96d2e,#c49351);padding:10px 16px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.4px;white-space:nowrap}
+  body.has-cart-bar .wa-float{bottom:80px!important}
+  body:not(.has-cart-bar) .wa-float{bottom:18px!important}
+  body{padding-bottom:0!important}
+  body.has-cart-bar{padding-bottom:78px!important}
 }
 @media(max-width:380px){
   .logo-text b{font-size:16px!important}
