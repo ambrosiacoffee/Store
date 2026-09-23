@@ -8,8 +8,10 @@
 <meta name="description" content="Speciality single-origin coffee beans, freshly roasted in small batches. Whole bean or ground for espresso, filter or French press. Cash on delivery across the UAE.">
 <link rel="canonical" href="https://ambrosiacoffee.site/">
 <meta name="theme-color" content="#0f3434">
-<link rel="icon" type="image/webp" href="ambrosia_logo.webp">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Ambrosia Speciality Coffee">
 <meta property="og:title" content="Ambrosia Speciality Coffee — Freshly Roasted Beans, UAE Delivery">
@@ -26,7 +28,9 @@
 <meta name="twitter:title" content="Ambrosia Speciality Coffee — Freshly Roasted Beans, UAE Delivery">
 <meta name="twitter:description" content="Single-origin coffee beans, roasted in small batches. Cash on delivery across the UAE.">
 <meta name="twitter:image" content="https://ambrosiacoffee.site/og-image.jpg">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","name":"Ambrosia Speciality Coffee","url":"https://ambrosiacoffee.site/","image":"https://ambrosiacoffee.site/og-image.jpg","description":"Speciality single-origin coffee beans, freshly roasted in small batches, delivered across the UAE.","telephone":"+971568115042","email":"ambrosiaspecialitycoffee@gmail.com","address":{"@type":"PostalAddress","addressCountry":"AE"},"areaServed":"AE","paymentAccepted":"Cash"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Ambrosia Speciality Coffee","alternateName":["Ambrosia Coffee","Ambrosia"],"url":"https://ambrosiacoffee.site/"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Ambrosia Speciality Coffee","url":"https://ambrosiacoffee.site/","logo":"https://ambrosiacoffee.site/favicon-192.png"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","logo":"https://ambrosiacoffee.site/favicon-192.png","name":"Ambrosia Speciality Coffee","url":"https://ambrosiacoffee.site/","image":"https://ambrosiacoffee.site/og-image.jpg","description":"Speciality single-origin coffee beans, freshly roasted in small batches, delivered across the UAE.","telephone":"+971568115042","email":"ambrosiaspecialitycoffee@gmail.com","address":{"@type":"PostalAddress","addressCountry":"AE"},"areaServed":"AE","paymentAccepted":"Cash"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -456,6 +460,7 @@ const AR_TEXT=new Map(Object.entries({
  "Your order {no} has been received.":"تم استلام طلبك {no}.",
  "NEW":"جديد","SALE":"تخفيض","BEST SELLER":"الأكثر مبيعًا","BEST SELLERS":"الأكثر مبيعًا","SOLD OUT":"نفدت الكمية","LIMITED":"كمية محدودة",
  "Product":"المنتج","Policy":"السياسة","Shop this Collection":"تسوّق هذه المجموعة",
+ "Share":"مشاركة","Link copied ✓":"تم نسخ الرابط ✓","Copy this link:":"انسخ هذا الرابط:",
  "of this coffee":"من هذه القهوة","one item":"أحد المنتجات","Customer":"عميلنا العزيز"
 }));
 // Arabic defaults for the text the admin edits in "Store Content".
@@ -554,8 +559,22 @@ window.setLang=setLang;window.toggleLang=toggleLang;
 .product-detail-drawer{max-width:none!important;width:100vw!important;max-height:none!important;height:100vh!important;overflow:auto;padding:38px 36px!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;transform:none!important;border-radius:0!important;box-shadow:none!important;border:none!important}
 .product-detail-drawer-inner{max-width:900px;margin:0 auto}
 .product-detail-drawer .drawer-head{border-bottom:1px solid #ece2d2;padding-bottom:16px;margin-bottom:4px}
-.product-detail-drawer .drawer-head{display:flex;align-items:center;gap:12px}
-.product-detail-drawer .drawer-head h3{display:block;flex:1;min-width:0;margin:0;font-family:Georgia,serif;font-size:19px;font-weight:500;color:#211710;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.product-detail-drawer .drawer-head{display:flex;align-items:center;gap:12px;position:sticky;top:-38px;z-index:5;background:#fffcf7;box-shadow:0 -38px 0 #fffcf7;padding-top:10px}
+.product-detail-drawer .drawer-head h3{display:flex!important;align-items:baseline;gap:10px;flex:1;min-width:0;margin:0;font-family:Georgia,serif;font-size:19px;font-weight:500;color:#211710;white-space:nowrap;opacity:0;transform:translateY(6px);transition:opacity .25s ease,transform .25s ease;pointer-events:none}
+.product-detail-drawer .drawer-head.show-name h3{opacity:1;transform:none}
+.product-detail-drawer .drawer-head .close{margin-left:0!important;margin-right:0!important;width:38px!important;height:38px!important;min-height:38px!important;flex-shrink:0;border-radius:50%!important;padding:0}
+.dh-btn{position:relative;flex-shrink:0;width:38px;height:38px;min-height:38px!important;padding:0;border:0;border-radius:50%!important;background:#f2ece2;color:#4a3c2e;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.dh-btn:hover{background:#e6dbca}
+.dh-btn svg{width:18px;height:18px}
+.dh-badge{position:absolute;top:-4px;right:-4px;background:#96551f;color:#fff;font-size:10px;font-weight:700;min-width:17px;height:17px;line-height:17px;border-radius:999px;text-align:center;padding:0 4px;font-family:Inter,Arial,sans-serif}
+.dh-badge.hide{display:none}
+html[dir=rtl] .dh-badge{right:auto;left:-4px}
+.share-toast{position:fixed;left:50%;bottom:110px;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:#2b2119;color:#fff;padding:11px 18px;border-radius:999px;font-size:13px;font-weight:600;z-index:1000;transition:opacity .25s,transform .25s;white-space:nowrap}
+.share-toast.show{opacity:1;transform:translate(-50%,0)}
+.dh-name{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.dh-price{flex-shrink:0;font-family:Inter,Arial,sans-serif;font-size:14px;font-weight:700;color:#9a642b}
+.dh-price:before{content:"·";margin-right:8px;color:#b3a594;font-weight:400}
+html[dir=rtl] .dh-price:before{margin-right:0;margin-left:8px}
 .product-detail-drawer .close{width:34px;height:34px;border-radius:50%;background:#f2ece2;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1;color:#4a3c2e;margin-left:auto;transition:.2s ease}
 .product-detail-drawer .close:hover{background:#e6dbca}
 @media(max-width:600px){.product-detail-drawer{width:100vw!important;height:100vh!important}}
@@ -758,7 +777,11 @@ window.setLang=setLang;window.toggleLang=toggleLang;
 <div class="overlay" id="productDetailOverlay" onclick="if(event.target===this)closeProductDetail()">
 <div class="drawer product-detail-drawer">
 <div class="product-detail-drawer-inner">
-<div class="drawer-head"><h3 id="detailName">Product</h3><button class="close" onclick="closeProductDetail()">×</button></div>
+<div class="drawer-head"><h3 id="detailName">Product</h3>
+<button type="button" class="dh-btn" onclick="shareProduct()" aria-label="Share" title="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>
+<button type="button" class="dh-btn" onclick="closeProductDetail();openCart()" aria-label="Cart" title="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h2.4l2.1 11.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"/></svg><span class="dh-badge hide" id="detailCartCount">0</span></button>
+<button class="close" onclick="closeProductDetail()">×</button></div>
+<div class="share-toast" id="shareToast" role="status" aria-live="polite"></div>
 <div id="detailContent"></div>
 </div>
 </div></div><div class="overlay" id="sizeOverlay" onclick="if(event.target===this)closeSizePicker()"><div class="drawer" style="max-width:520px"><div class="drawer-head"><h3 id="sizePickerTitle">Choose Size</h3><button class="close" onclick="closeSizePicker()">×</button></div><div id="sizePickerProduct"></div><div id="sizeOptions" style="display:grid;gap:10px;margin-top:16px"></div></div></div><div class="overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
@@ -919,6 +942,7 @@ function handleProductsSnapshot(v){
  renderBestSellers();renderNewArrivals();
  if(activeCollectionCategory)renderCollectionProducts();
  hideSiteLoader();
+ openDeepLinkedProduct();
 }
 // Shows while the store's first batch of data (and the hero background)
 // arrives, so shoppers see something moving instead of a blank/frozen page.
@@ -1032,6 +1056,7 @@ function pruneCart(){if(!products.length)return;
  if(cart.some(i=>"grind" in i)){let m=[];cart.forEach(i=>{let x=m.find(j=>String(j.id)===String(i.id)&&j.size===i.size);if(x)x.qty+=i.qty;else{let c={...i};delete c.grind;m.push(c)}});cart=m;save();}
  let before=cart.length;cart=cart.filter(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p&&getSizes(p).some(z=>z.key===i.size)});if(cart.length!==before)save()}
 function updateCart(){let e=document.getElementById("cartCount");if(!e)return;let live=cart.filter(i=>!products.length||products.some(p=>String(p.id)===String(i.id)));let n=live.reduce((a,b)=>a+b.qty,0);e.textContent=n;e.classList.toggle("hide",n===0);
+ {let d=document.getElementById("detailCartCount");if(d){d.textContent=n;d.classList.toggle("hide",n===0)}}
  // Phone-only bar at the bottom of the screen while the cart has something in it.
  let bar=document.getElementById("mCartBar");
  if(bar){bar.classList.toggle("show",n>0);document.body.classList.toggle("has-cart-bar",n>0);
@@ -1218,7 +1243,7 @@ function openProductDetail(id){
  let sizes=getSizes(p);let oos=isOutOfStock(p);let first=sizes.find(s=>sizeInStock(p,s))||sizes[0]||{key:"kg1",label:"1 Kg",price:p.price,old:p.old||0};
  selectedDetail={product:p,size:first,qty:1};
  let gallery=[p.img,...(p.gallery||[])].filter(Boolean);
- document.getElementById("detailName").textContent=arField(p,"name");
+ document.getElementById("detailName").innerHTML=`<span class="dh-name">${esc(arField(p,"name"))}</span><span class="dh-price" id="detailHeadPrice">${money(first.price)}</span>`;
  document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${gallery[0]}" alt="${esc(arField(p,"name"))}">
  ${gallery.length>1?`<div class="detail-thumbs">${gallery.map((g,i)=>`<img src="${g}" class="${i===0?"active":""}" onclick="selectDetailImage(${i})">`).join("")}</div>`:""}
  <div class="detail-eyebrow">${[catLabel(p.cat),p.origin].filter(Boolean).join(" · ")}</div>
@@ -1242,7 +1267,39 @@ function openProductDetail(id){
  <div id="panel-tasting" class="detail-panel">${arField(p,"tastingNotes")||arField(p,"tastingShort")||t("Chocolate, hazelnut and caramel.")}</div>
  <div id="panel-brewing" class="detail-panel">${arField(p,"brewingGuide")||t("Use your preferred brewing method and adjust grind size, dose and extraction time to taste.")}</div>`;
  document.getElementById("productDetailOverlay").style.display="block";
+ // start at the top, with the header name hidden until the big title scrolls away
+ let dr=document.querySelector(".product-detail-drawer");if(dr)dr.scrollTop=0;
+ updateDetailHeader();updateCart();setProductInUrl(p.id);
 }
+// ---- Share a coffee. The link opens this product directly (…/?p=ID).
+function productLink(id){let u=new URL(location.href);u.search="";u.hash="";u.searchParams.set("p",id);return u.toString()}
+function showShareToast(msg){let t=document.getElementById("shareToast");if(!t)return;t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2200)}
+async function shareProduct(){
+ if(!selectedDetail)return;
+ let p=selectedDetail.product,url=productLink(p.id),name=arField(p,"name");
+ let text=isAr()?`اكتشف ${name} من أمبروزيا للقهوة المختصة ☕`:`Check out ${name} from Ambrosia Speciality Coffee ☕`;
+ if(navigator.share){try{await navigator.share({title:name,text,url});return}catch(e){if(e&&e.name==="AbortError")return}}
+ try{await navigator.clipboard.writeText(url);showShareToast(t("Link copied ✓"));}
+ catch(e){window.prompt(t("Copy this link:"),url)}
+}
+window.shareProduct=shareProduct;
+// keep the address bar pointing at the open coffee (so it can be copied/shared too)
+function setProductInUrl(id){try{let u=new URL(location.href);if(id)u.searchParams.set("p",id);else u.searchParams.delete("p");history.replaceState(null,"",u.pathname+(u.search||"")+u.hash)}catch(e){}}
+let deepLinkDone=false;
+function openDeepLinkedProduct(){
+ if(deepLinkDone||!productsLoaded)return;deepLinkDone=true;
+ let id=null;try{id=new URLSearchParams(location.search).get("p")}catch(e){}
+ if(id&&products.some(x=>String(x.id)===String(id)))openProductDetail(id);
+}
+// The name + price slide into the top bar only once the big title below the
+// photo has scrolled out of sight — so the name is never shown twice.
+function updateDetailHeader(){
+ let head=document.querySelector(".product-detail-drawer .drawer-head"),title=document.querySelector(".detail-title");
+ if(!head||!title)return;
+ head.classList.toggle("show-name",title.getBoundingClientRect().bottom<=head.getBoundingClientRect().bottom);
+}
+let detailHeadTick=false;
+document.addEventListener("DOMContentLoaded",()=>{let dr=document.querySelector(".product-detail-drawer");if(dr)dr.addEventListener("scroll",()=>{if(detailHeadTick)return;detailHeadTick=true;requestAnimationFrame(()=>{detailHeadTick=false;updateDetailHeader()})},{passive:true})});
 let selectedDetail=null;
 function selectDetailImage(idx){
  if(!selectedDetail)return;
@@ -1251,9 +1308,9 @@ function selectDetailImage(idx){
  document.getElementById("detailMainImg").src=img;
  document.querySelectorAll(".detail-thumbs img").forEach((t,i)=>t.classList.toggle("active",i===idx));
 }
-function closeProductDetail(){document.getElementById("productDetailOverlay").style.display="none";selectedDetail=null}
+function closeProductDetail(){document.getElementById("productDetailOverlay").style.display="none";selectedDetail=null;setProductInUrl(null)}
 function detailMaxQty(){let d=selectedDetail;if(!d)return 1;return Math.max(0,packsLeft(d.product.id,d.size.key)-cartPacks(d.product.id,d.size.key))}
-function selectDetailSize(key){if(!selectedDetail)return;let s=getSizes(selectedDetail.product).find(x=>x.key===key);if(!s||!sizeInStock(selectedDetail.product,s))return;selectedDetail.size=s;document.getElementById("detailPrice").textContent=money(s.price);document.querySelectorAll(".detail-size-options button").forEach(b=>b.classList.toggle("active",b.dataset.key===s.key));let mx=detailMaxQty();if(selectedDetail.qty>mx){selectedDetail.qty=Math.max(1,mx);document.getElementById("detailQty").textContent=selectedDetail.qty}}
+function selectDetailSize(key){if(!selectedDetail)return;let s=getSizes(selectedDetail.product).find(x=>x.key===key);if(!s||!sizeInStock(selectedDetail.product,s))return;selectedDetail.size=s;document.getElementById("detailPrice").textContent=money(s.price);{let hp=document.getElementById("detailHeadPrice");if(hp)hp.textContent=money(s.price)}document.querySelectorAll(".detail-size-options button").forEach(b=>b.classList.toggle("active",b.dataset.key===s.key));let mx=detailMaxQty();if(selectedDetail.qty>mx){selectedDetail.qty=Math.max(1,mx);document.getElementById("detailQty").textContent=selectedDetail.qty}}
 function detailQty(n){if(!selectedDetail)return;let q=Math.max(1,selectedDetail.qty+n);if(n>0&&q>detailMaxQty()){noStockMsg(selectedDetail.product,selectedDetail.size.label);return}selectedDetail.qty=q;document.getElementById("detailQty").textContent=q}
 function detailAdd(){if(!selectedDetail)return;if(addVariantToCart(selectedDetail.product,selectedDetail.size,selectedDetail.qty))closeProductDetail()}
 function detailBuy(){if(!selectedDetail)return;let d=selectedDetail;if(!canAddPacks(d.product.id,d.size.key,d.qty)){noStockMsg(d.product,d.size.label);return}{let x=cart.find(i=>String(i.id)===String(d.product.id)&&i.size===d.size.key);if(x)x.qty+=d.qty;else cart.push({id:d.product.id,size:d.size.key,sizeLabel:d.size.label,price:d.size.price,qty:d.qty});}save();closeProductDetail();checkout()}
@@ -1679,7 +1736,13 @@ button{min-height:44px}
   .detail-actions button{min-height:50px!important}
   .product-detail-drawer-inner{padding-bottom:28px}
   .product-detail-drawer .drawer-head{background:#fffcf7!important;box-shadow:0 -16px 0 #fffcf7}
-  .product-detail-drawer .drawer-head h3{font-size:18px}
+  .product-detail-drawer .drawer-head{gap:8px!important}
+  .product-detail-drawer .drawer-head h3{font-size:16px;gap:6px}
+  .dh-price{font-size:12.5px}
+  .dh-price:before{margin-right:6px}
+  html[dir=rtl] .dh-price:before{margin-left:6px}
+  .dh-btn,.product-detail-drawer .drawer-head .close{width:34px!important;height:34px!important;min-height:34px!important}
+  .dh-btn svg{width:16px;height:16px}
   .detail-tabs{gap:18px!important}
   .detail-tab{min-height:44px!important}
   .wa-float{right:15px!important;bottom:82px!important;width:50px!important;height:50px!important;z-index:80!important}
