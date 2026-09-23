@@ -337,11 +337,225 @@ firebase.auth().onAuthStateChanged(user=>{
  else{firebase.auth().signInAnonymously().catch(e=>console.error("Anonymous sign-in failed:",e));}
 });
 </script>
+<script>
+// ===== Language: English / العربية =====
+// The page is written in English. When Arabic is chosen, every piece of text
+// on the page that has an entry below is swapped for its Arabic version —
+// including cards, cart and checkout that are drawn later (a watcher re-runs
+// the swap whenever the page changes). Product names, flavours, etc. come
+// from the admin's optional Arabic fields; if those are empty the English
+// text is shown. Orders are always saved in English for the shop.
+(function(){
+ function detect(){
+  try{var q=new URLSearchParams(location.search).get("lang");if(q==="ar"||q==="en")return q;}catch(e){}
+  try{var s=localStorage.getItem("ambrosia_lang");if(s==="ar"||s==="en")return s;}catch(e){}
+  try{if(String(navigator.language||"").toLowerCase().indexOf("ar")===0)return "ar";}catch(e){}
+  return "en";
+ }
+ window.LANG=detect();
+ var h=document.documentElement;h.lang=window.LANG;h.dir=window.LANG==="ar"?"rtl":"ltr";
+ window.loadArabicFonts=function(){
+  if(document.getElementById("arFonts"))return;
+  var l=document.createElement("link");l.id="arFonts";l.rel="stylesheet";
+  l.href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap";
+  document.head.appendChild(l);
+ };
+ if(window.LANG==="ar")window.loadArabicFonts();
+})();
+
+const AR_TEXT=new Map(Object.entries({
+ // header / hero / features
+ "Loading…":"جارٍ التحميل…",
+ "FRESHLY ROASTED COFFEE • UAE DELIVERY":"قهوة محمّصة طازجة • توصيل داخل الإمارات",
+ "Home":"الرئيسية","Store":"المتجر","Collections":"المجموعات","About Us":"من نحن","Contact":"تواصل معنا",
+ "Search":"بحث","Cart":"السلة",
+ "SPECIALTY COFFEE, PERFECTLY ROASTED":"قهوة مختصة، محمّصة بإتقان",
+ "Fresh Coffee Beans":"حبوب قهوة طازجة","Roasted With":"محمّصة","Passion":"بشغف",
+ "Discover premium single origin and signature blends,":"اكتشف أجود أنواع القهوة أحادية المصدر وخلطاتنا المميزة،",
+ "roasted to perfection and delivered fresh to your door.":"محمّصة بإتقان وتصلك طازجة حتى باب منزلك.",
+ "SHOP NOW":"تسوّق الآن",
+ "PREMIUM QUALITY":"جودة فاخرة","100% Arabica Beans":"حبوب أرابيكا 100%",
+ "FRESHLY ROASTED":"تحميص طازج","Small Batch Roasting":"تحميص بكميات صغيرة",
+ "FAST DELIVERY":"توصيل سريع","Across UAE":"في جميع أنحاء الإمارات",
+ "SATISFACTION":"رضاك يهمّنا","Premium Guarantee":"ضمان الجودة",
+ // sections
+ "Our Coffee Collection":"مجموعة قهوتنا","Choose your favourite style of coffee.":"اختر أسلوب قهوتك المفضّل.",
+ "Featured Coffee":"قهوتنا المميزة","Our most popular coffees, selected for everyday brewing.":"أكثر أنواع قهوتنا طلبًا، مختارة لتحضيرك اليومي.",
+ "Best Sellers":"الأكثر مبيعًا","Loved by our regular customers.":"المفضّلة لدى عملائنا الدائمين.",
+ "New Arrivals":"وصل حديثًا","Freshly roasted and freshly added.":"محمّصة طازجة وأُضيفت حديثًا.",
+ "Showing":"عرض","coffee":"نوع قهوة","coffees":"أنواع قهوة","Show all ✕":"عرض الكل ✕",
+ // about / help
+ "OUR STORY":"قصتنا","Roasted With Passion, Served With Pride":"محمّصة بشغف، تُقدَّم بفخر",
+ "Ambrosia began with a simple belief — that great coffee starts with great beans, and great beans deserve careful hands. We work directly with small farms to source single-origin coffees and signature blends, roasting each batch in small quantities to preserve its flavour, character, and freshness.":"بدأت أمبروزيا بإيمان بسيط — أن القهوة الرائعة تبدأ بحبوب رائعة، وأن الحبوب الرائعة تستحق أيادي تعتني بها. نتعامل مباشرة مع مزارع صغيرة لنختار القهوة أحادية المصدر وخلطاتنا المميزة، ونحمّص كل دفعة بكميات صغيرة للحفاظ على نكهتها وطابعها وطزاجتها.",
+ "From our roastery to your cup, every step is done with care. For us, coffee isn't simply a drink — it's a craft, shaped by quality beans, thoughtful roasting, and a genuine passion for great coffee.":"من محمصتنا إلى فنجانك، نؤدي كل خطوة بعناية. القهوة بالنسبة لنا ليست مجرد مشروب — بل حرفة تصنعها حبوب عالية الجودة، وتحميص مدروس، وشغف حقيقي بالقهوة الرائعة.",
+ "Partner Farms":"مزرعة شريكة","Cups Served":"كوب قُدِّم",
+ "Need help choosing your coffee?":"تحتاج مساعدة في اختيار قهوتك؟",
+ "Tell us how you brew your coffee and what flavour you like. We can help you choose the right Ambrosia beans.":"أخبرنا كيف تحضّر قهوتك وما النكهات التي تحبها، وسنساعدك في اختيار حبوب أمبروزيا المناسبة لك.",
+ "Ask For Help":"اطلب المساعدة",
+ // contact
+ "Contact Us":"تواصل معنا",
+ "Questions about an order, wholesale, or just want to talk coffee? We'd love to hear from you.":"لديك سؤال عن طلبك أو عن البيع بالجملة، أو تريد فقط الحديث عن القهوة؟ يسعدنا تواصلك معنا.",
+ "Visit / Deliver To":"الزيارة / التوصيل إلى","Ambrosia Speciality Coffee":"أمبروزيا للقهوة المختصة",
+ "Email":"البريد الإلكتروني","Phone / WhatsApp":"الهاتف / واتساب","Hours":"ساعات العمل",
+ "Sat – Thu: 8:00 AM – 10:00 PM":"السبت – الخميس: 8:00 ص – 10:00 م","Friday: 2:00 PM – 10:00 PM":"الجمعة: 2:00 م – 10:00 م",
+ "Send Us a Message":"أرسل لنا رسالة",
+ "Thank you — your message has been sent. We'll get back to you shortly.":"شكرًا لك — تم إرسال رسالتك، وسنعود إليك قريبًا.",
+ "Name":"الاسم","Your name":"اسمك","Phone (optional)":"الهاتف (اختياري)","Message":"الرسالة",
+ "How can we help?":"كيف يمكننا مساعدتك؟","Send Message":"إرسال الرسالة","Sending…":"جارٍ الإرسال…",
+ // footer
+ "Freshly roasted coffee beans for homes, cafés and coffee lovers across the UAE.":"حبوب قهوة محمّصة طازجة للمنازل والمقاهي ومحبي القهوة في جميع أنحاء الإمارات.",
+ "Shop":"تسوّق","Coffee Beans":"حبوب القهوة","Information":"معلومات","Delivery Policy":"سياسة التوصيل",
+ "Returns Policy":"سياسة الإرجاع","Customer Care":"خدمة العملاء","Shipping":"الشحن","Refund Policy":"سياسة الاسترداد",
+ "Privacy Policy":"سياسة الخصوصية","Terms & Conditions":"الشروط والأحكام",
+ "© 2026 Ambrosia Coffee Beans. All Rights Reserved.":"© 2026 أمبروزيا للقهوة. جميع الحقوق محفوظة.",
+ "Chat with us on WhatsApp":"تحدّث معنا عبر واتساب",
+ // product cards / detail
+ "Loading products…":"جارٍ تحميل المنتجات…","No products found yet.":"لا توجد منتجات بعد.",
+ "Quick View":"عرض سريع","Add to Cart":"أضف إلى السلة","Out of Stock":"نفدت الكمية","Out of stock":"نفدت الكمية",
+ "From":"ابتداءً من","Buy Now":"اشترِ الآن","Weight":"الوزن","Quantity":"الكمية","Pack size":"حجم العبوة",
+ "Description":"الوصف","Tasting Notes":"ملاحظات التذوق","Brewing Guide":"طريقة التحضير","reviews":"تقييمات",
+ "Out of Stock — please check back soon.":"نفدت الكمية — يرجى المراجعة قريبًا.",
+ "Premium coffee beans, freshly roasted for a smooth and enjoyable cup.":"حبوب قهوة فاخرة، محمّصة طازجة لكوب ناعم وممتع.",
+ "Chocolate, hazelnut and caramel.":"شوكولاتة، بندق وكراميل.",
+ "Use your preferred brewing method and adjust grind size, dose and extraction time to taste.":"استخدم طريقة التحضير المفضّلة لديك، واضبط درجة الطحن والكمية ووقت الاستخلاص حسب ذوقك.",
+ "Choose Size":"اختر الحجم",
+ "Select your pack size":"اختر حجم العبوة",
+ "Espresso":"إسبريسو",
+ "200g":"200 غ","250g":"250 غ","1 Kg":"1 كغ",
+ // cart
+ "Your Cart":"سلة التسوق","Subtotal":"المجموع الفرعي","Delivery Charges: AED 30.00":"رسوم التوصيل: 30.00 د.إ",
+ "Proceed to Checkout":"إتمام الطلب","← Continue Shopping / Browse Categories":"متابعة التسوق / تصفّح المجموعات →",
+ "Your cart is empty.":"سلتك فارغة.","Remove":"إزالة",
+ "Now out of stock — please remove":"نفدت الكمية — يرجى الإزالة",
+ "Not enough stock — please reduce quantity":"الكمية غير كافية — يرجى تقليل العدد",
+ "item":"منتج","items":"منتجات","View Cart →":"عرض السلة ←","View cart":"عرض السلة",
+ // checkout
+ "Checkout":"إتمام الطلب","Back to Cart":"العودة إلى السلة","Customer Details":"بيانات العميل",
+ "Full Name":"الاسم الكامل","Your full name":"اسمك الكامل","Delivery Address":"عنوان التوصيل",
+ "Building, street, area":"المبنى، الشارع، المنطقة","City":"المدينة","Al Ain / Abu Dhabi / Dubai":"العين / أبوظبي / دبي",
+ "Emirate":"الإمارة","Select":"اختر","Abu Dhabi":"أبوظبي","Dubai":"دبي","Sharjah":"الشارقة","Ajman":"عجمان",
+ "Umm Al Quwain":"أم القيوين","Ras Al Khaimah":"رأس الخيمة","Fujairah":"الفجيرة",
+ "Payment Method":"طريقة الدفع","Cash on Delivery":"الدفع عند الاستلام","Place Order":"تأكيد الطلب",
+ "Placing order…":"جارٍ إرسال الطلب…","Your Order":"طلبك","Delivery Charges":"رسوم التوصيل","Total":"الإجمالي",
+ // success
+ "Order Confirmed":"تم تأكيد الطلب","Order Total":"إجمالي الطلب","Confirm on WhatsApp":"أكّد عبر واتساب",
+ "Continue Shopping":"متابعة التسوق",
+ "Please keep your phone nearby — our delivery team may call to confirm your address before arrival.":"يرجى إبقاء هاتفك بالقرب منك — قد يتصل بك فريق التوصيل لتأكيد عنوانك قبل الوصول.",
+ // search
+ "Search coffee, blends, origins…":"ابحث عن القهوة، الخلطات، بلد المنشأ…",
+ "Start typing to search our coffee collection.":"ابدأ الكتابة للبحث في مجموعة قهوتنا.",
+ // sentences with blanks (used through t())
+ "Sorry — we don't have enough {name}{label} in stock for that.":"عذرًا — لا تتوفر كمية كافية من {name}{label}.",
+ "Sorry, not enough stock for: {list}. Please update your cart.":"عذرًا، الكمية غير كافية لـ: {list}. يرجى تحديث سلتك.",
+ "Sorry — {name} {size} has just sold out or doesn't have enough stock left. Please update your cart.":"عذرًا — نفدت كمية {name} {size} للتو أو لم تعد كافية. يرجى تحديث سلتك.",
+ "Order could not be sent. Please try again.":"تعذّر إرسال الطلب. يرجى المحاولة مرة أخرى.",
+ "Sorry, your message couldn't be sent. Please try again or contact us on WhatsApp.":"عذرًا، تعذّر إرسال رسالتك. يرجى المحاولة مرة أخرى أو التواصل معنا عبر واتساب.",
+ "No products found in \"{c}\" yet.":"لا توجد منتجات في \"{c}\" بعد.",
+ "No products found for \"{q}\".":"لا توجد منتجات تطابق \"{q}\".",
+ "Thank you, {name}.":"شكرًا لك، {name}.",
+ "Your order {no} has been received.":"تم استلام طلبك {no}.",
+ "NEW":"جديد","SALE":"تخفيض","BEST SELLER":"الأكثر مبيعًا","BEST SELLERS":"الأكثر مبيعًا","SOLD OUT":"نفدت الكمية","LIMITED":"كمية محدودة",
+ "Product":"المنتج","Policy":"السياسة","Shop this Collection":"تسوّق هذه المجموعة",
+ "of this coffee":"من هذه القهوة","one item":"أحد المنتجات","Customer":"عميلنا العزيز"
+}));
+// Arabic defaults for the text the admin edits in "Store Content".
+// The admin's own Arabic text (Store Content → Arabic) wins over these.
+const AR_SETTINGS={
+ topbar:"قهوة محمّصة طازجة • توصيل داخل الإمارات",home:"الرئيسية",shop:"المتجر",coffee:"حبوب القهوة",
+ collections:"المجموعات",best:"الأكثر مبيعًا",aboutnav:"من نحن",contactnav:"تواصل معنا",
+ eyebrow:"قهوة مختصة، محمّصة بإتقان",herotitle:"حبوب قهوة طازجة | محمّصة بشغف",
+ herodesc:"اكتشف أجود أنواع القهوة أحادية المصدر وخلطاتنا المميزة، محمّصة بإتقان وتصلك طازجة حتى باب منزلك.",
+ herobutton:"تسوّق الآن",storetitle:"قهوتنا المميزة",storedesc:"أكثر أنواع قهوتنا طلبًا، مختارة لتحضيرك اليومي.",
+ besttitle:"الأكثر مبيعًا",bestdesc:"المفضّلة لدى عملائنا، محمّصة طازجة وجاهزة لتستمتع بها.",
+ collectiontitle:"مجموعة قهوتنا",collectiondesc:"اختر أسلوب قهوتك المفضّل.",
+ abouttitle:"تحتاج مساعدة في اختيار قهوتك؟",
+ abouttext:"أخبرنا كيف تحضّر قهوتك وما النكهات التي تحبها، وسنساعدك في اختيار حبوب أمبروزيا المناسبة لك.",
+ helpbutton:"اطلب المساعدة",uae:"الإمارات العربية المتحدة",
+ footerdesc:"حبوب قهوة محمّصة طازجة للمنازل والمقاهي ومحبي القهوة في جميع أنحاء الإمارات.",
+ copyright:"© 2026 أمبروزيا للقهوة. جميع الحقوق محفوظة."
+};
+const AR_REV=new Map();AR_TEXT.forEach((v,k)=>{if(!AR_REV.has(v))AR_REV.set(v,k)});
+function isAr(){return window.LANG==="ar"}
+// t("English sentence with {blanks}", {blanks}) → the sentence in the current language
+function t(key,vars){let s=(isAr()&&AR_TEXT.get(key))||key;if(vars)for(const k in vars)s=s.split("{"+k+"}").join(vars[k]);return s}
+// Store Content text: admin's Arabic → built-in Arabic → the English text
+function pickSetting(s,k){if(!isAr())return s[k];return (s[k+"_ar"]&&String(s[k+"_ar"]).trim())||AR_SETTINGS[k]||s[k]}
+// Product / collection text: the admin's optional Arabic field, else English
+function arField(obj,field){if(!obj)return "";if(isAr()&&obj[field+"_ar"]&&String(obj[field+"_ar"]).trim())return obj[field+"_ar"];return obj[field]||""}
+
+// ---- swap the text on the page ----
+const I18N_SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,TEXTAREA:1,svg:1,SVG:1};
+function i18nTextNode(node){
+ const raw=node.nodeValue,s=raw.trim();if(!s)return;
+ let en=node.__en;
+ if(en===undefined||(s!==en&&s!==AR_TEXT.get(en)))en=AR_TEXT.has(s)?s:(AR_REV.get(s)||null);
+ node.__en=en;if(!en)return;
+ const want=isAr()?AR_TEXT.get(en):en;
+ if(want&&want!==s)node.nodeValue=raw.replace(s,want);
+}
+function i18nAttrs(el){
+ for(const a of ["placeholder","title","aria-label"]){
+  if(!el.hasAttribute(a))continue;
+  el.__enAttr=el.__enAttr||{};
+  const cur=el.getAttribute(a);let en=el.__enAttr[a];
+  if(en===undefined||(cur!==en&&cur!==AR_TEXT.get(en)))en=AR_TEXT.has(cur)?cur:(AR_REV.get(cur)||null);
+  el.__enAttr[a]=en;if(!en)continue;
+  const want=isAr()?AR_TEXT.get(en):en;
+  if(want&&want!==cur)el.setAttribute(a,want);
+ }
+}
+function i18nWalk(el){
+ if(!el)return;
+ if(el.tagName==="TEXTAREA"){i18nAttrs(el);return}  // placeholder only, never what was typed
+ if(I18N_SKIP_TAGS[el.tagName])return;
+ if(el.hasAttribute&&el.hasAttribute("data-no-i18n"))return;
+ if(el.nodeType===1)i18nAttrs(el);
+ for(let n=el.firstChild;n;n=n.nextSibling){
+  if(n.nodeType===3)i18nTextNode(n);
+  else if(n.nodeType===1)i18nWalk(n);
+ }
+}
+let i18nQueued=false,i18nObserver=null;
+function i18nRun(){i18nQueued=false;if(i18nObserver)i18nObserver.disconnect();i18nWalk(document.body);if(i18nObserver)i18nObserver.observe(document.body,{childList:true,subtree:true,characterData:true});}
+function i18nQueue(){if(i18nQueued)return;i18nQueued=true;requestAnimationFrame(i18nRun)}
+document.addEventListener("DOMContentLoaded",function(){
+ i18nObserver=new MutationObserver(i18nQueue);
+ i18nRun();updateLangButton();
+});
+function updateLangButton(){
+ const b=document.getElementById("langBtn");if(!b)return;
+ b.textContent=isAr()?"EN":"ع";
+ b.setAttribute("aria-label",isAr()?"Switch to English":"التبديل إلى العربية");
+ b.title=isAr()?"English":"العربية";
+ document.title=isAr()?"أمبروزيا للقهوة المختصة — حبوب قهوة محمّصة طازجة | توصيل داخل الإمارات":"Ambrosia Speciality Coffee — Fresh Roasted Coffee Beans | UAE Delivery";
+}
+function setLang(l){
+ if(l!=="ar"&&l!=="en")return;
+ window.LANG=l;
+ try{localStorage.setItem("ambrosia_lang",l)}catch(e){}
+ // drop ?lang= from the address so a refresh keeps the language just chosen
+ try{let u=new URL(location.href);if(u.searchParams.has("lang")){u.searchParams.delete("lang");history.replaceState(null,"",u.pathname+(u.search||"")+u.hash)}}catch(e){}
+ const h=document.documentElement;h.lang=l;h.dir=l==="ar"?"rtl":"ltr";
+ if(l==="ar")window.loadArabicFonts();
+ // redraw everything that is built from data, in the new language
+ try{if(window.__fbCache&&window.__fbCache.settings)applySettings(window.__fbCache.settings)}catch(e){}
+ try{renderProducts();renderBestSellers();renderNewArrivals();renderCollections();renderStoreFilterBar();renderCart();updateCart()}catch(e){}
+ try{if(selectedDetail&&document.getElementById("productDetailOverlay").style.display==="block"){let id=selectedDetail.product.id;openProductDetail(id)}}catch(e){}
+ try{if(document.getElementById("checkoutSummary"))renderCheckout()}catch(e){}
+ try{if(document.getElementById("searchOverlay").classList.contains("open"))renderSearchResults(document.getElementById("searchInput").value)}catch(e){}
+ try{if(selectedProduct&&document.getElementById("sizeOverlay").style.display==="block")addToCart(selectedProduct.id)}catch(e){}
+ i18nRun();updateLangButton();
+}
+function toggleLang(){setLang(isAr()?"en":"ar")}
+window.setLang=setLang;window.toggleLang=toggleLang;
+
+</script>
 <style>#sizeOptions button{width:100%;display:flex;justify-content:space-between;align-items:center;padding:15px 18px;border:1px solid #ddccb8;border-radius:15px;background:rgba(255,253,249,.9);color:#30251d;cursor:pointer;font-size:15px}#sizeOptions button:hover{border-color:#b9823f}.size-name{font-weight:700}.size-price{font-weight:700;color:#9a642b}</style><style>
 .product-detail-drawer{max-width:none!important;width:100vw!important;max-height:none!important;height:100vh!important;overflow:auto;padding:38px 36px!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;transform:none!important;border-radius:0!important;box-shadow:none!important;border:none!important}
 .product-detail-drawer-inner{max-width:900px;margin:0 auto}
 .product-detail-drawer .drawer-head{border-bottom:1px solid #ece2d2;padding-bottom:16px;margin-bottom:4px}
-.product-detail-drawer .drawer-head h3{display:none}
+.product-detail-drawer .drawer-head{display:flex;align-items:center;gap:12px}
+.product-detail-drawer .drawer-head h3{display:block;flex:1;min-width:0;margin:0;font-family:Georgia,serif;font-size:19px;font-weight:500;color:#211710;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .product-detail-drawer .close{width:34px;height:34px;border-radius:50%;background:#f2ece2;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1;color:#4a3c2e;margin-left:auto;transition:.2s ease}
 .product-detail-drawer .close:hover{background:#e6dbca}
 @media(max-width:600px){.product-detail-drawer{width:100vw!important;height:100vh!important}}
@@ -379,17 +593,11 @@ firebase.auth().onAuthStateChanged(user=>{
 @media(max-width:600px){.product-detail-drawer{padding:26px 20px!important}.detail-img{height:200px}.detail-title{font-size:26px}.detail-actions{grid-template-columns:1fr}.detail-tabs{gap:16px}.detail-tab{font-size:12.5px}}
 
 .wa-float{display:none;position:fixed;right:24px;bottom:24px;z-index:400;width:58px;height:58px;border-radius:50%;background:#25D366;color:#fff;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(37,211,102,.4);transition:transform .2s ease,box-shadow .2s ease}
+#productDetailOverlay[style*="block"]~#waFloat,#cartOverlay[style*="block"]~#waFloat,#sizeOverlay[style*="block"]~#waFloat,#checkoutOverlay[style*="block"]~#waFloat,#policyOverlay[style*="block"]~#waFloat{display:none!important}
 .wa-float:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 16px 36px rgba(37,211,102,.5)}
 .wa-float svg{width:30px;height:30px}
 @media(max-width:600px){.wa-float{right:16px;bottom:16px;width:52px;height:52px}.wa-float svg{width:26px;height:26px}}
 
-.grind-title{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:#4a3c2e;margin:16px 0 8px}
-.grind-options{display:flex;flex-wrap:wrap;gap:8px}
-.grind-options button{padding:10px 16px;border:1px solid #ddccb8;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#2d211a;min-height:0}
-.grind-options button:hover{border-color:#b9823f}
-.grind-options button.active{background:#211710;border-color:#211710;color:#fff}
-.detail-grinds{margin-bottom:26px}
-@media(max-width:760px){.grind-options{display:grid;grid-template-columns:1fr 1fr}.grind-options button{min-height:44px}}
 .card-flavour{font-size:12.5px;color:#8a7866;margin:-2px 0 8px;line-height:1.35;height:2.7em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
 .product .rating.empty{visibility:hidden}
 .card-sizes{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 14px}
@@ -423,9 +631,10 @@ firebase.auth().onAuthStateChanged(user=>{
 <div class="topbar">FRESHLY ROASTED COFFEE • UAE DELIVERY</div>
 <header>
 <nav class="nav">
-<a class="logo" href="#"><img class="logo-icon" src="ambrosia_logo.webp" alt="Ambrosia" width="114" height="120"><span class="logo-text"><b>AMBROSIA</b><small>SPECIALITY COFFEE</small></span></a>
+<a class="logo" href="#" data-no-i18n><img class="logo-icon" src="ambrosia_logo.webp" alt="Ambrosia" width="114" height="120"><span class="logo-text"><b>AMBROSIA</b><small>SPECIALITY COFFEE</small></span></a>
 <div class="links"><a href="#home">Home</a><a href="#store">Store</a><a href="#collections">Collections</a><a href="#" onclick="openFullPage('about');return false;">About Us</a><a href="#" onclick="openFullPage('contact');return false;">Contact</a></div>
 <div class="nav-icons">
+<button class="icon-btn lang-btn" id="langBtn" type="button" data-no-i18n onclick="toggleLang()" aria-label="التبديل إلى العربية" title="العربية">ع</button>
 <button class="icon-btn" onclick="openSearch()" aria-label="Search" title="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
 <button class="icon-btn" onclick="openCart()" aria-label="Cart" title="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"></circle><circle cx="19" cy="21" r="1.4"></circle><path d="M2.5 3h2.4l2.1 11.4a2 2 0 0 0 2 1.6h8.4a2 2 0 0 0 2-1.6L21 7H6"></path></svg><span class="cart-badge" id="cartCount">0</span></button>
 </div>
@@ -508,8 +717,8 @@ firebase.auth().onAuthStateChanged(user=>{
 <div class="contact-wrap">
 <div>
 <div class="contact-info-card"><h4>Visit / Deliver To</h4><p id="contactVisit">Ambrosia Speciality Coffee<br>United Arab Emirates</p></div>
-<div class="contact-info-card"><h4>Email</h4><p id="contactEmail"><a href="mailto:ambrosiaspecialitycoffee@gmail.com">ambrosiaspecialitycoffee@gmail.com</a></p></div>
-<div class="contact-info-card"><h4>Phone / WhatsApp</h4><p id="contactPhone"><a href="tel:+971568115042">+971 56 811 5042</a></p></div>
+<div class="contact-info-card"><h4>Email</h4><p id="contactEmail" data-no-i18n dir="ltr"><a href="mailto:ambrosiaspecialitycoffee@gmail.com">ambrosiaspecialitycoffee@gmail.com</a></p></div>
+<div class="contact-info-card"><h4>Phone / WhatsApp</h4><p id="contactPhone" data-no-i18n dir="ltr"><a href="tel:+971568115042">+971 56 811 5042</a></p></div>
 <div class="contact-info-card"><h4>Hours</h4><p>Sat – Thu: 8:00 AM – 10:00 PM<br>Friday: 2:00 PM – 10:00 PM</p></div>
 </div>
 <div class="contact-form-box">
@@ -579,7 +788,9 @@ const db=window.__fbdb;
 let products=[],collections=[],cart=[];
 let activeCollectionCategory=null;
 let activeStoreFilter=null;
-const DELIVERY_CHARGE=30,money=n=>"AED "+Number(n||0).toFixed(2);
+const DELIVERY_CHARGE=30,money=n=>isAr()?Number(n||0).toFixed(2)+" د.إ":"AED "+Number(n||0).toFixed(2);
+// Collection name to show (Arabic if the admin added one)
+function catLabel(name){let c=collections.find(x=>x.name===name);return c?arField(c,"name"):(name||"")}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 // Stars now follow the product's rating from the admin (they were always 5).
 function stars(r){r=Math.max(0,Math.min(5,Math.round(Number(r)||5)));return "★".repeat(r)+"☆".repeat(5-r)}
@@ -594,7 +805,7 @@ function cartPacks(id,key){return cart.reduce((a,i)=>String(i.id)===String(id)&&
 function canAddPacks(id,key,n){return packsLeft(id,key)-cartPacks(id,key)>=n}
 function sizeInStock(p,s){return packsLeft(p.id,s.key)>=1}
 function isOutOfStock(p){let sz=getSizes(p);if(!sz.length)return false;return !sz.some(s=>sizeInStock(p,s))}
-function noStockMsg(p,label){alert(`Sorry — we don't have enough ${p?p.name:"of this coffee"}${label?" ("+label+")":""} in stock for that.`)}
+function noStockMsg(p,label){alert(t("Sorry — we don't have enough {name}{label} in stock for that.",{name:p?arField(p,"name"):t("of this coffee"),label:label?" ("+t(label)+")":""}))}
 function cartStockProblems(){let bad=[];cart.forEach(i=>{if(cartPacks(i.id,i.size)>packsLeft(i.id,i.size)){let p=products.find(x=>String(x.id)===String(i.id));let n=(p?p.name:i.id)+" "+(i.sizeLabel||"");if(!bad.includes(n))bad.push(n)}});return bad}
 function handleStockSnapshot(v){
  stock=(v&&typeof v==="object")?v:{};
@@ -623,6 +834,7 @@ else{window.__fbHandlers.authReady=attachCartListener;}
 
 function applySettings(s){
  if(!s)return;
+ {let raw=s;s=Object.assign({},raw);if(isAr())Object.keys(AR_SETTINGS).forEach(k=>s[k]=pickSetting(raw,k));}
  const q=(sel,t)=>{let e=document.querySelector(sel);if(e)e.textContent=t};
  q(".topbar",s.topbar);q(".eyebrow",s.eyebrow);
  let hero=document.querySelector(".hero h1");
@@ -655,7 +867,7 @@ function applySettings(s){
  if(fc[1])fc[1].querySelector("p").innerHTML=`<a href="#store">${s.coffee}</a><br><a href="#collections">${s.collections}</a><br><a href="#best-sellers">${s.best}</a>`;
  if(fc[2])fc[2].querySelector("p").innerHTML=`<a href="#" onclick="openFullPage('about');return false;">${s.aboutnav}</a><br><a href="#" onclick="openPolicy('delivery');return false;">Delivery Policy</a><br><a href="#" onclick="openPolicy('returns');return false;">Returns Policy</a>`;
  let cVisit=document.getElementById("contactVisit");
- if(cVisit)cVisit.innerHTML=`Ambrosia Speciality Coffee<br>${s.uae||"United Arab Emirates"}`;
+ if(cVisit)cVisit.innerHTML=`${t("Ambrosia Speciality Coffee")}<br>${s.uae||"United Arab Emirates"}`;
  let cEmail=document.getElementById("contactEmail");
  if(cEmail&&s.email)cEmail.innerHTML=`<a href="mailto:${s.email}">${s.email}</a>`;
  let cPhone=document.getElementById("contactPhone");
@@ -666,6 +878,8 @@ function applySettings(s){
   if(url){a.href=url;a.classList.add("show");}else{a.classList.remove("show");a.removeAttribute("href");}
  });
  let links=document.querySelectorAll(".links a");[s.home,s.shop,s.collections,s.aboutnav,s.contactnav].forEach((x,i)=>{if(links[i])links[i].textContent=x});
+ // keep the phone menu (a copy of these links) in step
+ document.querySelectorAll(".mobile-menu a").forEach((a,i)=>{if(links[i])a.textContent=links[i].textContent});
  setWhatsAppLink(s.whatsapp);
 }
 let waDigits="971568115042"; // replaced by the WhatsApp number from Store Content
@@ -682,9 +896,9 @@ function closeSearch(){document.getElementById("searchOverlay").classList.remove
 function renderSearchResults(q){
  let box=document.getElementById("searchResults");
  q=(q||"").trim().toLowerCase();
- let list=!q?products:products.filter(p=>(p.name||"").toLowerCase().includes(q)||(p.cat||"").toLowerCase().includes(q)||(p.origin||"").toLowerCase().includes(q));
- if(!list.length){box.innerHTML=`<div class="search-empty">${q?`No products found for "${q}".`:"Start typing to search our coffee collection."}</div>`;return}
- box.innerHTML=list.map(p=>`<div class="search-result-item" onclick="closeSearch();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><img src="${p.img}" alt="${p.name}" loading="lazy"><div><div class="sr-name">${p.name}</div><div class="sr-cat">${p.cat||""}</div></div><div class="sr-price">${money(p.price)}</div></div>`).join("");
+ let list=!q?products:products.filter(p=>(p.name||"").toLowerCase().includes(q)||(p.name_ar||"").toLowerCase().includes(q)||catLabel(p.cat).toLowerCase().includes(q)||(p.cat||"").toLowerCase().includes(q)||(p.origin||"").toLowerCase().includes(q));
+ if(!list.length){box.innerHTML=`<div class="search-empty">${q?esc(t('No products found for "{q}".',{q})):t("Start typing to search our coffee collection.")}</div>`;return}
+ box.innerHTML=list.map(p=>`<div class="search-result-item" onclick="closeSearch();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><img src="${p.img}" alt="${esc(arField(p,"name"))}" loading="lazy"><div><div class="sr-name">${arField(p,"name")}</div><div class="sr-cat">${catLabel(p.cat)}</div></div><div class="sr-price">${money(p.price)}</div></div>`).join("");
 }
 function handleProductsSnapshot(v){
  if(v&&typeof v==="object"&&!Array.isArray(v)){
@@ -742,17 +956,17 @@ function submitContactForm(e){
  const f=new FormData(form);
  const msg={name:String(f.get("name")||"").trim().slice(0,200),email:String(f.get("email")||"").trim().slice(0,200),phone:String(f.get("phone")||"").trim().slice(0,50),message:String(f.get("message")||"").trim().slice(0,5000),created:new Date().toISOString(),read:false};
  if(!msg.name||!msg.email||!msg.message)return false;
- const oldLabel=btn?btn.textContent:"";if(btn){btn.disabled=true;btn.textContent="Sending…"}
+ const oldLabel=btn?btn.textContent:"";if(btn){btn.disabled=true;btn.textContent=t("Sending…")}
  db.ref("messages").push(msg).then(()=>{
   if(success&&success.classList.contains("contact-success"))success.classList.add("show");
   form.reset();
- }).catch(err=>{console.error(err);alert("Sorry, your message couldn't be sent. Please try again or contact us on WhatsApp.");})
+ }).catch(err=>{console.error(err);alert(t("Sorry, your message couldn't be sent. Please try again or contact us on WhatsApp."));})
  .finally(()=>{if(btn){btn.disabled=false;btn.textContent=oldLabel}});
  return false;
 }
 // Tapping a collection shows just its coffees in the Featured list below.
 // Tap the same collection again (or "Show all") to see everything.
-function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<div class="collection-item${activeStoreFilter===c.name?" is-active":""}"><a class="collection-card${activeStoreFilter===c.name?" active":""}" href="#store" onclick="event.preventDefault();setStoreFilter(activeStoreFilter==='${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}'?null:'${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}')"><img src="${c.img}" loading="lazy" alt="${esc(c.name)}"></a><div class="collection-name">${esc(c.name)}</div></div>`).join("")}
+function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<div class="collection-item${activeStoreFilter===c.name?" is-active":""}"><a class="collection-card${activeStoreFilter===c.name?" active":""}" href="#store" onclick="event.preventDefault();setStoreFilter(activeStoreFilter==='${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}'?null:'${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}')"><img src="${c.img}" loading="lazy" alt="${esc(arField(c,"name"))}"></a><div class="collection-name">${esc(arField(c,"name"))}</div></div>`).join("")}
 // Clicking a collection card opens an inline panel with just that category's
 // products, directly below the collection cards. The main store grid above
 // is never touched by this.
@@ -806,30 +1020,22 @@ function save(){
  db.ref("carts/"+cartUid).set(cart).catch(err=>console.error("Cart save failed:",err));
 }
 let selectedProduct=null;
-// Grind options. "Whole Bean" is the default (and what older cart items are).
-const GRINDS=["Whole Bean","Espresso","Filter / V60","French Press"];
-const DEFAULT_GRIND=GRINDS[0];
-let pickerGrind=DEFAULT_GRIND;
-function grindOf(i){return i&&GRINDS.includes(i.grind)?i.grind:DEFAULT_GRIND}
-function grindButtonsHTML(current,fn){return GRINDS.map(g=>`<button type="button" class="${g===current?"active":""}" onclick="${fn}('${g}')">${g}</button>`).join("")}
 function getSizes(p){let s=p.sizes;if(!s)return [{key:"kg1",label:"1 Kg",price:Number(p.price||0),old:Number(p.old||0)}];let out=[];if(s.g200?.enabled!==false&&Number(s.g200?.price)>0)out.push({key:"g200",label:"200g",price:Number(s.g200.price),old:Number(s.g200.old||0)});if(s.g250?.enabled!==false&&Number(s.g250?.price)>0)out.push({key:"g250",label:"250g",price:Number(s.g250.price),old:Number(s.g250.old||0)});if(s.kg1?.enabled!==false&&Number(s.kg1?.price)>0)out.push({key:"kg1",label:"1 Kg",price:Number(s.kg1.price),old:Number(s.kg1.old||0)});return out}
-function addToCart(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;if(isOutOfStock(p)){noStockMsg(p);return}let sizes=getSizes(p);selectedProduct=p;pickerGrind=DEFAULT_GRIND;document.getElementById("sizePickerTitle").textContent="Choose Grind & Size";document.getElementById("sizePickerProduct").innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img src="${p.img}" style="width:72px;height:72px;object-fit:cover;border-radius:14px"><div><b style="font-size:18px">${p.name}</b><div style="color:#7a6b5d;margin-top:4px">1. Pick a grind · 2. Tap a pack size</div></div></div><div class="grind-title">Grind</div><div class="grind-options" id="pickerGrinds">${grindButtonsHTML(pickerGrind,"setPickerGrind")}</div><div class="grind-title" style="margin-top:14px">Pack size</div>`;document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button ${sizeInStock(p,s)?"":"disabled"} onclick="addVariantAndClose('${s.key}')"><span class="size-name">${s.label}</span><span class="size-price">${sizeInStock(p,s)?`${s.old?`<del style="color:#999;font-weight:400">${money(s.old)}</del> `:""}${money(s.price)}`:"Out of Stock"}</span></button>`).join("");document.getElementById("sizeOverlay").style.display="block"}
-function setPickerGrind(g){pickerGrind=g;let box=document.getElementById("pickerGrinds");if(box)box.innerHTML=grindButtonsHTML(pickerGrind,"setPickerGrind")}
-window.setPickerGrind=setPickerGrind;
-// Same coffee + same size + same grind = one cart line. Stock is per size,
-// whatever the grind.
-function addVariantToCart(p,s,qty=1,grind=DEFAULT_GRIND){if(!s)return false;if(!canAddPacks(p.id,s.key,qty)){noStockMsg(p,s.label);return false}let x=cart.find(i=>String(i.id)===String(p.id)&&i.size===s.key&&grindOf(i)===grind);if(x)x.qty+=qty;else cart.push({id:p.id,size:s.key,sizeLabel:s.label,price:s.price,qty,grind});save();openCart();return true}
-function addVariantAndClose(key){let s=getSizes(selectedProduct).find(x=>x.key===key);addVariantToCart(selectedProduct,s,1,pickerGrind);closeSizePicker()}
+function addToCart(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;if(isOutOfStock(p)){noStockMsg(p);return}let sizes=getSizes(p);if(sizes.length<=1){addVariantToCart(p,sizes[0]);return}selectedProduct=p;document.getElementById("sizePickerTitle").textContent="Choose Size";document.getElementById("sizePickerProduct").innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img src="${p.img}" style="width:72px;height:72px;object-fit:cover;border-radius:14px"><div><b style="font-size:18px">${arField(p,"name")}</b><div style="color:#7a6b5d;margin-top:4px">Select your pack size</div></div></div>`;document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button ${sizeInStock(p,s)?"":"disabled"} onclick="addVariantAndClose('${s.key}')"><span class="size-name">${s.label}</span><span class="size-price">${sizeInStock(p,s)?`${s.old?`<del style="color:#999;font-weight:400">${money(s.old)}</del> `:""}${money(s.price)}`:"Out of Stock"}</span></button>`).join("");document.getElementById("sizeOverlay").style.display="block"}
+function addVariantToCart(p,s,qty=1){if(!s)return false;if(!canAddPacks(p.id,s.key,qty)){noStockMsg(p,s.label);return false}let x=cart.find(i=>String(i.id)===String(p.id)&&i.size===s.key);if(x)x.qty+=qty;else cart.push({id:p.id,size:s.key,sizeLabel:s.label,price:s.price,qty});save();openCart();return true}
+function addVariantAndClose(key){let s=getSizes(selectedProduct).find(x=>x.key===key);addVariantToCart(selectedProduct,s);closeSizePicker()}
 function closeSizePicker(){document.getElementById("sizeOverlay").style.display="none";selectedProduct=null}
 // Always charge the product's CURRENT price for that size (the cart may have
 // been filled days ago, before a price change in the admin).
 function linePrice(i,p){p=p||products.find(x=>String(x.id)===String(i.id));if(!p)return Number(i.price||0);let s=getSizes(p).find(z=>z.key===i.size);return s?Number(s.price):Number(i.price||p.price||0)}
-function pruneCart(){if(!products.length)return;let before=cart.length;cart=cart.filter(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p&&getSizes(p).some(z=>z.key===i.size)});if(cart.length!==before)save()}
+function pruneCart(){if(!products.length)return;
+ if(cart.some(i=>"grind" in i)){let m=[];cart.forEach(i=>{let x=m.find(j=>String(j.id)===String(i.id)&&j.size===i.size);if(x)x.qty+=i.qty;else{let c={...i};delete c.grind;m.push(c)}});cart=m;save();}
+ let before=cart.length;cart=cart.filter(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p&&getSizes(p).some(z=>z.key===i.size)});if(cart.length!==before)save()}
 function updateCart(){let e=document.getElementById("cartCount");if(!e)return;let live=cart.filter(i=>!products.length||products.some(p=>String(p.id)===String(i.id)));let n=live.reduce((a,b)=>a+b.qty,0);e.textContent=n;e.classList.toggle("hide",n===0);
  // Phone-only bar at the bottom of the screen while the cart has something in it.
  let bar=document.getElementById("mCartBar");
  if(bar){bar.classList.toggle("show",n>0);document.body.classList.toggle("has-cart-bar",n>0);
-  if(n>0){document.getElementById("mcbCount").textContent=n+(n===1?" item":" items");document.getElementById("mcbTotal").textContent=money(live.reduce((a,i)=>a+linePrice(i)*i.qty,0));}}
+  if(n>0){document.getElementById("mcbCount").innerHTML=n+" <span>"+(n===1?"item":"items")+"</span>";document.getElementById("mcbTotal").textContent=money(live.reduce((a,i)=>a+linePrice(i)*i.qty,0));}}
 }
 function openCart(){renderCart();document.getElementById("cartOverlay").style.display="block"}
 function closeCart(){document.getElementById("cartOverlay").style.display="none"}
@@ -918,8 +1124,48 @@ function shopThisCollection(){
  filterByCollection(currentViewedCollection);
 }
 window.openImageView=openImageView;window.closeImageView=closeImageView;window.shopThisCollection=shopThisCollection;
+const POLICIES_AR={
+ delivery:{title:"سياسة التوصيل",body:`
+  <p>نوصل حاليًا إلى جميع أنحاء الإمارات العربية المتحدة.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">مدة التوصيل</h4>
+  <p>تتم معالجة الطلبات خلال 1–2 يوم عمل، وعادةً ما يتم التوصيل خلال 2–4 أيام عمل.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">رسوم التوصيل</h4>
+  <ul style="padding-right:18px;margin:0"><li>التوصيل العادي: 30 د.إ</li></ul>
+  <h4 style="margin:18px 0 8px;color:#2c2115">الدفع</h4>
+  <p>نقبل حاليًا الدفع عند الاستلام لجميع الطلبات.</p>`},
+ returns:{title:"سياسة الإرجاع",body:`
+  <p>نريدك أن تحب قهوتك. وإذا لم يكن هناك شيء على ما يرام، فنحن هنا لمساعدتك.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">شروط الإرجاع</h4>
+  <p>يمكن إرجاع المنتجات غير المفتوحة خلال 14 يومًا من التوصيل واسترداد كامل المبلغ.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">كيفية طلب الإرجاع</h4>
+  <p>تواصل معنا عبر <a href="mailto:ambrosiaspecialitycoffee@gmail.com">ambrosiaspecialitycoffee@gmail.com</a> أو عبر واتساب على <a href="https://wa.me/971568115042" target="_blank" rel="noopener" dir="ltr">+971 56 811 5042</a> مع رقم طلبك، وسنرشدك إلى الخطوات التالية.</p>`},
+ shipping:{title:"سياسة الشحن",body:`
+  <p>نشحن حاليًا إلى جميع أنحاء الإمارات العربية المتحدة.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">مدة التوصيل</h4>
+  <p>تتم معالجة الطلبات خلال 1–2 يوم عمل، وعادةً ما تصل خلال 2–4 أيام عمل.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">رسوم الشحن</h4>
+  <ul style="padding-right:18px;margin:0"><li>التوصيل العادي: 30 د.إ</li></ul>`},
+ refund:{title:"سياسة الاسترداد",body:`
+  <p>نريدك أن تحب قهوتك. وإذا لم يكن هناك شيء على ما يرام، فنحن هنا لمساعدتك.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">شروط الاسترداد</h4>
+  <p>يمكن إرجاع المنتجات غير المفتوحة خلال 14 يومًا من التوصيل واسترداد كامل المبلغ.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">كيفية طلب الاسترداد</h4>
+  <p>تواصل معنا عبر <a href="mailto:ambrosiaspecialitycoffee@gmail.com">ambrosiaspecialitycoffee@gmail.com</a> أو عبر واتساب على <a href="https://wa.me/971568115042" target="_blank" rel="noopener" dir="ltr">+971 56 811 5042</a> مع رقم طلبك، وسنرشدك إلى الخطوات التالية.</p>`},
+ privacy:{title:"سياسة الخصوصية",body:`
+  <p>نجمع فقط المعلومات اللازمة لمعالجة طلباتك وتحسين تجربتك — مثل اسمك وعنوان التوصيل ورقم هاتفك وبريدك الإلكتروني.</p>
+  <p>لا نبيع بياناتك الشخصية أبدًا. تُستخدم المعلومات فقط لتنفيذ الطلبات وخدمة العملاء، وإذا وافقت، لإرسال تحديثات عرضية عن المنتجات والعروض الجديدة.</p>
+  <p>يمكنك تحديث بياناتك أو إلغاء الاشتراك في الرسائل التسويقية في أي وقت بالتواصل معنا عبر ambrosiaspecialitycoffee@gmail.com.</p>`},
+ terms:{title:"الشروط والأحكام",body:`
+  <p>باستخدامك لموقع أمبروزيا للقهوة، فإنك توافق على الشروط التالية.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">الطلبات</h4>
+  <p>تخضع جميع الطلبات للتوفر وتأكيد السعر. ونحتفظ بحق رفض أو إلغاء أي طلب.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">الأسعار</h4>
+  <p>جميع الأسعار بالدرهم الإماراتي وقابلة للتغيير دون إشعار مسبق.</p>
+  <h4 style="margin:18px 0 8px;color:#2c2115">استخدام الموقع</h4>
+  <p>محتوى هذا الموقع، بما في ذلك النصوص والصور، ملك لأمبروزيا للقهوة ولا يجوز نسخه دون إذن.</p>`}
+};
 function openPolicy(key){
- const p=POLICIES[key];if(!p)return;
+ const p=(isAr()&&POLICIES_AR[key])||POLICIES[key];if(!p)return;
  document.getElementById("policyTitle").textContent=p.title;
  document.getElementById("policyContent").innerHTML=p.body;
  document.getElementById("policyOverlay").style.display="block";
@@ -939,7 +1185,7 @@ window.openFullPage=openFullPage;window.closeFullPage=closeFullPage;
 // ---- Product card extras ----
 function reviewCount(p){return Number(p.reviewCount||p.reviews||0)}
 // Flavour line from the admin ("Chocolate · Hazelnut · Caramel"), one line only.
-function cardFlavourHTML(p){let f=p.tastingShort||p.shortDescription||"";return `<div class="card-flavour" title="${esc(f)}">${esc(f)}</div>`}
+function cardFlavourHTML(p){let f=arField(p,"tastingShort")||p.shortDescription||"";return `<div class="card-flavour" title="${esc(f)}">${esc(f)}</div>`}
 // Cheapest size that's in stock. "From" only when there's more than one size.
 function cardPriceHTML(p){
  let sizes=getSizes(p);if(!sizes.length)return `<div class="price"><strong>${money(p.price)}</strong></div>`;
@@ -949,14 +1195,14 @@ function cardPriceHTML(p){
 }
 // Size chips; a sold-out size is crossed out.
 function cardSizesHTML(p){let sizes=getSizes(p);if(sizes.length<2&&!(p.sizes))return "";return `<div class="card-sizes">${sizes.map(s=>`<span class="${sizeInStock(p,s)?"":"off"}" title="${sizeInStock(p,s)?"":"Out of stock"}">${s.label}</span>`).join("")}</div>`}
-function productCardHTML(p){let oos=isOutOfStock(p);return `<article class="product${oos?" oos":""}" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}${oos?`<span class="oos-badge">Out of Stock</span>`:""}<img src="${p.img}" alt="${p.name}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${p.name}</div>${cardFlavourHTML(p)}<div class="rating${reviewCount(p)?"":" empty"}">${stars(p.rating)} <span>(${reviewCount(p)})</span></div>${cardPriceHTML(p)}${cardSizesHTML(p)}${oos?`<button class="add" disabled>Out of Stock</button>`:`<button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button>`}</div></article>`}
-function renderProducts(){let grid=document.getElementById("productsGrid")||document.getElementById("productGrid");if(!grid)return;if(!productsLoaded){grid.innerHTML='<div style="padding:40px;text-align:center;color:#9a8a78">Loading products…</div>';return}if(!products.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found yet.</div>`;return}let list=activeStoreFilter?products.filter(p=>(p.cat||"")===activeStoreFilter):products;if(!list.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found in "${activeStoreFilter}" yet.</div>`;return}grid.innerHTML=list.map(productCardHTML).join("")}
+function productCardHTML(p){let oos=isOutOfStock(p);return `<article class="product${oos?" oos":""}" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}${oos?`<span class="oos-badge">Out of Stock</span>`:""}<img src="${p.img}" alt="${esc(arField(p,"name"))}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${arField(p,"name")}</div>${cardFlavourHTML(p)}<div class="rating${reviewCount(p)?"":" empty"}">${stars(p.rating)} <span>(${reviewCount(p)})</span></div>${cardPriceHTML(p)}${cardSizesHTML(p)}${oos?`<button class="add" disabled>Out of Stock</button>`:`<button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button>`}</div></article>`}
+function renderProducts(){let grid=document.getElementById("productsGrid")||document.getElementById("productGrid");if(!grid)return;if(!productsLoaded){grid.innerHTML='<div style="padding:40px;text-align:center;color:#9a8a78">Loading products…</div>';return}if(!products.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found yet.</div>`;return}let list=activeStoreFilter?products.filter(p=>(p.cat||"")===activeStoreFilter):products;if(!list.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">${esc(t('No products found in "{c}" yet.',{c:catLabel(activeStoreFilter)}))}</div>`;return}grid.innerHTML=list.map(productCardHTML).join("")}
 function renderStoreFilterBar(){
  let bar=document.getElementById("storeFilterBar");if(!bar)return;
  if(!activeStoreFilter){bar.innerHTML="";bar.classList.remove("show");return}
  let n=products.filter(p=>(p.cat||"")===activeStoreFilter).length;
  bar.classList.add("show");
- bar.innerHTML=`<span>Showing <b>${esc(activeStoreFilter)}</b> · ${n} coffee${n===1?"":"s"}</span><button type="button" onclick="setStoreFilter(null)">Show all ✕</button>`;
+ bar.innerHTML=`<span><span>Showing</span> <b>${esc(catLabel(activeStoreFilter))}</b> · ${n} <span>${n===1?"coffee":"coffees"}</span></span><button type="button" onclick="setStoreFilter(null)">Show all ✕</button>`;
 }
 function setStoreFilter(name){
  activeStoreFilter=name;
@@ -970,21 +1216,19 @@ window.setStoreFilter=setStoreFilter;
 function openProductDetail(id){
  let p=products.find(x=>String(x.id)===String(id));if(!p)return;
  let sizes=getSizes(p);let oos=isOutOfStock(p);let first=sizes.find(s=>sizeInStock(p,s))||sizes[0]||{key:"kg1",label:"1 Kg",price:p.price,old:p.old||0};
- selectedDetail={product:p,size:first,qty:1,grind:DEFAULT_GRIND};
+ selectedDetail={product:p,size:first,qty:1};
  let gallery=[p.img,...(p.gallery||[])].filter(Boolean);
- document.getElementById("detailName").textContent=p.name;
- document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${gallery[0]}" alt="${p.name}">
+ document.getElementById("detailName").textContent=arField(p,"name");
+ document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${gallery[0]}" alt="${esc(arField(p,"name"))}">
  ${gallery.length>1?`<div class="detail-thumbs">${gallery.map((g,i)=>`<img src="${g}" class="${i===0?"active":""}" onclick="selectDetailImage(${i})">`).join("")}</div>`:""}
- <div class="detail-eyebrow">${[p.cat,p.origin].filter(Boolean).join(" · ")}</div>
- <h1 class="detail-title">${p.name}</h1>
- ${reviewCount(p)?`<div class="detail-rating">${stars(p.rating)} &nbsp; ${p.rating||"5.0"} (${reviewCount(p)} reviews)</div>`:""}
+ <div class="detail-eyebrow">${[catLabel(p.cat),p.origin].filter(Boolean).join(" · ")}</div>
+ <h1 class="detail-title">${arField(p,"name")}</h1>
+ ${reviewCount(p)?`<div class="detail-rating">${stars(p.rating)} &nbsp; ${p.rating||"5.0"} (<span>${reviewCount(p)}</span> <span>reviews</span>)</div>`:""}
  <div id="detailPrice" class="detail-price">${money(first.price)}</div>
- <div class="detail-notes">${p.tastingShort||p.shortDescription||p.notes||""}</div>
+ <div class="detail-notes">${arField(p,"tastingShort")||p.shortDescription||p.notes||""}</div>
  ${oos?`<div class="stock-note">Out of Stock — please check back soon.</div>`:""}
  <div class="detail-size-title">Weight</div>
  <div class="detail-size-options">${sizes.map(s=>`<button data-key="${s.key}" class="${s.key===first.key&&!oos?"active":""}" ${sizeInStock(p,s)?"":"disabled title=\"Out of stock\""} onclick="selectDetailSize('${s.key}')">${s.label}</button>`).join("")}</div>
- <div class="detail-size-title">Grind</div>
- <div class="grind-options detail-grinds" id="detailGrinds">${grindButtonsHTML(DEFAULT_GRIND,"selectDetailGrind")}</div>
  <div class="detail-qty-title">Quantity</div>
  <div class="detail-qty"><button onclick="detailQty(-1)">−</button><span id="detailQty">1</span><button onclick="detailQty(1)">+</button></div>
  <div class="detail-actions">${oos?`<button class="detail-add" disabled>Out of Stock</button><button class="detail-buy" disabled>Buy Now</button>`:`<button class="detail-add" onclick="detailAdd()">Add to Cart</button><button class="detail-buy" onclick="detailBuy()">Buy Now</button>`}</div>
@@ -994,9 +1238,9 @@ function openProductDetail(id){
   <button class="detail-tab" onclick="showDetailTab('brewing',this)">Brewing Guide</button>
  </div>
  </div>
- <div id="panel-description" class="detail-panel active">${p.description||"Premium coffee beans, freshly roasted for a smooth and enjoyable cup."}</div>
- <div id="panel-tasting" class="detail-panel">${p.tastingNotes||p.tastingShort||"Chocolate, hazelnut and caramel."}</div>
- <div id="panel-brewing" class="detail-panel">${p.brewingGuide||"Use your preferred brewing method and adjust grind size, dose and extraction time to taste."}</div>`;
+ <div id="panel-description" class="detail-panel active">${arField(p,"description")||t("Premium coffee beans, freshly roasted for a smooth and enjoyable cup.")}</div>
+ <div id="panel-tasting" class="detail-panel">${arField(p,"tastingNotes")||arField(p,"tastingShort")||t("Chocolate, hazelnut and caramel.")}</div>
+ <div id="panel-brewing" class="detail-panel">${arField(p,"brewingGuide")||t("Use your preferred brewing method and adjust grind size, dose and extraction time to taste.")}</div>`;
  document.getElementById("productDetailOverlay").style.display="block";
 }
 let selectedDetail=null;
@@ -1011,17 +1255,15 @@ function closeProductDetail(){document.getElementById("productDetailOverlay").st
 function detailMaxQty(){let d=selectedDetail;if(!d)return 1;return Math.max(0,packsLeft(d.product.id,d.size.key)-cartPacks(d.product.id,d.size.key))}
 function selectDetailSize(key){if(!selectedDetail)return;let s=getSizes(selectedDetail.product).find(x=>x.key===key);if(!s||!sizeInStock(selectedDetail.product,s))return;selectedDetail.size=s;document.getElementById("detailPrice").textContent=money(s.price);document.querySelectorAll(".detail-size-options button").forEach(b=>b.classList.toggle("active",b.dataset.key===s.key));let mx=detailMaxQty();if(selectedDetail.qty>mx){selectedDetail.qty=Math.max(1,mx);document.getElementById("detailQty").textContent=selectedDetail.qty}}
 function detailQty(n){if(!selectedDetail)return;let q=Math.max(1,selectedDetail.qty+n);if(n>0&&q>detailMaxQty()){noStockMsg(selectedDetail.product,selectedDetail.size.label);return}selectedDetail.qty=q;document.getElementById("detailQty").textContent=q}
-function selectDetailGrind(g){if(!selectedDetail)return;selectedDetail.grind=g;let box=document.getElementById("detailGrinds");if(box)box.innerHTML=grindButtonsHTML(g,"selectDetailGrind")}
-window.selectDetailGrind=selectDetailGrind;
-function detailAdd(){if(!selectedDetail)return;if(addVariantToCart(selectedDetail.product,selectedDetail.size,selectedDetail.qty,selectedDetail.grind))closeProductDetail()}
-function detailBuy(){if(!selectedDetail)return;let d=selectedDetail;if(!canAddPacks(d.product.id,d.size.key,d.qty)){noStockMsg(d.product,d.size.label);return}{let g=d.grind||DEFAULT_GRIND;let x=cart.find(i=>String(i.id)===String(d.product.id)&&i.size===d.size.key&&grindOf(i)===g);if(x)x.qty+=d.qty;else cart.push({id:d.product.id,size:d.size.key,sizeLabel:d.size.label,price:d.size.price,qty:d.qty,grind:g});}save();closeProductDetail();checkout()}
+function detailAdd(){if(!selectedDetail)return;if(addVariantToCart(selectedDetail.product,selectedDetail.size,selectedDetail.qty))closeProductDetail()}
+function detailBuy(){if(!selectedDetail)return;let d=selectedDetail;if(!canAddPacks(d.product.id,d.size.key,d.qty)){noStockMsg(d.product,d.size.label);return}{let x=cart.find(i=>String(i.id)===String(d.product.id)&&i.size===d.size.key);if(x)x.qty+=d.qty;else cart.push({id:d.product.id,size:d.size.key,sizeLabel:d.size.label,price:d.size.price,qty:d.qty});}save();closeProductDetail();checkout()}
 function showDetailTab(id,btn){document.querySelectorAll(".detail-panel").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".detail-tab").forEach(x=>x.classList.remove("active"));document.getElementById("panel-"+id).classList.add("active");btn.classList.add("active")}
-function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=linePrice(i,p);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${p.name}</h4><div style="color:#7a6b5d">${size.label} · ${esc(grindOf(i))}</div><div>${money(unit)}</div>${cartPacks(p.id,i.size)>packsLeft(p.id,i.size)?`<div class="stock-warn">${packsLeft(p.id,i.size)<1?"Now out of stock — please remove":"Not enough stock — please reduce quantity"}</div>`:""}<div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal)}
+function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=linePrice(i,p);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${arField(p,"name")}</h4><div style="color:#7a6b5d">${size.label}</div><div>${money(unit)}</div>${cartPacks(p.id,i.size)>packsLeft(p.id,i.size)?`<div class="stock-warn">${packsLeft(p.id,i.size)<1?"Now out of stock — please remove":"Not enough stock — please reduce quantity"}</div>`:""}<div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal)}
 function changeQty(index,n){let x=cart[index];if(!x)return;if(n>0&&!canAddPacks(x.id,x.size,n)){noStockMsg(products.find(p=>String(p.id)===String(x.id)),x.sizeLabel);return}x.qty+=n;if(x.qty<=0)cart.splice(index,1);save();renderCart()}
 function removeItem(index){cart.splice(index,1);save();renderCart()}
 let CHECKOUT_TEMPLATE=null;
-function checkout(){if(!cart.length){alert("Your cart is empty.");return}let bad=cartStockProblems();if(bad.length){alert("Sorry, not enough stock for: "+bad.join(", ")+". Please update your cart.");openCart();return}let box=document.getElementById("checkoutContent");if(CHECKOUT_TEMPLATE===null)CHECKOUT_TEMPLATE=box.innerHTML;else if(!document.getElementById("checkoutForm"))box.innerHTML=CHECKOUT_TEMPLATE;closeCart();renderCheckout();document.getElementById("checkoutOverlay").style.display="block"}
-function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0),total=subtotal+DELIVERY_CHARGE;document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${p.name} — ${i.sizeLabel||"1 Kg"}, ${esc(grindOf(i))} × ${i.qty}</span><strong>${money(linePrice(i,p)*i.qty)}</strong></div>`:""}).join("")+`<div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
+function checkout(){if(!cart.length){alert(t("Your cart is empty."));return}let bad=cartStockProblems();if(bad.length){alert(t("Sorry, not enough stock for: {list}. Please update your cart.",{list:bad.join(", ")}));openCart();return}let box=document.getElementById("checkoutContent");if(CHECKOUT_TEMPLATE===null)CHECKOUT_TEMPLATE=box.innerHTML;else if(!document.getElementById("checkoutForm"))box.innerHTML=CHECKOUT_TEMPLATE;closeCart();renderCheckout();document.getElementById("checkoutOverlay").style.display="block"}
+function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0),total=subtotal+DELIVERY_CHARGE;document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${arField(p,"name")} — <span>${i.sizeLabel||"1 Kg"}</span> × ${i.qty}</span><strong>${money(linePrice(i,p)*i.qty)}</strong></div>`:""}).join("")+`<div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
 function closeCheckout(){document.getElementById("checkoutOverlay").style.display="none"}
 function backToCart(){closeCheckout();openCart()}
 function goShopping(target){closeCart();closeCheckout();let el=document.getElementById(target);if(el)el.scrollIntoView({behavior:"smooth"})}
@@ -1034,7 +1276,7 @@ async function returnStock(taken){
 let placingOrder=false;
 // Pre-filled WhatsApp message so the customer can confirm with one tap.
 function orderWhatsAppLink(orderNo,items,total,form){
- let lines=[`Hi Ambrosia Coffee! I just placed order #${orderNo}.`,"",...items.map(i=>`• ${i.name} ${i.size} (${i.grind}) × ${i.qty}`),"",`Total: ${money(total)} (Cash on Delivery)`,`Name: ${form.get("fullname")||""}`,`Area: ${[form.get("city"),form.get("emirate")].filter(Boolean).join(", ")}`,"","Please confirm my order. Thank you!"];
+ let lines=[`Hi Ambrosia Coffee! I just placed order #${orderNo}.`,"",...items.map(i=>`• ${i.name} ${i.size} × ${i.qty}`),"",`Total: ${money(total)} (Cash on Delivery)`,`Name: ${form.get("fullname")||""}`,`Area: ${[form.get("city"),form.get("emirate")].filter(Boolean).join(", ")}`,"","Please confirm my order. Thank you!"];
  return "https://wa.me/"+waDigits+"?text="+encodeURIComponent(lines.join("\n"));
 }
 // e.g. AMB-260924-7K3Q  (date + 4 random characters). The old number was the
@@ -1043,11 +1285,11 @@ function makeOrderNo(){let d=new Date(),p=n=>String(n).padStart(2,"0"),chars="AB
 async function placeOrder(e){
  e.preventDefault();if(!cart.length||placingOrder)return;
  const form=new FormData(document.getElementById("checkoutForm")),orderNo=makeOrderNo();
- const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",sizeKey:i.size||"kg1",grind:grindOf(i),price:linePrice(i,p),qty:i.qty}:null}).filter(Boolean);
+ const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",sizeKey:i.size||"kg1",price:linePrice(i,p),qty:i.qty}:null}).filter(Boolean);
  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0),total=subtotal+DELIVERY_CHARGE;
  const btn=document.querySelector("#checkoutForm .place-order");
- placingOrder=true;if(btn){btn.disabled=true;btn.textContent="Placing order…"}
- const done=()=>{placingOrder=false;if(btn){btn.disabled=false;btn.textContent="Place Order"}};
+ placingOrder=true;if(btn){btn.disabled=true;btn.textContent=t("Placing order…")}
+ const done=()=>{placingOrder=false;if(btn){btn.disabled=false;btn.textContent=t("Place Order")}};
  // Reserve stock first. Each product is a Firebase transaction, so if two
  // customers try to buy the last pack at the same moment only one succeeds.
  let need={};items.forEach(it=>{let k=it.id+"\u0001"+it.sizeKey;need[k]=(need[k]||0)+it.qty});
@@ -1062,7 +1304,7 @@ async function placeOrder(e){
    if(!r.committed){
     await returnStock(taken);done();
     let p=products.find(x=>String(x.id)===String(id)),lab=(items.find(it=>String(it.id)===String(id)&&it.sizeKey===key)||{}).size||"";
-    alert(`Sorry — ${p?p.name:"one item"} ${lab} has just sold out or doesn't have enough stock left. Please update your cart.`);
+    alert(t("Sorry — {name} {size} has just sold out or doesn't have enough stock left. Please update your cart.",{name:p?arField(p,"name"):t("one item"),size:t(lab)}));
     closeCheckout();openCart();return;
    }
    if(r.snapshot.val()!==null)taken.push([id,key,n]);
@@ -1073,8 +1315,8 @@ async function placeOrder(e){
   console.error("Stock update failed, placing order without deducting stock:",err);
   await returnStock(taken);taken=[];
  }
- const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,status:"New",created:new Date().toISOString(),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
- try{await db.ref("orders").push(order);done();cart=[];save();document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>Thank you, ${esc(form.get("fullname")||"Customer")}.</p><p>Your order <strong>#${orderNo}</strong> has been received.</p><div class="cod-badge">💵&nbsp; Cash on Delivery</div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><a class="wa-confirm" href="${orderWhatsAppLink(orderNo,items,total,form)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Z"/></svg>Confirm on WhatsApp</a><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert("Order could not be sent. Please try again.");console.error(err)}
+ const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,status:"New",lang:window.LANG||"en",created:new Date().toISOString(),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
+ try{await db.ref("orders").push(order);done();cart=[];save();document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>${t("Thank you, {name}.",{name:esc(form.get("fullname")||t("Customer"))})}</p><p>${t("Your order {no} has been received.",{no:`<strong dir="ltr">#${orderNo}</strong>`})}</p><div class="cod-badge">💵&nbsp; <span>Cash on Delivery</span></div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><a class="wa-confirm" href="${orderWhatsAppLink(orderNo,items,total,form)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Z"/></svg>Confirm on WhatsApp</a><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert(t("Order could not be sent. Please try again."));console.error(err)}
 }
 renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 // (renderProducts() above will show a "Loading products…" placeholder until the
@@ -1084,7 +1326,7 @@ renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 
 <div class="checkout-overlay" id="checkoutOverlay">
 <div class="checkout-box" id="checkoutContent">
-<div class="checkout-head"><div style="display:flex;align-items:center;gap:14px"><button class="close" onclick="backToCart()" title="Back to Cart" style="font-size:22px">←</button><h2>Checkout</h2></div><button class="close" onclick="closeCheckout()">×</button></div>
+<div class="checkout-head"><div style="display:flex;align-items:center;gap:14px"><button class="close back-btn" onclick="backToCart()" title="Back to Cart" style="font-size:22px">←</button><h2>Checkout</h2></div><button class="close" onclick="closeCheckout()">×</button></div>
 <div class="checkout-layout">
 <form class="checkout-form" id="checkoutForm" onsubmit="placeOrder(event)">
 <h3>Customer Details</h3>
@@ -1094,7 +1336,7 @@ renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 <div class="field"><label>Phone / WhatsApp</label><input name="phone" required placeholder="+971 5X XXX XXXX"></div>
 <div class="field full"><label>Delivery Address</label><textarea name="address" required placeholder="Building, street, area"></textarea></div>
 <div class="field"><label>City</label><input name="city" required placeholder="Al Ain / Abu Dhabi / Dubai"></div>
-<div class="field"><label>Emirate</label><select name="emirate" required><option value="">Select</option><option>Abu Dhabi</option><option>Dubai</option><option>Sharjah</option><option>Ajman</option><option>Umm Al Quwain</option><option>Ras Al Khaimah</option><option>Fujairah</option></select></div>
+<div class="field"><label>Emirate</label><select name="emirate" required><option value="">Select</option><option value="Abu Dhabi">Abu Dhabi</option><option value="Dubai">Dubai</option><option value="Sharjah">Sharjah</option><option value="Ajman">Ajman</option><option value="Umm Al Quwain">Umm Al Quwain</option><option value="Ras Al Khaimah">Ras Al Khaimah</option><option value="Fujairah">Fujairah</option></select></div>
 </div>
 <div class="payment"><strong>Payment Method</strong>Cash on Delivery</div>
 <button class="place-order" type="submit">Place Order</button>
@@ -1116,6 +1358,44 @@ renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 </a>
 
 
+<style id="arabic-rtl">
+.lang-btn{font-family:'Tajawal','Noto Sans Arabic',Arial,sans-serif!important;font-size:17px!important;font-weight:700;width:30px;height:30px;border:1px solid rgba(150,110,70,.3)!important;border-radius:50%!important;line-height:1}
+html[dir=rtl] .lang-btn{font-family:Arial,sans-serif!important;font-size:12px!important;letter-spacing:.3px}
+html[dir=rtl] body{font-family:'Tajawal','Noto Sans Arabic','Segoe UI',Tahoma,Arial,sans-serif!important}
+html[dir=rtl] body *:not(.logo-text):not(.logo-text *):not(.lang-btn){letter-spacing:0!important}
+html[dir=rtl] :is(.hero h1,.section-title h2,.product .name,.detail-title,.collection-name,.about-copy h2,.help h2,.checkout-head h2,.drawer h3,.success h2,.fullpage-head h3,.contact-form-box h3,.contact-info-card h4,.checkout-form h3,.order-summary h3,.amount-callout .ac-value){font-family:'Amiri','Noto Naskh Arabic','Times New Roman',serif!important}
+html[dir=rtl] .hero{text-align:right!important;background:linear-gradient(270deg,rgba(249,245,238,.62) 0%,rgba(249,245,238,.36) 52%,rgba(249,245,238,.06) 100%),url("ambrosia_coffee_shop_web.webp") center/cover no-repeat!important}
+html[dir=rtl] .hero h1{line-height:1.25!important}
+html[dir=rtl] .hero-shop span,html[dir=rtl] .back-btn{display:inline-block;transform:scaleX(-1)}
+html[dir=rtl] .badge{left:auto!important;right:12px!important}
+html[dir=rtl] .oos-badge{right:auto!important;left:12px!important}
+html[dir=rtl] .cart-badge{right:auto!important;left:-12px!important}
+html[dir=rtl] .drawer:not(.policy-drawer):not(.product-detail-drawer){right:auto;left:0}
+html[dir=rtl] .remove{margin-left:0;margin-right:auto}
+html[dir=rtl] .search-result-item .sr-price{margin-left:0;margin-right:auto}
+html[dir=rtl] .product-detail-drawer .close{margin-left:0!important;margin-right:auto!important}
+html[dir=rtl] .feature{text-align:right!important;border-right:0!important;border-left:1px solid rgba(139,103,64,.22)!important}
+html[dir=rtl] .feature:last-child{border-left:0!important}
+html[dir=rtl] .amount-callout,html[dir=rtl] .keep-ready{text-align:right}
+html[dir=rtl] #cartOverlay .drawer>div[style*="text-align:right"]{text-align:left!important}
+html[dir=rtl] .wa-float{right:auto;left:24px}
+html[dir=rtl] input[type=email],html[dir=rtl] input[name=phone],html[dir=rtl] #contactEmail,html[dir=rtl] #contactPhone{direction:ltr;text-align:right}
+html[dir=rtl] .policy-drawer ul{padding-left:0}
+html[dir=rtl] .card-flavour,html[dir=rtl] .product .name{text-align:right}
+html[dir=rtl] .price-from{margin-right:0;margin-left:5px}
+html[dir=rtl] .detail-rating,html[dir=rtl] .rating{direction:rtl}
+@media(max-width:760px){
+ html[dir=rtl] .badge{right:7px!important}
+ html[dir=rtl] .oos-badge{left:7px!important}
+ html[dir=rtl] .cart-badge{left:1px!important}
+ html[dir=rtl] .wa-float{right:auto!important;left:15px!important}
+ html[dir=rtl] .feature{text-align:center!important;border-left:1px solid rgba(139,103,64,.16)!important}
+ html[dir=rtl] .feature:last-child{border-left:0!important}
+ html[dir=rtl] .feature strong{font-size:10px!important}
+ html[dir=rtl] .m-cart-bar{padding:10px 16px 10px 12px}
+ .lang-btn{width:34px!important;height:34px!important;min-height:34px!important}
+}
+</style>
 <style id="mobile-friendly-final">
 .m-cart-bar{display:none}
 /* ===== MOBILE-FIRST UX POLISH ===== */
@@ -1356,7 +1636,7 @@ button{min-height:44px}
   .success{margin:35px auto!important}
   .success h2{font-size:29px!important}
   .product-detail-drawer{
-    padding:14px 15px 90px!important;
+    padding:14px 15px 0!important;
     overflow-y:auto!important;
     -webkit-overflow-scrolling:touch;
   }
@@ -1397,6 +1677,9 @@ button{min-height:44px}
     backdrop-filter:blur(14px);
   }
   .detail-actions button{min-height:50px!important}
+  .product-detail-drawer-inner{padding-bottom:28px}
+  .product-detail-drawer .drawer-head{background:#fffcf7!important;box-shadow:0 -16px 0 #fffcf7}
+  .product-detail-drawer .drawer-head h3{font-size:18px}
   .detail-tabs{gap:18px!important}
   .detail-tab{min-height:44px!important}
   .wa-float{right:15px!important;bottom:82px!important;width:50px!important;height:50px!important;z-index:80!important}
