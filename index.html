@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ambrosia Speciality Coffee — Fresh Roasted Coffee Beans | UAE Delivery</title>
 <!-- ===== Search & share preview (Google, WhatsApp, Instagram, Facebook, X) ===== -->
-<meta name="description" content="Speciality single-origin coffee beans, freshly roasted in small batches. Whole bean or ground for espresso, filter or French press. Cash on delivery across the UAE.">
-<link rel="canonical" href="https://ambrosiacoffee.site/">
+<meta name="description" content="Speciality single-origin coffee beans, freshly roasted in small batches and delivered fresh. Cash on delivery across the UAE.">
+<link rel="canonical" href="https://ambrosiacoffee.store/">
 <meta name="theme-color" content="#0f3434">
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
@@ -15,10 +15,10 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Ambrosia Speciality Coffee">
 <meta property="og:title" content="Ambrosia Speciality Coffee — Freshly Roasted Beans, UAE Delivery">
-<meta property="og:description" content="Single-origin coffee beans, roasted in small batches. Whole bean or ground to order. Cash on delivery across the UAE.">
-<meta property="og:url" content="https://ambrosiacoffee.site/">
-<meta property="og:image" content="https://ambrosiacoffee.site/og-image.jpg">
-<meta property="og:image:secure_url" content="https://ambrosiacoffee.site/og-image.jpg">
+<meta property="og:description" content="Single-origin coffee beans, roasted in small batches. Cash on delivery across the UAE.">
+<meta property="og:url" content="https://ambrosiacoffee.store/">
+<meta property="og:image" content="https://ambrosiacoffee.store/og-image.jpg">
+<meta property="og:image:secure_url" content="https://ambrosiacoffee.store/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -27,10 +27,10 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ambrosia Speciality Coffee — Freshly Roasted Beans, UAE Delivery">
 <meta name="twitter:description" content="Single-origin coffee beans, roasted in small batches. Cash on delivery across the UAE.">
-<meta name="twitter:image" content="https://ambrosiacoffee.site/og-image.jpg">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Ambrosia Speciality Coffee","alternateName":["Ambrosia Coffee","Ambrosia"],"url":"https://ambrosiacoffee.site/"}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Ambrosia Speciality Coffee","url":"https://ambrosiacoffee.site/","logo":"https://ambrosiacoffee.site/favicon-192.png"}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","logo":"https://ambrosiacoffee.site/favicon-192.png","name":"Ambrosia Speciality Coffee","url":"https://ambrosiacoffee.site/","image":"https://ambrosiacoffee.site/og-image.jpg","description":"Speciality single-origin coffee beans, freshly roasted in small batches, delivered across the UAE.","telephone":"+971568115042","email":"ambrosiaspecialitycoffee@gmail.com","address":{"@type":"PostalAddress","addressCountry":"AE"},"areaServed":"AE","paymentAccepted":"Cash"}</script>
+<meta name="twitter:image" content="https://ambrosiacoffee.store/og-image.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Ambrosia Speciality Coffee","alternateName":["Ambrosia Coffee","Ambrosia"],"url":"https://ambrosiacoffee.store/"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Ambrosia Speciality Coffee","url":"https://ambrosiacoffee.store/","logo":"https://ambrosiacoffee.store/favicon-192.png"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Store","logo":"https://ambrosiacoffee.store/favicon-192.png","name":"Ambrosia Speciality Coffee","url":"https://ambrosiacoffee.store/","image":"https://ambrosiacoffee.store/og-image.jpg","description":"Speciality single-origin coffee beans, freshly roasted in small batches, delivered across the UAE.","telephone":"+971568115042","email":"ambrosiaspecialitycoffee@gmail.com","address":{"@type":"PostalAddress","addressCountry":"AE"},"areaServed":"AE","paymentAccepted":"Cash"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -461,6 +461,9 @@ const AR_TEXT=new Map(Object.entries({
  "NEW":"جديد","SALE":"تخفيض","BEST SELLER":"الأكثر مبيعًا","BEST SELLERS":"الأكثر مبيعًا","SOLD OUT":"نفدت الكمية","LIMITED":"كمية محدودة",
  "Product":"المنتج","Policy":"السياسة","Shop this Collection":"تسوّق هذه المجموعة",
  "Share":"مشاركة","Link copied ✓":"تم نسخ الرابط ✓","Copy this link:":"انسخ هذا الرابط:",
+ "Promo code":"رمز الخصم","Apply":"تطبيق","applied":"مُطبَّق","Discount":"الخصم",
+ "This promo code isn't valid.":"رمز الخصم هذا غير صالح.","This promo code has expired.":"انتهت صلاحية رمز الخصم هذا.",
+ "This code needs an order of at least {min}.":"يتطلب هذا الرمز طلبًا بقيمة {min} على الأقل.",
  "of this coffee":"من هذه القهوة","one item":"أحد المنتجات","Customer":"عميلنا العزيز"
 }));
 // Arabic defaults for the text the admin edits in "Store Content".
@@ -617,6 +620,16 @@ html[dir=rtl] .dh-price:before{margin-right:0;margin-left:8px}
 .wa-float svg{width:30px;height:30px}
 @media(max-width:600px){.wa-float{right:16px;bottom:16px;width:52px;height:52px}.wa-float svg{width:26px;height:26px}}
 
+.promo-box{padding:12px 0;border-bottom:1px solid #ddd6cd}
+.promo-row{display:flex;gap:8px}
+.promo-row input{flex:1;min-width:0;padding:11px 12px;border:1px solid #d9c9b6;border-radius:12px!important;font:inherit;font-size:14px;text-transform:uppercase;letter-spacing:.5px}
+.promo-row button{border:1px solid #211710;background:#211710;color:#fff;padding:0 16px;border-radius:12px!important;font-weight:700;font-size:13px;cursor:pointer;min-height:44px}
+.promo-msg{display:none;color:#a3452f;font-size:12.5px;margin-top:7px}
+.promo-msg.show{display:block}
+.promo-applied{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#eef6ee;border:1px solid #bfe0bf;color:#2c5c2c;padding:10px 12px;border-radius:12px;font-size:13px}
+.promo-applied button{border:0;background:none;color:#8d3e32;text-decoration:underline;cursor:pointer;font-size:12.5px;min-height:0;padding:0}
+.promo-line strong{color:#2c7a3c}
+html[dir=rtl] .promo-row input{text-align:right}
 .card-flavour{font-size:12.5px;color:#8a7866;margin:-2px 0 8px;line-height:1.35;height:2.7em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
 .product .rating.empty{visibility:hidden}
 .card-sizes{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 14px}
@@ -1320,7 +1333,12 @@ function changeQty(index,n){let x=cart[index];if(!x)return;if(n>0&&!canAddPacks(
 function removeItem(index){cart.splice(index,1);save();renderCart()}
 let CHECKOUT_TEMPLATE=null;
 function checkout(){if(!cart.length){alert(t("Your cart is empty."));return}let bad=cartStockProblems();if(bad.length){alert(t("Sorry, not enough stock for: {list}. Please update your cart.",{list:bad.join(", ")}));openCart();return}let box=document.getElementById("checkoutContent");if(CHECKOUT_TEMPLATE===null)CHECKOUT_TEMPLATE=box.innerHTML;else if(!document.getElementById("checkoutForm"))box.innerHTML=CHECKOUT_TEMPLATE;closeCart();renderCheckout();document.getElementById("checkoutOverlay").style.display="block"}
-function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0),total=subtotal+DELIVERY_CHARGE;document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${arField(p,"name")} — <span>${i.sizeLabel||"1 Kg"}</span> × ${i.qty}</span><strong>${money(linePrice(i,p)*i.qty)}</strong></div>`:""}).join("")+`<div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
+function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0);
+ let promoNote="";
+ if(appliedPromo&&appliedPromo.minSubtotal&&subtotal<appliedPromo.minSubtotal){promoNote=t("This code needs an order of at least {min}.",{min:money(appliedPromo.minSubtotal)});appliedPromo=null}
+ let discount=promoDiscount(appliedPromo,subtotal),total=round2(subtotal-discount+DELIVERY_CHARGE);
+ let promoBox=appliedPromo?`<div class="promo-applied"><span>🏷️ <b dir="ltr">${esc(appliedPromo.code)}</b> <span>applied</span></span><button type="button" onclick="removePromo()">Remove</button></div>`:`<div class="promo-row"><input id="promoInput" autocomplete="off" autocapitalize="characters" placeholder="Promo code" onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromo()}"><button type="button" onclick="applyPromo(this)">Apply</button></div><div class="promo-msg${promoNote?" show":""}" id="promoMsg">${esc(promoNote)}</div>`;
+ document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${arField(p,"name")} — <span>${i.sizeLabel||"1 Kg"}</span> × ${i.qty}</span><strong>${money(linePrice(i,p)*i.qty)}</strong></div>`:""}).join("")+`<div class="promo-box">${promoBox}</div><div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div>${discount>0?`<div class="summary-item promo-line"><span><span>Discount</span> (<span dir="ltr">${esc(appliedPromo.code)}</span>)</span><strong>−${money(discount)}</strong></div>`:""}<div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
 function closeCheckout(){document.getElementById("checkoutOverlay").style.display="none"}
 function backToCart(){closeCheckout();openCart()}
 function goShopping(target){closeCart();closeCheckout();let el=document.getElementById(target);if(el)el.scrollIntoView({behavior:"smooth"})}
@@ -1331,9 +1349,37 @@ async function returnStock(taken){
  if(failed.length){try{await db.ref("stockReturns").push({items:failed,created:new Date().toISOString()})}catch(e){console.error("Could not file stock return note:",e)}}
 }
 let placingOrder=false;
+// ---- Promo codes (created in admin → Promo Codes; stored at promos/CODE) ----
+let appliedPromo=null; // {code,type:"percent"|"fixed",value,minSubtotal}
+const round2=n=>Math.round(n*100)/100;
+function promoDiscount(pr,subtotal){if(!pr)return 0;let v=Number(pr.value)||0;return round2(pr.type==="fixed"?Math.min(v,subtotal):subtotal*Math.min(v,100)/100)}
+async function checkPromo(code,subtotal){
+ code=String(code||"").trim().toUpperCase().replace(/\s+/g,"");
+ const bad={ok:false,msg:t("This promo code isn't valid.")};
+ if(!/^[A-Z0-9_-]{2,30}$/.test(code))return bad;
+ let pr;try{pr=(await db.ref("promos/"+code).once("value")).val()}catch(e){return bad}
+ if(!pr||pr.active===false)return bad;
+ if(pr.expires){let end=new Date(pr.expires+"T23:59:59");if(!isNaN(end)&&Date.now()>end.getTime())return {ok:false,msg:t("This promo code has expired.")}}
+ let min=Number(pr.minSubtotal||0);
+ if(min&&subtotal<min)return {ok:false,msg:t("This code needs an order of at least {min}.",{min:money(min)})};
+ let promo={code,type:pr.type==="fixed"?"fixed":"percent",value:Number(pr.value)||0,minSubtotal:min};
+ let d=promoDiscount(promo,subtotal);if(!(d>0))return bad;
+ return {ok:true,promo,discount:d};
+}
+async function applyPromo(btn){
+ let inp=document.getElementById("promoInput"),msg=document.getElementById("promoMsg");if(!inp)return;
+ let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0);
+ if(btn){btn.disabled=true}
+ let r=await checkPromo(inp.value,subtotal);
+ if(btn){btn.disabled=false}
+ if(!r.ok){if(msg){msg.textContent=r.msg;msg.classList.add("show")}return}
+ appliedPromo=r.promo;renderCheckout();
+}
+function removePromo(){appliedPromo=null;renderCheckout()}
+window.applyPromo=applyPromo;window.removePromo=removePromo;
 // Pre-filled WhatsApp message so the customer can confirm with one tap.
-function orderWhatsAppLink(orderNo,items,total,form){
- let lines=[`Hi Ambrosia Coffee! I just placed order #${orderNo}.`,"",...items.map(i=>`• ${i.name} ${i.size} × ${i.qty}`),"",`Total: ${money(total)} (Cash on Delivery)`,`Name: ${form.get("fullname")||""}`,`Area: ${[form.get("city"),form.get("emirate")].filter(Boolean).join(", ")}`,"","Please confirm my order. Thank you!"];
+function orderWhatsAppLink(orderNo,items,total,form,promo,discount){
+ let lines=[`Hi Ambrosia Coffee! I just placed order #${orderNo}.`,"",...items.map(i=>`• ${i.name} ${i.size} × ${i.qty}`),"",...(promo?[`Promo code: ${promo.code} (−${money(discount)})`]:[]),`Total: ${money(total)} (Cash on Delivery)`,`Name: ${form.get("fullname")||""}`,`Area: ${[form.get("city"),form.get("emirate")].filter(Boolean).join(", ")}`,"","Please confirm my order. Thank you!"];
  return "https://wa.me/"+waDigits+"?text="+encodeURIComponent(lines.join("\n"));
 }
 // e.g. AMB-260924-7K3Q  (date + 4 random characters). The old number was the
@@ -1343,10 +1389,15 @@ async function placeOrder(e){
  e.preventDefault();if(!cart.length||placingOrder)return;
  const form=new FormData(document.getElementById("checkoutForm")),orderNo=makeOrderNo();
  const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",sizeKey:i.size||"kg1",price:linePrice(i,p),qty:i.qty}:null}).filter(Boolean);
- const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0),total=subtotal+DELIVERY_CHARGE;
+ const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0);let promo=null,discount=0,total=subtotal+DELIVERY_CHARGE;
  const btn=document.querySelector("#checkoutForm .place-order");
  placingOrder=true;if(btn){btn.disabled=true;btn.textContent=t("Placing order…")}
  const done=()=>{placingOrder=false;if(btn){btn.disabled=false;btn.textContent=t("Place Order")}};
+ if(appliedPromo){
+  const r=await checkPromo(appliedPromo.code,subtotal);
+  if(!r.ok){appliedPromo=null;renderCheckout();done();alert(r.msg);return}
+  promo={code:r.promo.code,type:r.promo.type,value:r.promo.value};discount=r.discount;total=round2(subtotal-discount+DELIVERY_CHARGE);
+ }
  // Reserve stock first. Each product is a Firebase transaction, so if two
  // customers try to buy the last pack at the same moment only one succeeds.
  let need={};items.forEach(it=>{let k=it.id+"\u0001"+it.sizeKey;need[k]=(need[k]||0)+it.qty});
@@ -1372,8 +1423,8 @@ async function placeOrder(e){
   console.error("Stock update failed, placing order without deducting stock:",err);
   await returnStock(taken);taken=[];
  }
- const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,status:"New",lang:window.LANG||"en",created:new Date().toISOString(),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
- try{await db.ref("orders").push(order);done();cart=[];save();document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>${t("Thank you, {name}.",{name:esc(form.get("fullname")||t("Customer"))})}</p><p>${t("Your order {no} has been received.",{no:`<strong dir="ltr">#${orderNo}</strong>`})}</p><div class="cod-badge">💵&nbsp; <span>Cash on Delivery</span></div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><a class="wa-confirm" href="${orderWhatsAppLink(orderNo,items,total,form)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Z"/></svg>Confirm on WhatsApp</a><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert(t("Order could not be sent. Please try again."));console.error(err)}
+ const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,...(promo?{promo,discount}:{}),status:"New",lang:window.LANG||"en",created:new Date().toISOString(),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
+ try{await db.ref("orders").push(order);done();cart=[];appliedPromo=null;save();document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>${t("Thank you, {name}.",{name:esc(form.get("fullname")||t("Customer"))})}</p><p>${t("Your order {no} has been received.",{no:`<strong dir="ltr">#${orderNo}</strong>`})}</p><div class="cod-badge">💵&nbsp; <span>Cash on Delivery</span></div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><a class="wa-confirm" href="${orderWhatsAppLink(orderNo,items,total,form,promo,discount)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Z"/></svg>Confirm on WhatsApp</a><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert(t("Order could not be sent. Please try again."));console.error(err)}
 }
 renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 // (renderProducts() above will show a "Loading products…" placeholder until the
