@@ -297,11 +297,12 @@ header{width:calc(100% - 18px)!important}
 // fetched twice.
 if(!firebase.apps.length) firebase.initializeApp({apiKey:"AIzaSyALLukly05ilAdnwR66yLnIMq4wP8vt1jk",authDomain:"ambrosiaweb.firebaseapp.com",databaseURL:"https://ambrosiaweb-default-rtdb.firebaseio.com",projectId:"ambrosiaweb"});
 window.__fbdb=firebase.database();
-window.__fbCache={products:undefined,collections:undefined,settings:undefined};
+window.__fbCache={products:undefined,collections:undefined,settings:undefined,stock:undefined};
 window.__fbHandlers={};
 window.__fbdb.ref("products").on("value",s=>{window.__fbCache.products=s.val();window.__fbHandlers.products&&window.__fbHandlers.products(s.val());});
 window.__fbdb.ref("collections").on("value",s=>{window.__fbCache.collections=s.val();window.__fbHandlers.collections&&window.__fbHandlers.collections(s.val());});
 window.__fbdb.ref("settings").on("value",s=>{window.__fbCache.settings=s.val();window.__fbHandlers.settings&&window.__fbHandlers.settings(s.val());});
+window.__fbdb.ref("stock").on("value",s=>{window.__fbCache.stock=s.val();window.__fbHandlers.stock&&window.__fbHandlers.stock(s.val());});
 firebase.auth().onAuthStateChanged(user=>{
  if(user){window.__fbUid=user.uid;window.__fbHandlers.authReady&&window.__fbHandlers.authReady(user.uid);}
  else{firebase.auth().signInAnonymously().catch(e=>console.error("Anonymous sign-in failed:",e));}
@@ -353,6 +354,14 @@ firebase.auth().onAuthStateChanged(user=>{
 .wa-float svg{width:30px;height:30px}
 @media(max-width:600px){.wa-float{right:16px;bottom:16px;width:52px;height:52px}.wa-float svg{width:26px;height:26px}}
 
+.oos-badge{position:absolute;top:12px;right:12px;z-index:2;background:#2b2119;color:#fff;padding:7px 10px;font-size:11px;letter-spacing:.5px;border-radius:999px;font-weight:600}
+.product.oos .product-img img{filter:grayscale(.6);opacity:.65}
+.add:disabled,.add:disabled:hover{background:#dcd0c1!important;color:#6d5f52!important;box-shadow:none!important;cursor:not-allowed;transform:none!important}
+#sizeOptions button:disabled,.detail-size-options button:disabled{opacity:.45;cursor:not-allowed;text-decoration:line-through}
+.detail-actions button:disabled{opacity:.5;cursor:not-allowed}
+.stock-note{color:#a3452f;font-size:12px;font-weight:600;margin:0 0 14px}
+.stock-warn{color:#a3452f;font-size:12px;margin:6px 0 2px}
+@media(max-width:760px){.oos-badge{top:7px;right:7px;padding:5px 7px;font-size:8px}}
 .quick-view-btn{position:absolute;left:50%;bottom:14px;transform:translate(-50%,10px);opacity:0;background:rgba(33,23,16,.88);color:#fff;border:0;padding:10px 20px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .25s ease,transform .25s ease;backdrop-filter:blur(6px);z-index:3}
 .product:hover .quick-view-btn{opacity:1;transform:translate(-50%,0)}
 @media(max-width:900px){.quick-view-btn{opacity:1;transform:translate(-50%,0);bottom:10px;padding:8px 16px;font-size:11px}}
@@ -524,7 +533,29 @@ let products=[],collections=[],cart=[];
 let activeCollectionCategory=null;
 let activeStoreFilter=null;
 const DELIVERY_CHARGE=30,money=n=>"AED "+Number(n||0).toFixed(2);
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+// Stars now follow the product's rating from the admin (they were always 5).
+function stars(r){r=Math.max(0,Math.min(5,Math.round(Number(r)||5)));return "★".repeat(r)+"☆".repeat(5-r)}
 let productsLoaded=false;
+
+// ---- Stock (packs on hand per size, from stock/{productId}/{g200|g250|kg1}) ----
+// No entry for a size = unlimited / not tracked. Each size is counted
+// separately: selling a 250g pack only takes 1 off the 250g stock.
+let stock={};
+function packsLeft(id,key){let v=stock[String(id)];if(!v||typeof v!=="object")return Infinity;v=v[key];return (v===undefined||v===null||v==="")?Infinity:Math.max(0,Math.floor(Number(v)||0))}
+function cartPacks(id,key){return cart.reduce((a,i)=>String(i.id)===String(id)&&i.size===key?a+i.qty:a,0)}
+function canAddPacks(id,key,n){return packsLeft(id,key)-cartPacks(id,key)>=n}
+function sizeInStock(p,s){return packsLeft(p.id,s.key)>=1}
+function isOutOfStock(p){let sz=getSizes(p);if(!sz.length)return false;return !sz.some(s=>sizeInStock(p,s))}
+function noStockMsg(p,label){alert(`Sorry — we don't have enough ${p?p.name:"of this coffee"}${label?" ("+label+")":""} in stock for that.`)}
+function cartStockProblems(){let bad=[];cart.forEach(i=>{if(cartPacks(i.id,i.size)>packsLeft(i.id,i.size)){let p=products.find(x=>String(x.id)===String(i.id));let n=(p?p.name:i.id)+" "+(i.sizeLabel||"");if(!bad.includes(n))bad.push(n)}});return bad}
+function handleStockSnapshot(v){
+ stock=(v&&typeof v==="object")?v:{};
+ if(!productsLoaded)return;
+ renderProducts();renderBestSellers();renderNewArrivals();
+ if(activeCollectionCategory)renderCollectionProducts();
+ renderCart();
+}
 
 // ---- Cart persistence: Firebase Realtime Database only, no localStorage. ----
 // Each visitor gets a stable identity via Firebase Anonymous Auth (Firebase
@@ -652,12 +683,22 @@ if(window.__fbCache.collections!==undefined)handleCollectionsSnapshot(window.__f
 window.__fbHandlers.collections=handleCollectionsSnapshot;
 if(window.__fbCache.settings!==undefined)applySettings(window.__fbCache.settings);
 window.__fbHandlers.settings=applySettings;
+if(window.__fbCache.stock!==undefined)handleStockSnapshot(window.__fbCache.stock);
+window.__fbHandlers.stock=handleStockSnapshot;
+// Saves the message to messages/{id}; it shows up in the admin "Messages" tab.
+// (Before, the form said "sent" but the message went nowhere.)
 function submitContactForm(e){
  e.preventDefault();
- const form=e.target;
- const success=form.previousElementSibling;
- if(success && success.classList.contains("contact-success")) success.classList.add("show");
- form.reset();
+ const form=e.target,btn=form.querySelector("button[type=submit]"),success=form.previousElementSibling;
+ const f=new FormData(form);
+ const msg={name:String(f.get("name")||"").trim().slice(0,200),email:String(f.get("email")||"").trim().slice(0,200),phone:String(f.get("phone")||"").trim().slice(0,50),message:String(f.get("message")||"").trim().slice(0,5000),created:new Date().toISOString(),read:false};
+ if(!msg.name||!msg.email||!msg.message)return false;
+ const oldLabel=btn?btn.textContent:"";if(btn){btn.disabled=true;btn.textContent="Sending…"}
+ db.ref("messages").push(msg).then(()=>{
+  if(success&&success.classList.contains("contact-success"))success.classList.add("show");
+  form.reset();
+ }).catch(err=>{console.error(err);alert("Sorry, your message couldn't be sent. Please try again or contact us on WhatsApp.");})
+ .finally(()=>{if(btn){btn.disabled=false;btn.textContent=oldLabel}});
  return false;
 }
 function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<div class="collection-item"><a class="collection-card${activeCollectionCategory===c.name?" active":""}" href="#" onclick="event.preventDefault();openImageView('${String(c.img).replace(/'/g,"\\'")}','${String(c.name).replace(/'/g,"\\'")}')"><img src="${c.img}" loading="lazy"></a><div class="collection-name">${c.name}</div></div>`).join("")}
@@ -715,11 +756,14 @@ function save(){
 }
 let selectedProduct=null;
 function getSizes(p){let s=p.sizes;if(!s)return [{key:"kg1",label:"1 Kg",price:Number(p.price||0),old:Number(p.old||0)}];let out=[];if(s.g200?.enabled!==false&&Number(s.g200?.price)>0)out.push({key:"g200",label:"200g",price:Number(s.g200.price),old:Number(s.g200.old||0)});if(s.g250?.enabled!==false&&Number(s.g250?.price)>0)out.push({key:"g250",label:"250g",price:Number(s.g250.price),old:Number(s.g250.old||0)});if(s.kg1?.enabled!==false&&Number(s.kg1?.price)>0)out.push({key:"kg1",label:"1 Kg",price:Number(s.kg1.price),old:Number(s.kg1.old||0)});return out}
-function addToCart(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;let sizes=getSizes(p);if(sizes.length<=1){addVariantToCart(p,sizes[0]);return}selectedProduct=p;document.getElementById("sizePickerProduct").innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img src="${p.img}" style="width:72px;height:72px;object-fit:cover;border-radius:14px"><div><b style="font-size:18px">${p.name}</b><div style="color:#7a6b5d;margin-top:4px">Select your pack size</div></div></div>`;document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button onclick="addVariantAndClose('${s.key}')"><span class="size-name">${s.label}</span><span class="size-price">${s.old?`<del style="color:#999;font-weight:400">${money(s.old)}</del> `:""}${money(s.price)}</span></button>`).join("");document.getElementById("sizeOverlay").style.display="block"}
-function addVariantToCart(p,s){if(!s)return;let x=cart.find(i=>String(i.id)===String(p.id)&&i.size===s.key);if(x)x.qty++;else cart.push({id:p.id,size:s.key,sizeLabel:s.label,price:s.price,qty:1});save();openCart()}
+function addToCart(id){let p=products.find(x=>String(x.id)===String(id));if(!p)return;if(isOutOfStock(p)){noStockMsg(p);return}let sizes=getSizes(p);if(sizes.length<=1){addVariantToCart(p,sizes[0]);return}selectedProduct=p;document.getElementById("sizePickerProduct").innerHTML=`<div style="display:flex;gap:12px;align-items:center"><img src="${p.img}" style="width:72px;height:72px;object-fit:cover;border-radius:14px"><div><b style="font-size:18px">${p.name}</b><div style="color:#7a6b5d;margin-top:4px">Select your pack size</div></div></div>`;document.getElementById("sizeOptions").innerHTML=sizes.map(s=>`<button ${sizeInStock(p,s)?"":"disabled"} onclick="addVariantAndClose('${s.key}')"><span class="size-name">${s.label}</span><span class="size-price">${sizeInStock(p,s)?`${s.old?`<del style="color:#999;font-weight:400">${money(s.old)}</del> `:""}${money(s.price)}`:"Out of Stock"}</span></button>`).join("");document.getElementById("sizeOverlay").style.display="block"}
+function addVariantToCart(p,s,qty=1){if(!s)return false;if(!canAddPacks(p.id,s.key,qty)){noStockMsg(p,s.label);return false}let x=cart.find(i=>String(i.id)===String(p.id)&&i.size===s.key);if(x)x.qty+=qty;else cart.push({id:p.id,size:s.key,sizeLabel:s.label,price:s.price,qty});save();openCart();return true}
 function addVariantAndClose(key){let s=getSizes(selectedProduct).find(x=>x.key===key);addVariantToCart(selectedProduct,s);closeSizePicker()}
 function closeSizePicker(){document.getElementById("sizeOverlay").style.display="none";selectedProduct=null}
-function pruneCart(){if(!products.length)return;let before=cart.length;cart=cart.filter(i=>products.some(p=>String(p.id)===String(i.id)));if(cart.length!==before)save()}
+// Always charge the product's CURRENT price for that size (the cart may have
+// been filled days ago, before a price change in the admin).
+function linePrice(i,p){p=p||products.find(x=>String(x.id)===String(i.id));if(!p)return Number(i.price||0);let s=getSizes(p).find(z=>z.key===i.size);return s?Number(s.price):Number(i.price||p.price||0)}
+function pruneCart(){if(!products.length)return;let before=cart.length;cart=cart.filter(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p&&getSizes(p).some(z=>z.key===i.size)});if(cart.length!==before)save()}
 function updateCart(){let e=document.getElementById("cartCount");if(!e)return;let n=cart.filter(i=>!products.length||products.some(p=>String(p.id)===String(i.id))).reduce((a,b)=>a+b.qty,0);e.textContent=n;e.classList.toggle("hide",n===0)}
 function openCart(){renderCart();document.getElementById("cartOverlay").style.display="block"}
 function closeCart(){document.getElementById("cartOverlay").style.display="none"}
@@ -826,7 +870,7 @@ function closeFullPage(key){
  document.body.classList.remove("no-scroll");
 }
 window.openFullPage=openFullPage;window.closeFullPage=closeFullPage;
-function productCardHTML(p){return `<article class="product" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}<img src="${p.img}" alt="${p.name}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${p.name}</div><div class="rating">★★★★★ <span>(${p.reviewCount||p.reviews||0})</span></div><div class="price">${p.old?`<del>${money(p.old)}</del> `:""}<strong>${money(p.price)}</strong></div><button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button></div></article>`}
+function productCardHTML(p){let oos=isOutOfStock(p);return `<article class="product${oos?" oos":""}" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}${oos?`<span class="oos-badge">Out of Stock</span>`:""}<img src="${p.img}" alt="${p.name}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${p.name}</div><div class="rating">${stars(p.rating)} <span>(${p.reviewCount||p.reviews||0})</span></div><div class="price">${p.old?`<del>${money(p.old)}</del> `:""}<strong>${money(p.price)}</strong></div>${oos?`<button class="add" disabled>Out of Stock</button>`:`<button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button>`}</div></article>`}
 function renderProducts(){let grid=document.getElementById("productsGrid")||document.getElementById("productGrid");if(!grid)return;if(!productsLoaded){grid.innerHTML='<div style="padding:40px;text-align:center;color:#9a8a78">Loading products…</div>';return}if(!products.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found yet.</div>`;return}let list=activeStoreFilter?products.filter(p=>(p.cat||"")===activeStoreFilter):products;if(!list.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found in "${activeStoreFilter}" yet.</div>`;return}grid.innerHTML=list.map(productCardHTML).join("")}
 function renderStoreFilterBar(){
  let bar=document.getElementById("storeFilterBar");if(!bar)return;
@@ -844,7 +888,7 @@ function setStoreFilter(name){
 window.setStoreFilter=setStoreFilter;
 function openProductDetail(id){
  let p=products.find(x=>String(x.id)===String(id));if(!p)return;
- let sizes=getSizes(p);let first=sizes[0]||{key:"kg1",label:"1 Kg",price:p.price,old:p.old||0};
+ let sizes=getSizes(p);let oos=isOutOfStock(p);let first=sizes.find(s=>sizeInStock(p,s))||sizes[0]||{key:"kg1",label:"1 Kg",price:p.price,old:p.old||0};
  selectedDetail={product:p,size:first,qty:1};
  let gallery=[p.img,...(p.gallery||[])].filter(Boolean);
  document.getElementById("detailName").textContent=p.name;
@@ -852,14 +896,15 @@ function openProductDetail(id){
  ${gallery.length>1?`<div class="detail-thumbs">${gallery.map((g,i)=>`<img src="${g}" class="${i===0?"active":""}" onclick="selectDetailImage(${i})">`).join("")}</div>`:""}
  <div class="detail-eyebrow">${[p.cat,p.origin].filter(Boolean).join(" · ")}</div>
  <h1 class="detail-title">${p.name}</h1>
- <div class="detail-rating">★★★★★ &nbsp; ${p.rating||"5.0"} (${p.reviewCount||p.reviews||0} reviews)</div>
+ <div class="detail-rating">${stars(p.rating)} &nbsp; ${p.rating||"5.0"} (${p.reviewCount||p.reviews||0} reviews)</div>
  <div id="detailPrice" class="detail-price">${money(first.price)}</div>
  <div class="detail-notes">${p.tastingShort||p.shortDescription||p.notes||""}</div>
+ ${oos?`<div class="stock-note">Out of Stock — please check back soon.</div>`:""}
  <div class="detail-size-title">Weight</div>
- <div class="detail-size-options">${sizes.map(s=>`<button class="${s.key===first.key?"active":""}" onclick="selectDetailSize('${s.key}')">${s.label}</button>`).join("")}</div>
+ <div class="detail-size-options">${sizes.map(s=>`<button data-key="${s.key}" class="${s.key===first.key&&!oos?"active":""}" ${sizeInStock(p,s)?"":"disabled title=\"Out of stock\""} onclick="selectDetailSize('${s.key}')">${s.label}</button>`).join("")}</div>
  <div class="detail-qty-title">Quantity</div>
  <div class="detail-qty"><button onclick="detailQty(-1)">−</button><span id="detailQty">1</span><button onclick="detailQty(1)">+</button></div>
- <div class="detail-actions"><button class="detail-add" onclick="detailAdd()">Add to Cart</button><button class="detail-buy" onclick="detailBuy()">Buy Now</button></div>
+ <div class="detail-actions">${oos?`<button class="detail-add" disabled>Out of Stock</button><button class="detail-buy" disabled>Buy Now</button>`:`<button class="detail-add" onclick="detailAdd()">Add to Cart</button><button class="detail-buy" onclick="detailBuy()">Buy Now</button>`}</div>
  <div class="detail-tabs">
   <button class="detail-tab active" onclick="showDetailTab('description',this)">Description</button>
   <button class="detail-tab" onclick="showDetailTab('tasting',this)">Tasting Notes</button>
@@ -880,26 +925,66 @@ function selectDetailImage(idx){
  document.querySelectorAll(".detail-thumbs img").forEach((t,i)=>t.classList.toggle("active",i===idx));
 }
 function closeProductDetail(){document.getElementById("productDetailOverlay").style.display="none";selectedDetail=null}
-function selectDetailSize(key){if(!selectedDetail)return;let s=getSizes(selectedDetail.product).find(x=>x.key===key);if(!s)return;selectedDetail.size=s;document.getElementById("detailPrice").textContent=money(s.price);document.querySelectorAll(".detail-size-options button").forEach(b=>b.classList.toggle("active",b.textContent===s.label))}
-function detailQty(n){if(!selectedDetail)return;selectedDetail.qty=Math.max(1,selectedDetail.qty+n);document.getElementById("detailQty").textContent=selectedDetail.qty}
-function detailAdd(){if(!selectedDetail)return;for(let n=0;n<selectedDetail.qty;n++)addVariantToCart(selectedDetail.product,selectedDetail.size);closeProductDetail()}
-function detailBuy(){if(!selectedDetail)return;cart.push({id:selectedDetail.product.id,size:selectedDetail.size.key,sizeLabel:selectedDetail.size.label,price:selectedDetail.size.price,qty:selectedDetail.qty});save();closeProductDetail();checkout()}
+function detailMaxQty(){let d=selectedDetail;if(!d)return 1;return Math.max(0,packsLeft(d.product.id,d.size.key)-cartPacks(d.product.id,d.size.key))}
+function selectDetailSize(key){if(!selectedDetail)return;let s=getSizes(selectedDetail.product).find(x=>x.key===key);if(!s||!sizeInStock(selectedDetail.product,s))return;selectedDetail.size=s;document.getElementById("detailPrice").textContent=money(s.price);document.querySelectorAll(".detail-size-options button").forEach(b=>b.classList.toggle("active",b.dataset.key===s.key));let mx=detailMaxQty();if(selectedDetail.qty>mx){selectedDetail.qty=Math.max(1,mx);document.getElementById("detailQty").textContent=selectedDetail.qty}}
+function detailQty(n){if(!selectedDetail)return;let q=Math.max(1,selectedDetail.qty+n);if(n>0&&q>detailMaxQty()){noStockMsg(selectedDetail.product,selectedDetail.size.label);return}selectedDetail.qty=q;document.getElementById("detailQty").textContent=q}
+function detailAdd(){if(!selectedDetail)return;if(addVariantToCart(selectedDetail.product,selectedDetail.size,selectedDetail.qty))closeProductDetail()}
+function detailBuy(){if(!selectedDetail)return;let d=selectedDetail;if(!canAddPacks(d.product.id,d.size.key,d.qty)){noStockMsg(d.product,d.size.label);return}{let x=cart.find(i=>String(i.id)===String(d.product.id)&&i.size===d.size.key);if(x)x.qty+=d.qty;else cart.push({id:d.product.id,size:d.size.key,sizeLabel:d.size.label,price:d.size.price,qty:d.qty});}save();closeProductDetail();checkout()}
 function showDetailTab(id,btn){document.querySelectorAll(".detail-panel").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".detail-tab").forEach(x=>x.classList.remove("active"));document.getElementById("panel-"+id).classList.add("active");btn.classList.add("active")}
-function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=Number(i.price||size.price||p.price);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${p.name}</h4><div style="color:#7a6b5d">${size.label}</div><div>${money(unit)}</div><div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal)}
-function changeQty(index,n){let x=cart[index];if(!x)return;x.qty+=n;if(x.qty<=0)cart.splice(index,1);save();renderCart()}
+function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=linePrice(i,p);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${p.name}</h4><div style="color:#7a6b5d">${size.label}</div><div>${money(unit)}</div>${cartPacks(p.id,i.size)>packsLeft(p.id,i.size)?`<div class="stock-warn">${packsLeft(p.id,i.size)<1?"Now out of stock — please remove":"Not enough stock — please reduce quantity"}</div>`:""}<div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal)}
+function changeQty(index,n){let x=cart[index];if(!x)return;if(n>0&&!canAddPacks(x.id,x.size,n)){noStockMsg(products.find(p=>String(p.id)===String(x.id)),x.sizeLabel);return}x.qty+=n;if(x.qty<=0)cart.splice(index,1);save();renderCart()}
 function removeItem(index){cart.splice(index,1);save();renderCart()}
-function checkout(){if(!cart.length){alert("Your cart is empty.");return}closeCart();renderCheckout();document.getElementById("checkoutOverlay").style.display="block"}
-function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+Number(i.price||0)*i.qty,0),total=subtotal+DELIVERY_CHARGE;document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${p.name} — ${i.sizeLabel||"1 Kg"} × ${i.qty}</span><strong>${money(Number(i.price||p.price)*i.qty)}</strong></div>`:""}).join("")+`<div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
+let CHECKOUT_TEMPLATE=null;
+function checkout(){if(!cart.length){alert("Your cart is empty.");return}let bad=cartStockProblems();if(bad.length){alert("Sorry, not enough stock for: "+bad.join(", ")+". Please update your cart.");openCart();return}let box=document.getElementById("checkoutContent");if(CHECKOUT_TEMPLATE===null)CHECKOUT_TEMPLATE=box.innerHTML;else if(!document.getElementById("checkoutForm"))box.innerHTML=CHECKOUT_TEMPLATE;closeCart();renderCheckout();document.getElementById("checkoutOverlay").style.display="block"}
+function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0),total=subtotal+DELIVERY_CHARGE;document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${p.name} — ${i.sizeLabel||"1 Kg"} × ${i.qty}</span><strong>${money(linePrice(i,p)*i.qty)}</strong></div>`:""}).join("")+`<div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div><div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
 function closeCheckout(){document.getElementById("checkoutOverlay").style.display="none"}
 function backToCart(){closeCheckout();openCart()}
 function goShopping(target){closeCart();closeCheckout();let el=document.getElementById(target);if(el)el.scrollIntoView({behavior:"smooth"})}
+// Gives packs back to stock (used if something fails half-way through an order).
+async function returnStock(taken){
+ let failed=[];
+ for(const [id,key,n] of taken){try{await db.ref(`stock/${id}/${key}`).transaction(c=>c===null?null:(Math.floor(Number(c))||0)+n)}catch(e){failed.push({id:String(id),key,n})}}
+ if(failed.length){try{await db.ref("stockReturns").push({items:failed,created:new Date().toISOString()})}catch(e){console.error("Could not file stock return note:",e)}}
+}
+let placingOrder=false;
+// e.g. AMB-260924-7K3Q  (date + 4 random characters). The old number was the
+// last 6 digits of the clock, which repeats every ~17 minutes.
+function makeOrderNo(){let d=new Date(),p=n=>String(n).padStart(2,"0"),chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",r="";for(let i=0;i<4;i++)r+=chars[Math.floor(Math.random()*chars.length)];return `AMB-${String(d.getFullYear()).slice(2)}${p(d.getMonth()+1)}${p(d.getDate())}-${r}`}
 async function placeOrder(e){
- e.preventDefault();if(!cart.length)return;
- const form=new FormData(document.getElementById("checkoutForm")),orderNo="AMB"+Date.now().toString().slice(-6);
- const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",price:Number(i.price||p.price),qty:i.qty}:null}).filter(Boolean);
+ e.preventDefault();if(!cart.length||placingOrder)return;
+ const form=new FormData(document.getElementById("checkoutForm")),orderNo=makeOrderNo();
+ const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",sizeKey:i.size||"kg1",price:linePrice(i,p),qty:i.qty}:null}).filter(Boolean);
  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0),total=subtotal+DELIVERY_CHARGE;
- const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,status:"New",created:new Date().toISOString()};
- try{await db.ref("orders").push(order);document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>Thank you, ${form.get("fullname")||"Customer"}.</p><p>Your order <strong>#${orderNo}</strong> has been received.</p><div class="cod-badge">💵&nbsp; Cash on Delivery</div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><button class="checkout" onclick="closeCheckout();cart=[];save()">Continue Shopping</button></div>`}catch(err){alert("Order could not be sent. Please try again.");console.error(err)}
+ const btn=document.querySelector("#checkoutForm .place-order");
+ placingOrder=true;if(btn){btn.disabled=true;btn.textContent="Placing order…"}
+ const done=()=>{placingOrder=false;if(btn){btn.disabled=false;btn.textContent="Place Order"}};
+ // Reserve stock first. Each product is a Firebase transaction, so if two
+ // customers try to buy the last pack at the same moment only one succeeds.
+ let need={};items.forEach(it=>{let k=it.id+"\u0001"+it.sizeKey;need[k]=(need[k]||0)+it.qty});
+ let taken=[];
+ try{
+  for(const [k,n] of Object.entries(need)){
+   const [id,key]=k.split("\u0001");
+   if(packsLeft(id,key)===Infinity)continue; // unlimited / not tracked
+   let untracked=false;
+   const r=await db.ref(`stock/${id}/${key}`).transaction(c=>{if(c===null){untracked=true;return}untracked=false;let v=Math.floor(Number(c))||0;if(v<n)return;return v-n});
+   if(!r.committed&&untracked)continue; // admin just switched it to unlimited
+   if(!r.committed){
+    await returnStock(taken);done();
+    let p=products.find(x=>String(x.id)===String(id)),lab=(items.find(it=>String(it.id)===String(id)&&it.sizeKey===key)||{}).size||"";
+    alert(`Sorry — ${p?p.name:"one item"} ${lab} has just sold out or doesn't have enough stock left. Please update your cart.`);
+    closeCheckout();openCart();return;
+   }
+   if(r.snapshot.val()!==null)taken.push([id,key,n]);
+  }
+ }catch(err){
+  // e.g. database rules don't allow writing to "stock" yet — don't lose the
+  // order, just place it without deducting.
+  console.error("Stock update failed, placing order without deducting stock:",err);
+  await returnStock(taken);taken=[];
+ }
+ const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,status:"New",created:new Date().toISOString(),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
+ try{await db.ref("orders").push(order);done();cart=[];save();document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>Thank you, ${esc(form.get("fullname")||"Customer")}.</p><p>Your order <strong>#${orderNo}</strong> has been received.</p><div class="cod-badge">💵&nbsp; Cash on Delivery</div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert("Order could not be sent. Please try again.");console.error(err)}
 }
 renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 // (renderProducts() above will show a "Loading products…" placeholder until the
