@@ -440,7 +440,7 @@ const AR_TEXT=new Map(Object.entries({
  "Emirate":"الإمارة","Select":"اختر","Abu Dhabi":"أبوظبي","Dubai":"دبي","Sharjah":"الشارقة","Ajman":"عجمان",
  "Umm Al Quwain":"أم القيوين","Ras Al Khaimah":"رأس الخيمة","Fujairah":"الفجيرة",
  "Payment Method":"طريقة الدفع","Cash on Delivery":"الدفع عند الاستلام","Place Order":"تأكيد الطلب",
- "Placing order…":"جارٍ إرسال الطلب…","Your Order":"طلبك","Delivery Charges":"رسوم التوصيل","Total":"الإجمالي",
+ "Placing order…":"جارٍ إرسال الطلب…","Please enter a valid phone number so we can call you about delivery (e.g. 05X XXX XXXX).":"يرجى إدخال رقم هاتف صحيح حتى نتمكن من الاتصال بك بخصوص التوصيل (مثال: 05X XXX XXXX).","Your Order":"طلبك","Delivery Charges":"رسوم التوصيل","Total":"الإجمالي",
  // success
  "Order Confirmed":"تم تأكيد الطلب","Order Total":"إجمالي الطلب","Confirm on WhatsApp":"أكّد عبر واتساب",
  "Continue Shopping":"متابعة التسوق",
@@ -791,7 +791,7 @@ html[dir=rtl] :is(.fd p,.fd dd,.fd-steps span,.fd-goal,.fd-h,.fd-tags span){unic
 <div class="field"><label>Name</label><input name="name" required placeholder="Your name"></div>
 <div class="field"><label>Email</label><input type="email" name="email" required placeholder="you@example.com"></div>
 </div>
-<div class="field"><label>Phone (optional)</label><input name="phone" placeholder="+971 5X XXX XXXX"></div>
+<div class="field"><label>Phone (optional)</label><input type="tel" inputmode="tel" autocomplete="tel" dir="ltr" name="phone" placeholder="+971 5X XXX XXXX"></div>
 <div class="field"><label>Message</label><textarea name="message" required placeholder="How can we help?" style="width:100%;padding:12px;border:1px solid #d8d2ca;background:#fff;outline:none;min-height:110px;resize:vertical;font:inherit"></textarea></div>
 <button type="submit" class="contact-submit">Send Message</button>
 </form>
@@ -850,6 +850,13 @@ html[dir=rtl] :is(.fd p,.fd dd,.fd-steps span,.fd-goal,.fd-h,.fd-tags span){unic
 </div>
 
 <script>
+// Values used while drawing product cards. Declared first because Firebase data
+// can arrive (and cards get drawn) before the rest of this script has run.
+var LOW_STOCK=5;
+var SPEC_KEYS={origin:"Origin",region:"Region",country:"Country",variety:"Variety",varietal:"Varietal",varieties:"Varieties",process:"Process",processing:"Process",altitude:"Altitude",elevation:"Elevation",grade:"Grade",score:"Score","sca score":"SCA Score",producer:"Producer",farm:"Farm",harvest:"Harvest",roast:"Roast","roast level":"Roast Level"};
+var TAG_KEYS=["profile","tasting notes","notes","flavour","flavor","flavours","flavors"];
+var __specCache=new Map();
+var BREW_KEYS={method:"Method",coffee:"Coffee",dose:"Dose",water:"Water",ratio:"Ratio","water temperature":"Water Temperature","water temp":"Water Temperature",temperature:"Temperature",temp:"Temp",grind:"Grind","grind size":"Grind","brew time":"Brew Time",yield:"Yield"};
 const db=window.__fbdb;
 let products=[],collections=[],cart=[];
 let activeCollectionCategory=null;
@@ -959,12 +966,17 @@ function setWhatsAppLink(num){
 }
 function openSearch(){document.getElementById("searchOverlay").classList.add("open");renderSearchResults("");setTimeout(()=>document.getElementById("searchInput").focus(),350)}
 function closeSearch(){document.getElementById("searchOverlay").classList.remove("open");document.getElementById("searchInput").value=""}
+// Arabic-Indic / Persian digits → 0-9 (phone numbers, search)
+function normDigits(x){return String(x||"").replace(/[٠-٩]/g,d=>d.charCodeAt(0)-0x660).replace(/[۰-۹]/g,d=>d.charCodeAt(0)-0x6F0)}
+// Everything a shopper might type: name, collection, origin, flavours, process, description (EN + AR)
+function searchText(p){let c=productCountry(p);return [p.name,p.name_ar,catLabel(p.cat),p.cat,p.origin,c,AR_TEXT.get(c),p.tastingShort,p.tastingShort_ar,p.tastingNotes,p.tastingNotes_ar,p.description,p.description_ar,p.badge].filter(Boolean).join(" · ").toLowerCase()}
+function searchPriceHTML(p){let sz=getSizes(p);if(!sz.length)return money(p.price);let pool=sz.filter(s=>sizeInStock(p,s));if(!pool.length)return `<span>${t("Out of Stock")}</span>`;let low=pool.reduce((a,b)=>b.price<a.price?b:a);return `${sz.length>1?`<span class="price-from">From</span> `:""}${money(low.price)}`}
 function renderSearchResults(q){
  let box=document.getElementById("searchResults");
  q=(q||"").trim().toLowerCase();
- let list=!q?products:products.filter(p=>(p.name||"").toLowerCase().includes(q)||(p.name_ar||"").toLowerCase().includes(q)||catLabel(p.cat).toLowerCase().includes(q)||(p.cat||"").toLowerCase().includes(q)||(p.origin||"").toLowerCase().includes(q));
+ let words=normDigits(q).split(/\s+/).filter(Boolean);let list=!q?products:products.filter(p=>{let hay=searchText(p);return words.every(w=>hay.includes(w))});
  if(!list.length){box.innerHTML=`<div class="search-empty">${q?esc(t('No products found for "{q}".',{q})):t("Start typing to search our coffee collection.")}</div>`;return}
- box.innerHTML=list.map(p=>`<div class="search-result-item" onclick="closeSearch();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><img src="${p.img}" alt="${esc(arField(p,"name"))}" loading="lazy"><div><div class="sr-name">${arField(p,"name")}</div><div class="sr-cat">${catLabel(p.cat)}</div></div><div class="sr-price">${money(p.price)}</div></div>`).join("");
+ box.innerHTML=list.map(p=>`<div class="search-result-item" onclick="closeSearch();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><img src="${p.img}" alt="${esc(arField(p,"name"))}" loading="lazy"><div><div class="sr-name">${arField(p,"name")}</div><div class="sr-cat">${catLabel(p.cat)}</div></div><div class="sr-price">${searchPriceHTML(p)}</div></div>`).join("");
 }
 function handleProductsSnapshot(v){
  if(v&&typeof v==="object"&&!Array.isArray(v)){
@@ -1007,6 +1019,10 @@ function handleCollectionsSnapshot(v){
 }
 // Pick up whatever the early <head> prefetch already received, then keep
 // getting updates through the same single listener (no second network round trip).
+// Runs at the END of this script (see the bottom): on a fast connection the data
+// can already be here, and drawing the store before every variable below exists
+// used to stop the whole script (cart, checkout and product pages then failed).
+function replayFirebaseCache(){
 if(window.__fbCache.products!==undefined)handleProductsSnapshot(window.__fbCache.products);
 window.__fbHandlers.products=handleProductsSnapshot;
 if(window.__fbCache.collections!==undefined)handleCollectionsSnapshot(window.__fbCache.collections);
@@ -1015,6 +1031,7 @@ if(window.__fbCache.settings!==undefined)applySettings(window.__fbCache.settings
 window.__fbHandlers.settings=applySettings;
 if(window.__fbCache.stock!==undefined)handleStockSnapshot(window.__fbCache.stock);
 window.__fbHandlers.stock=handleStockSnapshot;
+}
 // Saves the message to messages/{id}; it shows up in the admin "Messages" tab.
 // (Before, the form said "sent" but the message went nowhere.)
 function submitContactForm(e){
@@ -1176,7 +1193,7 @@ const POLICIES={
     <div class="field"><label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Name</label><input name="name" required placeholder="Your name" style="width:100%;padding:11px;border:1px solid #d8d2ca;background:#fff;outline:none;font:inherit"></div>
     <div class="field"><label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Email</label><input type="email" name="email" required placeholder="you@example.com" style="width:100%;padding:11px;border:1px solid #d8d2ca;background:#fff;outline:none;font:inherit"></div>
    </div>
-   <div class="field" style="margin-top:12px"><label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Phone (optional)</label><input name="phone" placeholder="+971 5X XXX XXXX" style="width:100%;padding:11px;border:1px solid #d8d2ca;background:#fff;outline:none;font:inherit"></div>
+   <div class="field" style="margin-top:12px"><label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Phone (optional)</label><input type="tel" inputmode="tel" autocomplete="tel" dir="ltr" name="phone" placeholder="+971 5X XXX XXXX" style="width:100%;padding:11px;border:1px solid #d8d2ca;background:#fff;outline:none;font:inherit"></div>
    <div class="field" style="margin:12px 0 16px"><label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Message</label><textarea name="message" required placeholder="How can we help?" style="width:100%;padding:11px;border:1px solid #d8d2ca;background:#fff;outline:none;min-height:100px;resize:vertical;font:inherit"></textarea></div>
    <button type="submit" style="width:100%;padding:14px;border:0;background:#1d1b18;color:#fff;cursor:pointer;text-transform:uppercase;letter-spacing:1px;font-size:12px;border-radius:2px">Send Message</button>
   </form>`}
@@ -1247,7 +1264,7 @@ window.openPolicy=openPolicy;window.closePolicy=closePolicy;
 function openFullPage(key){
  document.getElementById(key+"Overlay").classList.add("open");
  document.body.classList.add("no-scroll");
- window.scrollTo(0,0);
+ document.getElementById(key+"Overlay").scrollTop=0;
 }
 function closeFullPage(key){
  document.getElementById(key+"Overlay").classList.remove("open");
@@ -1262,14 +1279,10 @@ function cardFlavourHTML(p){let f=arField(p,"tastingShort")||p.shortDescription|
 // The admin types plain text with line breaks ("Origin: Colombia" …). Turn it
 // into readable blocks: paragraphs, a spec table, flavour tags, recipe steps.
 // Anything that already contains HTML is shown exactly as before.
-const LOW_STOCK=5;
-const SPEC_KEYS={origin:"Origin",region:"Region",country:"Country",variety:"Variety",varietal:"Varietal",varieties:"Varieties",process:"Process",processing:"Process",altitude:"Altitude",elevation:"Elevation",grade:"Grade",score:"Score","sca score":"SCA Score",producer:"Producer",farm:"Farm",harvest:"Harvest",roast:"Roast","roast level":"Roast Level"};
-const TAG_KEYS=["profile","tasting notes","notes","flavour","flavor","flavours","flavors"];
 function hasHtml(x){return /<[a-z][^>]*>/i.test(String(x||""))}
 function splitTags(v){return String(v||"").split(/\s*[·•|,;\/]\s*/).map(x=>x.trim()).filter(Boolean)}
 function tagsHTML(list){return list.length?`<div class="fd-tags">${list.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}
 function parasHTML(lines){let out=[],cur=[];lines.forEach(l=>{if(l===""){if(cur.length){out.push(cur);cur=[]}}else cur.push(l)});if(cur.length)out.push(cur);return out.map(c=>`<p>${c.map(esc).join("<br>")}</p>`).join("")}
-let __specCache=new Map();
 function parseDescription(text){
  text=String(text||"");if(__specCache.has(text))return __specCache.get(text);
  let lines=text.replace(/\r/g,"").split("\n").map(x=>x.trim()),specs=[],tags=[],body=[];
@@ -1293,7 +1306,6 @@ function formatTasting(text){
  if(!/\n/.test(text)&&text.length<160){let tg=splitTags(text);if(tg.length>1)return `<div class="fd">${tagsHTML(tg)}</div>`}
  return `<div class="fd">${parasHTML(String(text).replace(/\r/g,"").split("\n").map(x=>x.trim()))}</div>`;
 }
-const BREW_KEYS={method:"Method",coffee:"Coffee",dose:"Dose",water:"Water",ratio:"Ratio","water temperature":"Water Temperature","water temp":"Water Temperature",temperature:"Temperature",temp:"Temp",grind:"Grind","grind size":"Grind","brew time":"Brew Time",yield:"Yield"};
 function formatBrew(text){
  if(!text)return "";if(hasHtml(text))return text;
  let lines=String(text).replace(/\r/g,"").split("\n").map(x=>x.trim());
@@ -1485,6 +1497,8 @@ function orderWhatsAppLink(orderNo,items,total,form,promo,discount){
 function makeOrderNo(){let d=new Date(),p=n=>String(n).padStart(2,"0"),chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",r="";for(let i=0;i<4;i++)r+=chars[Math.floor(Math.random()*chars.length)];return `AMB-${String(d.getFullYear()).slice(2)}${p(d.getMonth()+1)}${p(d.getDate())}-${r}`}
 async function placeOrder(e){
  e.preventDefault();if(!cart.length||placingOrder)return;
+ {let ph=document.querySelector("#checkoutForm [name=phone]");if(ph){ph.value=normDigits(ph.value).trim();let d=ph.value.replace(/\D/g,"");
+  if(d.length<9||d.length>13){alert(t("Please enter a valid phone number so we can call you about delivery (e.g. 05X XXX XXXX)."));ph.focus();return}}}
  const form=new FormData(document.getElementById("checkoutForm")),orderNo=makeOrderNo();
  const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",sizeKey:i.size||"kg1",price:linePrice(i,p),qty:i.qty}:null}).filter(Boolean);
  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0);let promo=null,discount=0,total=subtotal+DELIVERY_CHARGE;
@@ -1528,6 +1542,7 @@ renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 // (renderProducts() above will show a "Loading products…" placeholder until the
 // first real Firebase snapshot arrives — this prevents any flash of fake demo
 // data being replaced a moment later by the real product list.)
+try{replayFirebaseCache()}catch(e){console.error(e)}
 </script>
 
 <div class="checkout-overlay" id="checkoutOverlay">
@@ -1537,11 +1552,11 @@ renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 <form class="checkout-form" id="checkoutForm" onsubmit="placeOrder(event)">
 <h3>Customer Details</h3>
 <div class="field-grid">
-<div class="field full"><label>Full Name</label><input name="fullname" required placeholder="Your full name"></div>
-<div class="field"><label>Email</label><input type="email" name="email" required placeholder="you@example.com"></div>
-<div class="field"><label>Phone / WhatsApp</label><input name="phone" required placeholder="+971 5X XXX XXXX"></div>
-<div class="field full"><label>Delivery Address</label><textarea name="address" required placeholder="Building, street, area"></textarea></div>
-<div class="field"><label>City</label><input name="city" required placeholder="Al Ain / Abu Dhabi / Dubai"></div>
+<div class="field full"><label>Full Name</label><input name="fullname" required autocomplete="name" placeholder="Your full name"></div>
+<div class="field"><label>Email</label><input type="email" name="email" required autocomplete="email" inputmode="email" autocapitalize="off" placeholder="you@example.com"></div>
+<div class="field"><label>Phone / WhatsApp</label><input type="tel" name="phone" required autocomplete="tel" inputmode="tel" dir="ltr" placeholder="+971 5X XXX XXXX"></div>
+<div class="field full"><label>Delivery Address</label><textarea name="address" required autocomplete="street-address" placeholder="Building, street, area"></textarea></div>
+<div class="field"><label>City</label><input name="city" required autocomplete="address-level2" placeholder="Al Ain / Abu Dhabi / Dubai"></div>
 <div class="field"><label>Emirate</label><select name="emirate" required><option value="">Select</option><option value="Abu Dhabi">Abu Dhabi</option><option value="Dubai">Dubai</option><option value="Sharjah">Sharjah</option><option value="Ajman">Ajman</option><option value="Umm Al Quwain">Umm Al Quwain</option><option value="Ras Al Khaimah">Ras Al Khaimah</option><option value="Fujairah">Fujairah</option></select></div>
 </div>
 <div class="payment"><strong>Payment Method</strong>Cash on Delivery</div>
@@ -2020,5 +2035,90 @@ button{min-height:44px}
  .grid.few.one{grid-template-columns:calc((100% - 12px)/2)!important;justify-content:center}
 }
 </style>
+<style id="scroll-fixes">
+/* 3) header really stays on top: overflow-x "hidden" on html+body made body its own
+   scroll box, which silently disables position:sticky. "clip" hides sideways
+   overflow the same way without breaking sticky. */
+@supports (overflow:clip){html,body{overflow-x:clip!important}}
+header{top:8px!important;transition:transform .32s cubic-bezier(.4,0,.2,1),box-shadow .3s ease}
+header.hdr-hide{transform:translateY(calc(-100% - 20px))}
+section[id]{scroll-margin-top:112px}
+@media (max-width:760px){section[id]{scroll-margin-top:92px}}
+/* 2) scrolling inside a window never scrolls the page behind it */
+.overlay,.checkout-overlay,.fullpage-overlay,.search-overlay,.product-detail-drawer,.drawer,#cartOverlay *{overscroll-behavior:contain}
+body.layer-lock{position:fixed!important;left:0;right:0;width:100%;overflow:hidden!important}
+/* the page header must never sit on top of an open window (it hid the Checkout close button) */
+body.layer-lock header{z-index:1!important}
+/* 4) phone footer: room for the WhatsApp button and the cart bar */
+@media (max-width:760px){
+ footer{padding-bottom:96px!important}
+ body.has-cart-bar{padding-bottom:0!important}
+ body.has-cart-bar footer{padding-bottom:150px!important}
+}
+@media (max-width:760px){footer p a{display:inline-block;padding:7px 0;min-width:44px}footer p{line-height:1.5!important}}
+</style>
+<script id="scroll-fixes-js">
+(function(){
+ // ---- Windows (product, cart, checkout, search…) ----
+ // Each open window gets its own step in the browser history, so the phone's
+ // Back button closes the window instead of leaving the site. While any window
+ // is open the page behind is frozen in place, and put back exactly where it was.
+ var LAYERS=[
+  ["imageViewOverlay",function(){closeImageView()}],
+  ["sizeOverlay",function(){closeSizePicker()}],
+  ["policyOverlay",function(){closePolicy()}],
+  ["productDetailOverlay",function(){closeProductDetail()}],
+  ["checkoutOverlay",function(){closeCheckout()}],
+  ["cartOverlay",function(){closeCart()}],
+  ["searchOverlay",function(){closeSearch()}],
+  ["aboutOverlay",function(){closeFullPage("about")}],
+  ["contactOverlay",function(){closeFullPage("contact")}]
+ ];
+ function isOpen(el){if(!el)return false;if(el.classList.contains("open"))return true;var d=el.style.display;return !!d&&d!=="none"}
+ function openList(){return LAYERS.filter(function(l){return isOpen(document.getElementById(l[0]))})}
+ var depth=0,ignorePops=0,handlingBack=false,lockedY=0,locked=false;
+ function lock(){if(locked)return;locked=true;lockedY=window.scrollY||window.pageYOffset||0;document.body.style.top=(-lockedY)+"px";document.body.classList.add("layer-lock")}
+ function unlock(){if(!locked)return;locked=false;document.body.classList.remove("layer-lock");document.body.style.top="";window.scrollTo({top:lockedY,left:0,behavior:"instant"})}
+ function syncUrl(){
+  // keep ?p= only while a product is actually open
+  try{var u=new URL(location.href),open=isOpen(document.getElementById("productDetailOverlay"));
+   if(!open&&u.searchParams.has("p")){u.searchParams.delete("p");history.replaceState(history.state,"",u.pathname+(u.search||"")+u.hash)}}catch(e){}
+ }
+ function update(){
+  var n=openList().length;
+  if(n>0)lock();else unlock();
+  if(handlingBack){depth=n;return}
+  if(n>depth){for(var i=depth;i<n;i++)history.pushState({ambLayer:i+1},"",location.href);depth=n}
+  else if(n<depth){var k=depth-n;depth=n;ignorePops++;history.go(-k)}
+ }
+ var pending=false;
+ function schedule(){if(pending)return;pending=true;Promise.resolve().then(function(){pending=false;update()})}
+ var mo=new MutationObserver(schedule);
+ LAYERS.forEach(function(l){var el=document.getElementById(l[0]);if(el)mo.observe(el,{attributes:true,attributeFilter:["style","class"]})});
+ window.addEventListener("popstate",function(){
+  if(ignorePops>0){ignorePops--;syncUrl();return}
+  if(depth<=0){syncUrl();return}
+  depth--;var top=openList()[0];
+  handlingBack=true;
+  try{if(top)top[1]()}catch(e){}
+  Promise.resolve().then(function(){handlingBack=false;update();syncUrl()});
+ });
+ schedule(); // a product opened from a shared link (?p=) is already on screen
+
+ // ---- Header: always reachable ----
+ // Laptop: stays on top. Phone: slides away while scrolling down to read,
+ // comes back as soon as you scroll up a little.
+ var hdr=document.querySelector("header"),lastY=window.scrollY,ticking=false;
+ function onScroll(){
+  ticking=false;if(!hdr||locked)return;
+  var y=window.scrollY,menu=document.querySelector(".mobile-menu.open");
+  if(window.innerWidth>760||y<140||menu){hdr.classList.remove("hdr-hide");lastY=y;return}
+  if(y>lastY+6){hdr.classList.add("hdr-hide");lastY=y}
+  else if(y<lastY-6){hdr.classList.remove("hdr-hide");lastY=y}
+ }
+ window.addEventListener("scroll",function(){if(!ticking){ticking=true;requestAnimationFrame(onScroll)}},{passive:true});
+ window.addEventListener("resize",function(){if(window.innerWidth>760&&hdr)hdr.classList.remove("hdr-hide")});
+})();
+</script>
 </body>
 </html>
