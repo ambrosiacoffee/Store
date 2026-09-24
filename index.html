@@ -417,7 +417,7 @@ const AR_TEXT=new Map(Object.entries({
  "Loading products…":"جارٍ تحميل المنتجات…","No products found yet.":"لا توجد منتجات بعد.",
  "Quick View":"عرض سريع","Add to Cart":"أضف إلى السلة","Out of Stock":"نفدت الكمية","Out of stock":"نفدت الكمية",
  "From":"ابتداءً من","Buy Now":"اشترِ الآن","Weight":"الوزن","Quantity":"الكمية","Pack size":"حجم العبوة",
- "Description":"الوصف","Tasting Notes":"ملاحظات التذوق","Brewing Guide":"طريقة التحضير","reviews":"تقييمات",
+ "Description":"الوصف","Tasting Notes":"ملاحظات التذوق","Brewing Guide":"طريقة التحضير","Origin":"المنشأ","Region":"المنطقة","Country":"البلد","Variety":"الصنف","Varietal":"الصنف","Varieties":"الأصناف","Process":"المعالجة","Altitude":"الارتفاع","Elevation":"الارتفاع","Grade":"الدرجة","Score":"التقييم","SCA Score":"تقييم SCA","Producer":"المنتج","Farm":"المزرعة","Harvest":"الحصاد","Roast":"التحميص","Roast Level":"درجة التحميص","Method":"الطريقة","Coffee":"القهوة","Dose":"الكمية","Water":"الماء","Ratio":"النسبة","Water Temperature":"حرارة الماء","Temperature":"الحرارة","Temp":"الحرارة","Grind":"الطحن","Brew Time":"وقت التحضير","Yield":"الناتج","Recipe":"الوصفة","Target time":"الوقت المستهدف","Cup goal":"النتيجة المطلوبة","Only {n} left":"بقي {n} فقط","Brazil":"البرازيل","Colombia":"كولومبيا","Ethiopia":"إثيوبيا","Kenya":"كينيا","Panama":"بنما","Costa Rica":"كوستاريكا","Guatemala":"غواتيمالا","Honduras":"هندوراس","Peru":"بيرو","Yemen":"اليمن","Rwanda":"رواندا","Burundi":"بوروندي","Indonesia":"إندونيسيا","El Salvador":"السلفادور","Nicaragua":"نيكاراغوا","Mexico":"المكسيك","Ecuador":"الإكوادور","Bolivia":"بوليفيا","Uganda":"أوغندا","Tanzania":"تنزانيا","Only {n} left in {size} — order soon":"بقي {n} فقط من {size} — اطلب قريبًا","reviews":"تقييمات",
  "Out of Stock — please check back soon.":"نفدت الكمية — يرجى المراجعة قريبًا.",
  "Premium coffee beans, freshly roasted for a smooth and enjoyable cup.":"حبوب قهوة فاخرة، محمّصة طازجة لكوب ناعم وممتع.",
  "Chocolate, hazelnut and caramel.":"شوكولاتة، بندق وكراميل.",
@@ -652,6 +652,36 @@ html[dir=rtl] .promo-row input{text-align:right}
 #sizeOptions button:disabled,.detail-size-options button:disabled{opacity:.45;cursor:not-allowed;text-decoration:line-through}
 .detail-actions button:disabled{opacity:.5;cursor:not-allowed}
 .stock-note{color:#a3452f;font-size:12px;font-weight:600;margin:0 0 14px}
+/* low stock */
+.oos-badge.low{background:#b3412c;box-shadow:0 2px 8px rgba(179,65,44,.3)}
+.low-stock-note{display:none;align-items:center;gap:8px;color:#a3452f;background:#fbeee9;border:1px solid #f0d2c8;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:600;margin:-14px 0 22px}
+.low-stock-note.show{display:flex}
+.low-stock-note:before{content:"";width:8px;height:8px;border-radius:50%;background:#c2462f;flex:none;animation:lowPulse 1.6s ease-in-out infinite}
+@keyframes lowPulse{0%,100%{opacity:1}50%{opacity:.35}}
+/* origin · process line on cards */
+.card-origin{font-size:10.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:#a07a4d;margin:0 0 -3px;height:1.35em;line-height:1.35;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.card-origin .co-proc{color:#8f8173;font-weight:600}
+/* formatted description / brewing guide */
+.fd p{margin:0 0 12px}
+.fd-specs{display:grid;grid-template-columns:max-content 1fr;gap:7px 16px;background:#f6ede2;border-radius:14px;padding:14px 16px;margin:14px 0;font-size:13.5px;line-height:1.45}
+.fd-specs dt{color:#8a6a45;font-weight:700;margin:0}
+.fd-specs dd{margin:0;color:#3f3226}
+.fd-tags{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 4px}
+.fd-tags span{background:#2f5d57;color:#fff;border-radius:999px;padding:5px 12px;font-size:12.5px;line-height:1.3}
+.fd-h{font-family:Georgia,serif;font-size:16px;color:#3a2a1f;margin:0 0 10px}
+.fd-steps{list-style:none;margin:6px 0 12px;padding:0}
+.fd-steps li{display:flex;gap:14px;padding:9px 0;border-bottom:1px dashed #e4d7c6;font-size:13.5px;line-height:1.5}
+.fd-steps li:last-child{border-bottom:0}
+.fd-steps b{min-width:40px;color:#8a6a45;font-variant-numeric:tabular-nums}
+.fd-target{display:inline-flex;gap:6px;align-items:center;background:#2f5d57;color:#fff;border-radius:999px;padding:6px 13px;font-size:12.5px;font-weight:600;margin:4px 0 12px}
+.fd-goal{border-left:3px solid #c9a36a;background:#fbf6ef;padding:10px 13px;border-radius:0 10px 10px 0;margin:6px 0 4px;font-size:13.5px}
+.fd-sub{font-size:11.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#8f7c67;margin:14px 0 2px}
+html[dir=rtl] .fd-goal{border-left:0;border-right:3px solid #c9a36a;border-radius:10px 0 0 10px}
+html[dir=rtl] .fd-steps b{direction:ltr;text-align:right}
+html[dir=rtl] :is(.fd p,.fd dd,.fd-steps span,.fd-goal,.fd-h,.fd-tags span){unicode-bidi:plaintext;text-align:right}
+.product-img .badge+.oos-badge.low{top:46px}
+@media(min-width:1101px){.product-img .badge+.oos-badge.low{top:12px}}
+@media(max-width:760px){.product-img .badge+.oos-badge.low{top:36px}.card-origin{font-size:9px;letter-spacing:.8px;margin-bottom:-4px}.fd-specs{font-size:13px;padding:12px 13px;gap:6px 12px}}
 .stock-warn{color:#a3452f;font-size:12px;margin:6px 0 2px}
 @media(max-width:760px){.product .name{min-height:0!important;white-space:normal!important;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;height:2.4em}.product-info{padding-top:9px}.card-sizes{margin-bottom:10px!important}.oos-badge{top:7px;right:7px;padding:5px 7px;font-size:8px}.card-flavour{font-size:11px;margin-bottom:5px}.card-sizes{gap:4px}.card-sizes span{font-size:9.5px;padding:2px 6px}.price-from{font-size:10.5px}}
 .quick-view-btn{position:absolute;left:50%;bottom:14px;transform:translate(-50%,10px);opacity:0;background:rgba(33,23,16,.88);color:#fff;border:0;padding:10px 20px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .25s ease,transform .25s ease;backdrop-filter:blur(6px);z-index:3}
@@ -1034,6 +1064,8 @@ function renderCollectionProducts(){
 // Best Sellers / New Arrivals are automatic: driven by whether a product's
 // Badge text contains "BEST" or "NEW". No manual product picking — and the
 // whole section hides itself when nothing currently matches.
+// Fewer cards than a full row: keep them the normal card size, centred.
+function fewCards(grid,n){grid.classList.toggle("few",n<4);grid.classList.toggle("one",n===1);grid.style.setProperty("--n",Math.min(n,4))}
 function renderBestSellers(){
  let sec=document.getElementById("best-sellers"),grid=document.getElementById("bestSellersGrid");
  if(!sec||!grid)return;
@@ -1041,6 +1073,7 @@ function renderBestSellers(){
  if(!list.length){sec.style.display="none";grid.innerHTML="";return}
  sec.style.display="";
  grid.innerHTML=list.map(productCardHTML).join("");
+ fewCards(grid,list.length);
 }
 function renderNewArrivals(){
  let sec=document.getElementById("new-arrivals"),grid=document.getElementById("newArrivalsGrid");
@@ -1049,6 +1082,7 @@ function renderNewArrivals(){
  if(!list.length){sec.style.display="none";grid.innerHTML="";return}
  sec.style.display="";
  grid.innerHTML=list.map(productCardHTML).join("");
+ fewCards(grid,list.length);
 }
 
 function save(){
@@ -1224,6 +1258,68 @@ window.openFullPage=openFullPage;window.closeFullPage=closeFullPage;
 function reviewCount(p){return Number(p.reviewCount||p.reviews||0)}
 // Flavour line from the admin ("Chocolate · Hazelnut · Caramel"), one line only.
 function cardFlavourHTML(p){let f=arField(p,"tastingShort")||p.shortDescription||"";return `<div class="card-flavour" title="${esc(f)}">${esc(f)}</div>`}
+// ---- Description / brewing guide formatting ----
+// The admin types plain text with line breaks ("Origin: Colombia" …). Turn it
+// into readable blocks: paragraphs, a spec table, flavour tags, recipe steps.
+// Anything that already contains HTML is shown exactly as before.
+const LOW_STOCK=5;
+const SPEC_KEYS={origin:"Origin",region:"Region",country:"Country",variety:"Variety",varietal:"Varietal",varieties:"Varieties",process:"Process",processing:"Process",altitude:"Altitude",elevation:"Elevation",grade:"Grade",score:"Score","sca score":"SCA Score",producer:"Producer",farm:"Farm",harvest:"Harvest",roast:"Roast","roast level":"Roast Level"};
+const TAG_KEYS=["profile","tasting notes","notes","flavour","flavor","flavours","flavors"];
+function hasHtml(x){return /<[a-z][^>]*>/i.test(String(x||""))}
+function splitTags(v){return String(v||"").split(/\s*[·•|,;\/]\s*/).map(x=>x.trim()).filter(Boolean)}
+function tagsHTML(list){return list.length?`<div class="fd-tags">${list.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}
+function parasHTML(lines){let out=[],cur=[];lines.forEach(l=>{if(l===""){if(cur.length){out.push(cur);cur=[]}}else cur.push(l)});if(cur.length)out.push(cur);return out.map(c=>`<p>${c.map(esc).join("<br>")}</p>`).join("")}
+let __specCache=new Map();
+function parseDescription(text){
+ text=String(text||"");if(__specCache.has(text))return __specCache.get(text);
+ let lines=text.replace(/\r/g,"").split("\n").map(x=>x.trim()),specs=[],tags=[],body=[];
+ lines.forEach(l=>{let m=l.match(/^([A-Za-z][A-Za-z .]{1,20}?)\s*:\s*(.+)$/);let k=m&&m[1].trim().toLowerCase();
+  if(m&&SPEC_KEYS[k])specs.push([SPEC_KEYS[k],m[2].trim()]);
+  else if(m&&TAG_KEYS.includes(k))tags=tags.concat(splitTags(m[2]));
+  else body.push(l)});
+ let r={specs,tags,body};__specCache.set(text,r);return r;
+}
+function specOf(p,key){let d=parseDescription(p&&p.description);let f=d.specs.find(x=>x[0]===key);return f?f[1]:""}
+function formatDescription(text,p){
+ if(!text)return "";if(hasHtml(text))return text;
+ let d=parseDescription(text),body=d.body.slice();
+ // drop a first line that just repeats the product name ("Brazil Choco Cake")
+ while(body.length&&body[0]==="")body.shift();
+ if(body.length&&p&&p.name&&body[0].length<60&&!/[.!?]$/.test(body[0])&&body[0].toLowerCase().includes(String(p.name).toLowerCase()))body.shift();
+ return `<div class="fd">${parasHTML(body)}${d.specs.length?`<dl class="fd-specs">${d.specs.map(([k,v])=>`<dt>${esc(t(k))}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`:""}${tagsHTML(d.tags)}</div>`;
+}
+function formatTasting(text){
+ if(!text)return "";if(hasHtml(text))return text;
+ if(!/\n/.test(text)&&text.length<160){let tg=splitTags(text);if(tg.length>1)return `<div class="fd">${tagsHTML(tg)}</div>`}
+ return `<div class="fd">${parasHTML(String(text).replace(/\r/g,"").split("\n").map(x=>x.trim()))}</div>`;
+}
+const BREW_KEYS={method:"Method",coffee:"Coffee",dose:"Dose",water:"Water",ratio:"Ratio","water temperature":"Water Temperature","water temp":"Water Temperature",temperature:"Temperature",temp:"Temp",grind:"Grind","grind size":"Grind","brew time":"Brew Time",yield:"Yield"};
+function formatBrew(text){
+ if(!text)return "";if(hasHtml(text))return text;
+ let lines=String(text).replace(/\r/g,"").split("\n").map(x=>x.trim());
+ let title="",params=[],steps=[],target="",goal="",body=[];
+ lines.forEach((l,i)=>{
+  if(!l){body.push("");return}
+  let st=l.match(/^(\d{1,2}:\d{2})\s*(?:→|->|–|—|-)\s*(.+)$/);if(st){steps.push([st[1],st[2]]);return}
+  let tg=l.match(/^target[^:]*:\s*(.+)$/i);if(tg){target=tg[1];return}
+  let cg=l.match(/^cup goal\s*:\s*(.+)$/i);if(cg){goal=cg[1];return}
+  if(/^recipe\s*:?$/i.test(l))return;
+  let m=l.match(/^([A-Za-z][A-Za-z ]{1,20}?)\s*:\s*(.+)$/);let k=m&&m[1].trim().toLowerCase();
+  if(m&&BREW_KEYS[k]){
+   // "Coffee: Brazil Choco Cake" is the name, not a dose — skip it
+   if(k==="coffee"&&!/\d/.test(m[2]))return;
+   params.push([BREW_KEYS[k],m[2].trim()]);return}
+  if(!title&&!params.length&&!steps.length&&/brew|guide|recipe/i.test(l)&&l.length<80){title=l.replace(/^[^A-Za-z0-9؀-ۿ]+/,"").trim();return}
+  body.push(l)});
+ return `<div class="fd">${title?`<div class="fd-h">${esc(title)}</div>`:""}${params.length?`<dl class="fd-specs">${params.map(([k,v])=>`<dt>${esc(t(k))}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`:""}${steps.length?`<div class="fd-sub">${esc(t("Recipe"))}</div><ol class="fd-steps">${steps.map(([a,b])=>`<li><b>${esc(a)}</b><span>${esc(b)}</span></li>`).join("")}</ol>`:""}${target?`<div class="fd-target">⏱ ${esc(t("Target time"))}: <bdi dir="ltr">${esc(target)}</bdi></div>`:""}${parasHTML(body)}${goal?`<div class="fd-goal"><b>${esc(t("Cup goal"))}:</b> ${esc(goal)}</div>`:""}</div>`;
+}
+// Country + process for the small line above the card name: "COLOMBIA · FRUIT CO-FERMENT"
+function shortProcess(x){x=String(x||"").trim();if(/co-?\s?ferment\w*\s+with\s+fruit/i.test(x))return "Fruit Co-ferment";if(/co-?\s?ferment/i.test(x))return "Co-ferment";return x}
+function productCountry(p){let o=specOf(p,"Origin")||specOf(p,"Country")||p.origin||"";let parts=o.split(",").map(x=>x.trim()).filter(Boolean);return parts.length?parts[parts.length-1]:""}
+function cardOriginHTML(p){let c=productCountry(p),pr=shortProcess(specOf(p,"Process"));return `<div class="card-origin">${esc(t(c))}${c&&pr?" · ":""}${pr?`<span class="co-proc">${esc(pr)}</span>`:""}</div>`}
+// Lowest stock among sizes that are still available and running low.
+function lowStockInfo(p){let sz=getSizes(p).filter(s=>sizeInStock(p,s));let low=sz.map(s=>({s,n:packsLeft(p.id,s.key)})).filter(x=>x.n<=LOW_STOCK&&isFinite(x.n));if(!low.length)return null;low.sort((a,b)=>a.n-b.n);return {n:low[0].n,size:low[0].s,many:getSizes(p).length>1}}
+function updateDetailLowStock(){let el=document.getElementById("detailLowStock");if(!el||!selectedDetail)return;let p=selectedDetail.product,s=selectedDetail.size;let n=s?packsLeft(p.id,s.key):Infinity;if(isFinite(n)&&n>=1&&n<=LOW_STOCK&&!isOutOfStock(p)){el.textContent=t("Only {n} left in {size} — order soon",{n,size:t(s.label)});el.classList.add("show")}else{el.textContent="";el.classList.remove("show")}}
 // Cheapest size that's in stock. "From" only when there's more than one size.
 function cardPriceHTML(p){
  let sizes=getSizes(p);if(!sizes.length)return `<div class="price"><strong>${money(p.price)}</strong></div>`;
@@ -1233,7 +1329,7 @@ function cardPriceHTML(p){
 }
 // Size chips; a sold-out size is crossed out.
 function cardSizesHTML(p){let sizes=getSizes(p);if(sizes.length<2&&!(p.sizes))return "";return `<div class="card-sizes">${sizes.map(s=>`<span class="${sizeInStock(p,s)?"":"off"}" title="${sizeInStock(p,s)?"":"Out of stock"}">${s.label}</span>`).join("")}</div>`}
-function productCardHTML(p){let oos=isOutOfStock(p);return `<article class="product${oos?" oos":""}" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}${oos?`<span class="oos-badge">Out of Stock</span>`:""}<img src="${p.img}" alt="${esc(arField(p,"name"))}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info"><div class="name">${arField(p,"name")}</div>${cardFlavourHTML(p)}<div class="rating${reviewCount(p)?"":" empty"}">${stars(p.rating)} <span>(${reviewCount(p)})</span></div>${cardPriceHTML(p)}${cardSizesHTML(p)}${oos?`<button class="add" disabled>Out of Stock</button>`:`<button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button>`}</div></article>`}
+function productCardHTML(p){let oos=isOutOfStock(p);return `<article class="product${oos?" oos":""}" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}${oos?`<span class="oos-badge">Out of Stock</span>`:(()=>{let lw=lowStockInfo(p);return lw?`<span class="oos-badge low">${esc(t("Only {n} left",{n:lw.n}))}${lw.many?" · "+esc(t(lw.size.label)):""}</span>`:""})()}<img src="${p.img}" alt="${esc(arField(p,"name"))}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info">${cardOriginHTML(p)}<div class="name">${arField(p,"name")}</div>${cardFlavourHTML(p)}<div class="rating${reviewCount(p)?"":" empty"}">${stars(p.rating)} <span>(${reviewCount(p)})</span></div>${cardPriceHTML(p)}${cardSizesHTML(p)}${oos?`<button class="add" disabled>Out of Stock</button>`:`<button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button>`}</div></article>`}
 function renderProducts(){let grid=document.getElementById("productsGrid")||document.getElementById("productGrid");if(!grid)return;if(!productsLoaded){grid.innerHTML='<div style="padding:40px;text-align:center;color:#9a8a78">Loading products…</div>';return}if(!products.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found yet.</div>`;return}let list=activeStoreFilter?products.filter(p=>(p.cat||"")===activeStoreFilter):products;if(!list.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">${esc(t('No products found in "{c}" yet.',{c:catLabel(activeStoreFilter)}))}</div>`;return}grid.innerHTML=list.map(productCardHTML).join("")}
 function renderStoreFilterBar(){
  let bar=document.getElementById("storeFilterBar");if(!bar)return;
@@ -1257,12 +1353,13 @@ function openProductDetail(id){
  selectedDetail={product:p,size:first,qty:1};
  let gallery=[p.img,...(p.gallery||[])].filter(Boolean);
  document.getElementById("detailName").innerHTML=`<span class="dh-name">${esc(arField(p,"name"))}</span><span class="dh-price" id="detailHeadPrice">${money(first.price)}</span>`;
- document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${gallery[0]}" alt="${esc(arField(p,"name"))}">
+ document.getElementById("detailContent").innerHTML=`<img class="detail-img" id="detailMainImg" src="${gallery[0]}" alt="${esc(arField(p,"name"))}" onclick="openImageView(this.src)" title="Tap to enlarge">
  ${gallery.length>1?`<div class="detail-thumbs">${gallery.map((g,i)=>`<img src="${g}" class="${i===0?"active":""}" onclick="selectDetailImage(${i})">`).join("")}</div>`:""}
  <div class="detail-eyebrow">${[catLabel(p.cat),p.origin].filter(Boolean).join(" · ")}</div>
  <h1 class="detail-title">${arField(p,"name")}</h1>
  ${reviewCount(p)?`<div class="detail-rating">${stars(p.rating)} &nbsp; ${p.rating||"5.0"} (<span>${reviewCount(p)}</span> <span>reviews</span>)</div>`:""}
  <div id="detailPrice" class="detail-price">${money(first.price)}</div>
+ <div id="detailLowStock" class="low-stock-note"></div>
  <div class="detail-notes">${arField(p,"tastingShort")||p.shortDescription||p.notes||""}</div>
  ${oos?`<div class="stock-note">Out of Stock — please check back soon.</div>`:""}
  <div class="detail-size-title">Weight</div>
@@ -1276,10 +1373,11 @@ function openProductDetail(id){
   <button class="detail-tab" onclick="showDetailTab('brewing',this)">Brewing Guide</button>
  </div>
  </div>
- <div id="panel-description" class="detail-panel active">${arField(p,"description")||t("Premium coffee beans, freshly roasted for a smooth and enjoyable cup.")}</div>
- <div id="panel-tasting" class="detail-panel">${arField(p,"tastingNotes")||arField(p,"tastingShort")||t("Chocolate, hazelnut and caramel.")}</div>
- <div id="panel-brewing" class="detail-panel">${arField(p,"brewingGuide")||t("Use your preferred brewing method and adjust grind size, dose and extraction time to taste.")}</div>`;
+ <div id="panel-description" class="detail-panel active">${formatDescription(arField(p,"description"),p)||t("Premium coffee beans, freshly roasted for a smooth and enjoyable cup.")}</div>
+ <div id="panel-tasting" class="detail-panel">${formatTasting(arField(p,"tastingNotes")||arField(p,"tastingShort"))||t("Chocolate, hazelnut and caramel.")}</div>
+ <div id="panel-brewing" class="detail-panel">${formatBrew(arField(p,"brewingGuide"))||t("Use your preferred brewing method and adjust grind size, dose and extraction time to taste.")}</div>`;
  document.getElementById("productDetailOverlay").style.display="block";
+ updateDetailLowStock();
  // start at the top, with the header name hidden until the big title scrolls away
  let dr=document.querySelector(".product-detail-drawer");if(dr)dr.scrollTop=0;
  updateDetailHeader();updateCart();setProductInUrl(p.id);
@@ -1323,7 +1421,7 @@ function selectDetailImage(idx){
 }
 function closeProductDetail(){document.getElementById("productDetailOverlay").style.display="none";selectedDetail=null;setProductInUrl(null)}
 function detailMaxQty(){let d=selectedDetail;if(!d)return 1;return Math.max(0,packsLeft(d.product.id,d.size.key)-cartPacks(d.product.id,d.size.key))}
-function selectDetailSize(key){if(!selectedDetail)return;let s=getSizes(selectedDetail.product).find(x=>x.key===key);if(!s||!sizeInStock(selectedDetail.product,s))return;selectedDetail.size=s;document.getElementById("detailPrice").textContent=money(s.price);{let hp=document.getElementById("detailHeadPrice");if(hp)hp.textContent=money(s.price)}document.querySelectorAll(".detail-size-options button").forEach(b=>b.classList.toggle("active",b.dataset.key===s.key));let mx=detailMaxQty();if(selectedDetail.qty>mx){selectedDetail.qty=Math.max(1,mx);document.getElementById("detailQty").textContent=selectedDetail.qty}}
+function selectDetailSize(key){if(!selectedDetail)return;let s=getSizes(selectedDetail.product).find(x=>x.key===key);if(!s||!sizeInStock(selectedDetail.product,s))return;selectedDetail.size=s;document.getElementById("detailPrice").textContent=money(s.price);{let hp=document.getElementById("detailHeadPrice");if(hp)hp.textContent=money(s.price)}document.querySelectorAll(".detail-size-options button").forEach(b=>b.classList.toggle("active",b.dataset.key===s.key));updateDetailLowStock();let mx=detailMaxQty();if(selectedDetail.qty>mx){selectedDetail.qty=Math.max(1,mx);document.getElementById("detailQty").textContent=selectedDetail.qty}}
 function detailQty(n){if(!selectedDetail)return;let q=Math.max(1,selectedDetail.qty+n);if(n>0&&q>detailMaxQty()){noStockMsg(selectedDetail.product,selectedDetail.size.label);return}selectedDetail.qty=q;document.getElementById("detailQty").textContent=q}
 function detailAdd(){if(!selectedDetail)return;if(addVariantToCart(selectedDetail.product,selectedDetail.size,selectedDetail.qty))closeProductDetail()}
 function detailBuy(){if(!selectedDetail)return;let d=selectedDetail;if(!canAddPacks(d.product.id,d.size.key,d.qty)){noStockMsg(d.product,d.size.label);return}{let x=cart.find(i=>String(i.id)===String(d.product.id)&&i.size===d.size.key);if(x)x.qty+=d.qty;else cart.push({id:d.product.id,size:d.size.key,sizeLabel:d.size.label,price:d.size.price,qty:d.qty});}save();closeProductDetail();checkout()}
@@ -1896,5 +1994,31 @@ button{min-height:44px}
 })();
 </script>
 
+<style id="layout-fixes">
+/* 2) top bar text readable on the light glass bar */
+.topbar{color:#7a5230!important;font-weight:600}
+/* 3) touch screens: the whole card already opens the product, so no Quick View pill over the bag */
+@media (max-width:760px),(hover:none){.quick-view-btn{display:none!important}}
+/* 5) enlarge cursor */
+#detailMainImg{cursor:zoom-in}
+/* 1) product photo never cropped: square photo, whole bag visible */
+@media (min-width:761px) and (max-width:899px){
+ .detail-img{height:auto!important;aspect-ratio:1/1;max-width:520px;display:block;margin:0 auto 18px!important;object-fit:contain!important;background:#fff}
+}
+@media (min-width:900px){
+ .product-detail-drawer-inner{max-width:1080px!important}
+ #detailContent{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:48px;align-items:start}
+ #detailContent>*{grid-column:2}
+ #detailContent>.detail-img{grid-column:1;grid-row:1/span 40;position:sticky;top:96px;height:auto!important;aspect-ratio:1/1;object-fit:contain!important;background:#fff;margin:0!important;align-self:start}
+ #detailContent>.detail-thumbs{grid-column:1;grid-row:41;margin-top:14px}
+ #detailContent>.detail-eyebrow{margin-top:8px}
+}
+/* 4) short rows centred, cards keep their normal width */
+.grid.few{grid-template-columns:repeat(var(--n),calc((100% - 72px)/4))!important;justify-content:center}
+@media (max-width:760px){
+ .grid.few{grid-template-columns:repeat(2,minmax(0,1fr))!important;justify-content:normal}
+ .grid.few.one{grid-template-columns:calc((100% - 12px)/2)!important;justify-content:center}
+}
+</style>
 </body>
 </html>
