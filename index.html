@@ -440,7 +440,7 @@ const AR_TEXT=new Map(Object.entries({
  "Emirate":"الإمارة","Select":"اختر","Abu Dhabi":"أبوظبي","Dubai":"دبي","Sharjah":"الشارقة","Ajman":"عجمان",
  "Umm Al Quwain":"أم القيوين","Ras Al Khaimah":"رأس الخيمة","Fujairah":"الفجيرة",
  "Payment Method":"طريقة الدفع","Cash on Delivery":"الدفع عند الاستلام","Place Order":"تأكيد الطلب",
- "Placing order…":"جارٍ إرسال الطلب…","Please enter a valid phone number so we can call you about delivery (e.g. 05X XXX XXXX).":"يرجى إدخال رقم هاتف صحيح حتى نتمكن من الاتصال بك بخصوص التوصيل (مثال: 05X XXX XXXX).","Your Order":"طلبك","Delivery Charges":"رسوم التوصيل","Total":"الإجمالي",
+ "Placing order…":"جارٍ إرسال الطلب…","Payment Method":"طريقة الدفع","Pay when your coffee arrives":"ادفع عند استلام قهوتك","Pay by Card / Apple Pay":"الدفع بالبطاقة / Apple Pay","Secure payment by Ziina":"دفع آمن عبر Ziina","Continue to Payment":"المتابعة إلى الدفع","Opening secure payment…":"جارٍ فتح صفحة الدفع الآمنة…","You'll be taken to Ziina to pay by card or Apple Pay.":"سيتم تحويلك إلى Ziina للدفع بالبطاقة أو Apple Pay.","Card payment couldn't start":"تعذّر بدء الدفع بالبطاقة","Your order {no} is saved.":"تم حفظ طلبك {no}.","Try card payment again":"إعادة محاولة الدفع بالبطاقة","Pay cash on delivery instead":"الدفع نقدًا عند الاستلام بدلًا من ذلك","Message us on WhatsApp":"راسلنا على واتساب","One moment…":"لحظة من فضلك…","Please message us":"يرجى مراسلتنا","Payment received":"تم استلام الدفع","Thank you{name}! Your order {no} is paid.":"شكرًا لك{name}! تم دفع طلبك {no}.","Paid by card":"مدفوع بالبطاقة","Amount paid":"المبلغ المدفوع","Confirming your payment…":"جارٍ تأكيد الدفع…","This usually takes a few seconds. Please don't pay again.":"يستغرق ذلك عادةً بضع ثوانٍ. يرجى عدم الدفع مرة أخرى.","Order":"الطلب","Payment not completed":"لم يكتمل الدفع","No money was taken. Your order {no} is saved — you can try again or pay cash on delivery.":"لم يتم خصم أي مبلغ. تم حفظ طلبك {no} — يمكنك المحاولة مرة أخرى أو الدفع نقدًا عند الاستلام.","Checking your payment…":"جارٍ التحقق من الدفع…","We couldn't check the payment":"تعذّر التحقق من الدفع","Please enter a valid phone number so we can call you about delivery (e.g. 05X XXX XXXX).":"يرجى إدخال رقم هاتف صحيح حتى نتمكن من الاتصال بك بخصوص التوصيل (مثال: 05X XXX XXXX).","Your Order":"طلبك","Delivery Charges":"رسوم التوصيل","Total":"الإجمالي",
  // success
  "Order Confirmed":"تم تأكيد الطلب","Order Total":"إجمالي الطلب","Confirm on WhatsApp":"أكّد عبر واتساب",
  "Continue Shopping":"متابعة التسوق",
@@ -652,6 +652,19 @@ html[dir=rtl] .promo-row input{text-align:right}
 #sizeOptions button:disabled,.detail-size-options button:disabled{opacity:.45;cursor:not-allowed;text-decoration:line-through}
 .detail-actions button:disabled{opacity:.5;cursor:not-allowed}
 .stock-note{color:#a3452f;font-size:12px;font-weight:600;margin:0 0 14px}
+/* payment choice */
+.pay-methods{display:flex;flex-direction:column;gap:8px;border-radius:14px}
+.pay-methods strong{margin-bottom:2px}
+.pay-opt{display:flex;align-items:center;gap:11px;border:1px solid #e3d6c4;border-radius:12px;padding:11px 13px;cursor:pointer;background:#fffdf9;transition:border-color .2s,box-shadow .2s}
+.pay-opt.on{border-color:#2f5d57;box-shadow:0 0 0 2px rgba(47,93,87,.15)}
+.pay-opt input{accent-color:#2f5d57;width:18px;height:18px;margin:0;flex:none}
+.pay-opt .po-ico{font-size:20px}
+.pay-opt .po-txt{display:flex;flex-direction:column;line-height:1.3}
+.pay-opt small{font-size:11.5px;color:#8a7866;font-weight:400}
+.pay-box .pay-alt{background:transparent!important;color:#3a2a1f!important;border:1px solid #d8c8b5!important;margin-top:8px}
+.pay-box .success-icon.pay-warn{background:#b3412c}
+.pay-spinner{width:44px;height:44px;margin:10px auto 18px;border-radius:50%;border:4px solid #eadfce;border-top-color:#2f5d57;animation:paySpin .9s linear infinite}
+@keyframes paySpin{to{transform:rotate(360deg)}}
 /* low stock */
 .oos-badge.low{background:#b3412c;box-shadow:0 2px 8px rgba(179,65,44,.3)}
 .low-stock-note{display:none;align-items:center;gap:8px;color:#a3452f;background:#fbeee9;border:1px solid #f0d2c8;border-radius:12px;padding:9px 12px;font-size:13px;font-weight:600;margin:-14px 0 22px}
@@ -907,6 +920,7 @@ else{window.__fbHandlers.authReady=attachCartListener;}
 
 function applySettings(s){
  if(!s)return;
+ CARD_PAY=String(s.cardpay||"off");try{updatePayOptions()}catch(e){}
  {let raw=s;s=Object.assign({},raw);if(isAr())Object.keys(AR_SETTINGS).forEach(k=>s[k]=pickSetting(raw,k));}
  const q=(sel,t)=>{let e=document.querySelector(sel);if(e)e.textContent=t};
  q(".topbar",s.topbar);q(".eyebrow",s.eyebrow);
@@ -1442,7 +1456,7 @@ function renderCart(){let box=document.getElementById("cartItems");if(!box)retur
 function changeQty(index,n){let x=cart[index];if(!x)return;if(n>0&&!canAddPacks(x.id,x.size,n)){noStockMsg(products.find(p=>String(p.id)===String(x.id)),x.sizeLabel);return}x.qty+=n;if(x.qty<=0)cart.splice(index,1);save();renderCart()}
 function removeItem(index){cart.splice(index,1);save();renderCart()}
 let CHECKOUT_TEMPLATE=null;
-function checkout(){if(!cart.length){alert(t("Your cart is empty."));return}let bad=cartStockProblems();if(bad.length){alert(t("Sorry, not enough stock for: {list}. Please update your cart.",{list:bad.join(", ")}));openCart();return}let box=document.getElementById("checkoutContent");if(CHECKOUT_TEMPLATE===null)CHECKOUT_TEMPLATE=box.innerHTML;else if(!document.getElementById("checkoutForm"))box.innerHTML=CHECKOUT_TEMPLATE;closeCart();renderCheckout();document.getElementById("checkoutOverlay").style.display="block"}
+function checkout(){if(!cart.length){alert(t("Your cart is empty."));return}let bad=cartStockProblems();if(bad.length){alert(t("Sorry, not enough stock for: {list}. Please update your cart.",{list:bad.join(", ")}));openCart();return}let box=document.getElementById("checkoutContent");if(CHECKOUT_TEMPLATE===null)CHECKOUT_TEMPLATE=box.innerHTML;else if(!document.getElementById("checkoutForm"))box.innerHTML=CHECKOUT_TEMPLATE;closeCart();renderCheckout();updatePayOptions();document.getElementById("checkoutOverlay").style.display="block"}
 function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0);
  let promoNote="";
  if(appliedPromo&&appliedPromo.minSubtotal&&subtotal<appliedPromo.minSubtotal){promoNote=t("This code needs an order of at least {min}.",{min:money(appliedPromo.minSubtotal)});appliedPromo=null}
@@ -1488,18 +1502,104 @@ async function applyPromo(btn){
 function removePromo(){appliedPromo=null;renderCheckout()}
 window.applyPromo=applyPromo;window.removePromo=removePromo;
 // Pre-filled WhatsApp message so the customer can confirm with one tap.
-function orderWhatsAppLink(orderNo,items,total,form,promo,discount){
- let lines=[`Hi Ambrosia Coffee! I just placed order #${orderNo}.`,"",...items.map(i=>`• ${i.name} ${i.size} × ${i.qty}`),"",...(promo?[`Promo code: ${promo.code} (−${money(discount)})`]:[]),`Total: ${money(total)} (Cash on Delivery)`,`Name: ${form.get("fullname")||""}`,`Area: ${[form.get("city"),form.get("emirate")].filter(Boolean).join(", ")}`,"","Please confirm my order. Thank you!"];
+function orderWhatsAppLink(orderNo,items,total,form,promo,discount,payLabel){
+ let lines=[`Hi Ambrosia Coffee! I just placed order #${orderNo}.`,"",...items.map(i=>`• ${i.name} ${i.size} × ${i.qty}`),"",...(promo?[`Promo code: ${promo.code} (−${money(discount)})`]:[]),`Total: ${money(total)} (${payLabel||"Cash on Delivery"})`,`Name: ${form.get("fullname")||""}`,`Area: ${[form.get("city"),form.get("emirate")].filter(Boolean).join(", ")}`,"","Please confirm my order. Thank you!"];
  return "https://wa.me/"+waDigits+"?text="+encodeURIComponent(lines.join("\n"));
 }
 // e.g. AMB-260924-7K3Q  (date + 4 random characters). The old number was the
 // last 6 digits of the clock, which repeats every ~17 minutes.
 function makeOrderNo(){let d=new Date(),p=n=>String(n).padStart(2,"0"),chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",r="";for(let i=0;i<4;i++)r+=chars[Math.floor(Math.random()*chars.length)];return `AMB-${String(d.getFullYear()).slice(2)}${p(d.getMonth()+1)}${p(d.getDate())}-${r}`}
+// ================= Card payments (Ziina) =================
+// The amount is worked out again on the server from the live prices — the
+// browser only says WHICH order to pay. See ambrosia-functions/functions/core.js
+var CARD_PAY="off";
+const PAY_API="https://us-central1-ambrosiaweb.cloudfunctions.net";
+// Card option shows when the admin switched it on, or on this device after
+// opening the store once with ?cardtest=1 (to try it before customers see it).
+function cardPayAvailable(){
+ try{if(new URLSearchParams(location.search).get("cardtest")==="1")sessionStorage.setItem("ambrosia_cardtest","1")}catch(e){}
+ let tester=false;try{tester=sessionStorage.getItem("ambrosia_cardtest")==="1"}catch(e){}
+ return CARD_PAY==="on"||tester;
+}
+function updatePayOptions(){
+ let opt=document.getElementById("payCardOpt");if(!opt)return;
+ let on=cardPayAvailable();opt.style.display=on?"":"none";
+ if(!on){let c=document.querySelector('#checkoutForm input[name=paymethod][value=cod]');if(c)c.checked=true}
+ payMethodChanged();
+}
+function payMethodChanged(){
+ let card=document.querySelector('#checkoutForm input[name=paymethod][value=card]');
+ let btn=document.querySelector("#checkoutForm .place-order");
+ if(btn&&!placingOrder)btn.textContent=card&&card.checked&&cardPayAvailable()?t("Continue to Payment"):t("Place Order");
+ document.querySelectorAll("#checkoutForm .pay-opt").forEach(l=>l.classList.toggle("on",!!l.querySelector("input:checked")));
+}
+function rememberCardOrder(key,orderNo,total,name,wa){try{sessionStorage.setItem("ambrosia_pay_"+key,JSON.stringify({orderNo,total,name:name||"",wa}))}catch(e){}}
+function cardOrderInfo(key){try{return JSON.parse(sessionStorage.getItem("ambrosia_pay_"+key)||"null")||{}}catch(e){return {}}}
+async function payApi(name,body){
+ let tok=null;try{let u=firebase.auth().currentUser;if(u)tok=await u.getIdToken()}catch(e){}
+ let r=await fetch(PAY_API+"/"+name,{method:"POST",headers:{"Content-Type":"application/json",...(tok?{Authorization:"Bearer "+tok}:{})},body:JSON.stringify(body)});
+ let j={};try{j=await r.json()}catch(e){}
+ if(!r.ok)throw new Error(j.error||("Error "+r.status));
+ return j;
+}
+function payBox(html){let b=document.getElementById("checkoutContent");
+ // keep a copy of the checkout form before replacing it, so the next checkout still has its form
+ if(CHECKOUT_TEMPLATE===null&&document.getElementById("checkoutForm"))CHECKOUT_TEMPLATE=b.innerHTML;
+ b.innerHTML=`<div class="success pay-box">${html}</div>`;document.getElementById("checkoutOverlay").style.display="block"}
+function payWaButton(key,label){let i=cardOrderInfo(key);let href=i.wa||("https://wa.me/"+waDigits+"?text="+encodeURIComponent(`Hi Ambrosia Coffee! About my order #${i.orderNo||""}.`));return `<a class="wa-confirm" href="${esc(href)}" target="_blank" rel="noopener">💬&nbsp; ${label||t("Message us on WhatsApp")}</a>`}
+async function startCardPayment(key){
+ payBox(`<div class="pay-spinner"></div><h2>${t("Opening secure payment…")}</h2><p>${t("You'll be taken to Ziina to pay by card or Apple Pay.")}</p>`);
+ try{
+  let r=await payApi("createpayment",{orderKey:key});
+  if(r.paid){return showPayResult(key,{paymentStatus:"paid"})}
+  location.href=r.redirect_url;
+ }catch(err){
+  console.error(err);
+  let i=cardOrderInfo(key);
+  payBox(`<div class="success-icon pay-warn">!</div><h2>${t("Card payment couldn't start")}</h2><p>${esc(err.message)}</p><p>${t("Your order {no} is saved.",{no:`<strong dir="ltr">#${esc(i.orderNo||"")}</strong>`})}</p><button class="checkout" onclick="startCardPayment('${key}')">${t("Try card payment again")}</button><button class="checkout pay-alt" onclick="switchToCod('${key}')">${t("Pay cash on delivery instead")}</button>${payWaButton(key)}`);
+ }
+}
+async function switchToCod(key){
+ payBox(`<div class="pay-spinner"></div><h2>${t("One moment…")}</h2>`);
+ try{let r=await payApi("checkpayment",{orderKey:key,action:"cod"});showPayResult(key,r)}
+ catch(err){payBox(`<div class="success-icon pay-warn">!</div><h2>${t("Please message us")}</h2><p>${esc(err.message)}</p>${payWaButton(key)}<button class="checkout" onclick="closeCheckout()">${t("Continue Shopping")}</button>`)}
+}
+function showPayResult(key,r){
+ let i=cardOrderInfo(key),no=r.orderNo||i.orderNo||"",total=r.total||i.total||0;
+ let noHtml=`<strong dir="ltr">#${esc(no)}</strong>`;
+ if(r.paymentStatus==="paid"){
+  payBox(`<div class="success-icon">✓</div><h2>${t("Payment received")}</h2><p>${t("Thank you{name}! Your order {no} is paid.",{name:i.name?", "+esc(i.name):"",no:noHtml})}</p><div class="cod-badge">💳&nbsp; <span>${t("Paid by card")}</span></div><div class="amount-callout"><span class="ac-label">${t("Amount paid")}</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">${t("Please keep your phone nearby — our delivery team may call to confirm your address before arrival.")}</div>${payWaButton(key,t("Confirm on WhatsApp"))}<button class="checkout" onclick="closeCheckout()">${t("Continue Shopping")}</button>`);
+ }else if(r.paymentStatus==="cod"){
+  payBox(`<div class="success-icon">✓</div><h2>${t("Order Confirmed")}</h2><p>${t("Your order {no} has been received.",{no:noHtml})}</p><div class="cod-badge">💵&nbsp; <span>${t("Cash on Delivery")}</span></div><div class="amount-callout"><span class="ac-label">${t("Order Total")}</span><span class="ac-value">${money(total)}</span></div>${payWaButton(key,t("Confirm on WhatsApp"))}<button class="checkout" onclick="closeCheckout()">${t("Continue Shopping")}</button>`);
+ }else if(r.paymentStatus==="awaiting"){
+  payBox(`<div class="pay-spinner"></div><h2>${t("Confirming your payment…")}</h2><p>${t("This usually takes a few seconds. Please don't pay again.")}</p><p>${t("Order")} ${noHtml}</p>${payWaButton(key)}`);
+ }else{
+  payBox(`<div class="success-icon pay-warn">!</div><h2>${t("Payment not completed")}</h2><p>${t("No money was taken. Your order {no} is saved — you can try again or pay cash on delivery.",{no:noHtml})}</p><button class="checkout" onclick="startCardPayment('${key}')">${t("Try card payment again")}</button><button class="checkout pay-alt" onclick="switchToCod('${key}')">${t("Pay cash on delivery instead")}</button>${payWaButton(key)}`);
+ }
+}
+// Coming back from Ziina: ?pay=success|cancel|failed&o=<order key>
+async function handlePayReturn(){
+ let q=new URLSearchParams(location.search),mode=q.get("pay"),key=q.get("o");
+ if(!mode||!key||!/^[-_A-Za-z0-9]{10,40}$/.test(key))return;
+ try{let u=new URL(location.href);u.searchParams.delete("pay");u.searchParams.delete("o");history.replaceState(history.state,"",u.pathname+(u.search||"")+u.hash)}catch(e){}
+ payBox(`<div class="pay-spinner"></div><h2>${t("Checking your payment…")}</h2>`);
+ for(let n=0;n<8;n++){
+  try{
+   let r=await payApi("checkpayment",{orderKey:key});
+   // back from "cancel"/"failed" pages: show it straight away; after "success" keep checking briefly
+   if(r.paymentStatus!=="awaiting"||mode!=="success"||n===7){showPayResult(key,r.paymentStatus==="awaiting"&&mode!=="success"?{...r,paymentStatus:"canceled"}:r);return}
+  }catch(err){console.error(err);if(n>=2){payBox(`<div class="success-icon pay-warn">!</div><h2>${t("We couldn't check the payment")}</h2><p>${esc(err.message)}</p>${payWaButton(key)}<button class="checkout" onclick="closeCheckout()">${t("Continue Shopping")}</button>`);return}}
+  await new Promise(r=>setTimeout(r,2500));
+ }
+}
+setTimeout(()=>{try{cardPayAvailable();handlePayReturn()}catch(e){console.error(e)}},0);
+
 async function placeOrder(e){
  e.preventDefault();if(!cart.length||placingOrder)return;
  {let ph=document.querySelector("#checkoutForm [name=phone]");if(ph){ph.value=normDigits(ph.value).trim();let d=ph.value.replace(/\D/g,"");
   if(d.length<9||d.length>13){alert(t("Please enter a valid phone number so we can call you about delivery (e.g. 05X XXX XXXX)."));ph.focus();return}}}
  const form=new FormData(document.getElementById("checkoutForm")),orderNo=makeOrderNo();
+ const payMethod=(form.get("paymethod")==="card"&&cardPayAvailable())?"card":"cod";form.delete("paymethod");
  const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",sizeKey:i.size||"kg1",price:linePrice(i,p),qty:i.qty}:null}).filter(Boolean);
  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0);let promo=null,discount=0,total=subtotal+DELIVERY_CHARGE;
  const btn=document.querySelector("#checkoutForm .place-order");
@@ -1535,8 +1635,10 @@ async function placeOrder(e){
   console.error("Stock update failed, placing order without deducting stock:",err);
   await returnStock(taken);taken=[];
  }
- const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,...(promo?{promo,discount}:{}),status:"New",lang:window.LANG||"en",created:new Date().toISOString(),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
- try{await db.ref("orders").push(order);done();cart=[];appliedPromo=null;save();document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>${t("Thank you, {name}.",{name:esc(form.get("fullname")||t("Customer"))})}</p><p>${t("Your order {no} has been received.",{no:`<strong dir="ltr">#${orderNo}</strong>`})}</p><div class="cod-badge">💵&nbsp; <span>Cash on Delivery</span></div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><a class="wa-confirm" href="${orderWhatsAppLink(orderNo,items,total,form,promo,discount)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Z"/></svg>Confirm on WhatsApp</a><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert(t("Order could not be sent. Please try again."));console.error(err)}
+ const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,...(promo?{promo,discount}:{}),status:"New",lang:window.LANG||"en",created:new Date().toISOString(),paymentMethod:payMethod,...(payMethod==="card"?{paymentStatus:"unpaid"}:{}),...(window.__fbUid?{uid:window.__fbUid}:{}),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
+ try{const oref=await db.ref("orders").push(order);done();cart=[];appliedPromo=null;save();
+ if(payMethod==="card"){rememberCardOrder(oref.key,orderNo,total,form.get("fullname"),orderWhatsAppLink(orderNo,items,total,form,promo,discount,"Card payment"));startCardPayment(oref.key);return}
+ document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>${t("Thank you, {name}.",{name:esc(form.get("fullname")||t("Customer"))})}</p><p>${t("Your order {no} has been received.",{no:`<strong dir="ltr">#${orderNo}</strong>`})}</p><div class="cod-badge">💵&nbsp; <span>Cash on Delivery</span></div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><a class="wa-confirm" href="${orderWhatsAppLink(orderNo,items,total,form,promo,discount)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Z"/></svg>Confirm on WhatsApp</a><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert(t("Order could not be sent. Please try again."));console.error(err)}
 }
 renderProducts();renderCollections();renderStoreFilterBar();updateCart();
 // (renderProducts() above will show a "Loading products…" placeholder until the
@@ -1559,7 +1661,10 @@ try{replayFirebaseCache()}catch(e){console.error(e)}
 <div class="field"><label>City</label><input name="city" required autocomplete="address-level2" placeholder="Al Ain / Abu Dhabi / Dubai"></div>
 <div class="field"><label>Emirate</label><select name="emirate" required><option value="">Select</option><option value="Abu Dhabi">Abu Dhabi</option><option value="Dubai">Dubai</option><option value="Sharjah">Sharjah</option><option value="Ajman">Ajman</option><option value="Umm Al Quwain">Umm Al Quwain</option><option value="Ras Al Khaimah">Ras Al Khaimah</option><option value="Fujairah">Fujairah</option></select></div>
 </div>
-<div class="payment"><strong>Payment Method</strong>Cash on Delivery</div>
+<div class="payment pay-methods"><strong>Payment Method</strong>
+<label class="pay-opt"><input type="radio" name="paymethod" value="cod" checked onchange="payMethodChanged()"><span class="po-ico">💵</span><span class="po-txt"><b>Cash on Delivery</b><small>Pay when your coffee arrives</small></span></label>
+<label class="pay-opt" id="payCardOpt" style="display:none"><input type="radio" name="paymethod" value="card" onchange="payMethodChanged()"><span class="po-ico">💳</span><span class="po-txt"><b>Pay by Card / Apple Pay</b><small>Secure payment by Ziina</small></span></label>
+</div>
 <button class="place-order" type="submit">Place Order</button>
 </form>
 <div class="order-summary"><h3>Your Order</h3><div id="checkoutSummary"></div></div>
