@@ -427,7 +427,7 @@ const AR_TEXT=new Map(Object.entries({
  "Espresso":"إسبريسو",
  "200g":"200 غ","250g":"250 غ","1 Kg":"1 كغ",
  // cart
- "Your Cart":"سلة التسوق","Subtotal":"المجموع الفرعي","Delivery Charges: AED 30.00":"رسوم التوصيل: 30.00 د.إ",
+ "Your Cart":"سلة التسوق","Subtotal":"المجموع الفرعي","Delivery Charges: AED 30.00":"رسوم التوصيل: 30.00 د.إ","Delivery Charges: {amt}":"رسوم التوصيل: {amt}","We accept Cash on Delivery and card payments (Visa, Mastercard, Apple Pay).":"نقبل الدفع عند الاستلام والدفع بالبطاقة (Visa وMastercard وApple Pay).",
  "Proceed to Checkout":"إتمام الطلب","← Continue Shopping / Browse Categories":"متابعة التسوق / تصفّح المجموعات →",
  "Your cart is empty.":"سلتك فارغة.","Remove":"إزالة",
  "Now out of stock — please remove":"نفدت الكمية — يرجى الإزالة",
@@ -845,7 +845,7 @@ html[dir=rtl] :is(.fd p,.fd dd,.fd-steps span,.fd-goal,.fd-h,.fd-tags span){unic
 <div class="drawer-head"><h3>Your Cart</h3><button class="close" onclick="closeCart()">×</button></div>
 <div id="cartItems"></div>
 <div class="total"><span>Subtotal</span><strong id="cartTotal">AED 0.00</strong></div>
-<div style="font-size:12px;color:#8a7a6a;margin:8px 0 14px;text-align:right">Delivery Charges: AED 30.00</div>
+<div id="cartDeliveryNote" style="font-size:12px;color:#8a7a6a;margin:8px 0 14px;text-align:right">Delivery Charges: AED 30.00</div>
 <button class="checkout" onclick="checkout()">Proceed to Checkout</button>
 <div style="text-align:center;margin-top:14px"><a href="#collections" style="font-size:12px;color:#8a7a6a;text-decoration:underline;cursor:pointer" onclick="goShopping('collections')">← Continue Shopping / Browse Categories</a></div>
 </div>
@@ -866,6 +866,7 @@ html[dir=rtl] :is(.fd p,.fd dd,.fd-steps span,.fd-goal,.fd-h,.fd-tags span){unic
 // Values used while drawing product cards. Declared first because Firebase data
 // can arrive (and cards get drawn) before the rest of this script has run.
 var LOW_STOCK=5;
+var DELIVERY_CHARGE=30; // replaced by settings.deliveryCharge from the admin
 var SPEC_KEYS={origin:"Origin",region:"Region",country:"Country",variety:"Variety",varietal:"Varietal",varieties:"Varieties",process:"Process",processing:"Process",altitude:"Altitude",elevation:"Elevation",grade:"Grade",score:"Score","sca score":"SCA Score",producer:"Producer",farm:"Farm",harvest:"Harvest",roast:"Roast","roast level":"Roast Level"};
 var TAG_KEYS=["profile","tasting notes","notes","flavour","flavor","flavours","flavors"];
 var __specCache=new Map();
@@ -874,7 +875,7 @@ const db=window.__fbdb;
 let products=[],collections=[],cart=[];
 let activeCollectionCategory=null;
 let activeStoreFilter=null;
-const DELIVERY_CHARGE=30,money=n=>isAr()?Number(n||0).toFixed(2)+" د.إ":"AED "+Number(n||0).toFixed(2);
+const money=n=>isAr()?Number(n||0).toFixed(2)+" د.إ":"AED "+Number(n||0).toFixed(2);
 // Collection name to show (Arabic if the admin added one)
 function catLabel(name){let c=collections.find(x=>x.name===name);return c?arField(c,"name"):(name||"")}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -920,6 +921,7 @@ else{window.__fbHandlers.authReady=attachCartListener;}
 
 function applySettings(s){
  if(!s)return;
+ {let dc=Number(s.deliveryCharge);if(s.deliveryCharge!==undefined&&s.deliveryCharge!==""&&isFinite(dc)&&dc>=0&&dc<=500&&dc!==DELIVERY_CHARGE){DELIVERY_CHARGE=Math.round(dc*100)/100;try{updateDeliveryTexts()}catch(e){}}}
  CARD_PAY=String(s.cardpay||"off");try{updatePayOptions()}catch(e){}
  {let raw=s;s=Object.assign({},raw);if(isAr())Object.keys(AR_SETTINGS).forEach(k=>s[k]=pickSetting(raw,k));}
  const q=(sel,t)=>{let e=document.querySelector(sel);if(e)e.textContent=t};
@@ -1149,9 +1151,9 @@ const POLICIES={
   <h4 style="margin:18px 0 8px;color:#2c2115">Delivery Time</h4>
   <p>Orders are processed within 1–2 business days and typically delivered within 2–4 business days.</p>
   <h4 style="margin:18px 0 8px;color:#2c2115">Delivery Charges</h4>
-  <ul style="padding-left:18px;margin:0"><li>Standard delivery: AED 30</li></ul>
+  <ul style="padding-left:18px;margin:0"><li>Standard delivery: {DC_EN}</li></ul>
   <h4 style="margin:18px 0 8px;color:#2c2115">Payment</h4>
-  <p>We currently accept Cash on Delivery for all orders.</p>`},
+  <p>{PAY_EN}</p>`},
  returns:{title:"Returns Policy",body:`
   <p>We want you to love your coffee. If something isn't right, we're here to help.</p>
   <h4 style="margin:18px 0 8px;color:#2c2115">Eligibility</h4>
@@ -1163,7 +1165,7 @@ const POLICIES={
   <h4 style="margin:18px 0 8px;color:#2c2115">Delivery Times</h4>
   <p>Orders are processed within 1–2 business days and typically arrive within 2–4 business days.</p>
   <h4 style="margin:18px 0 8px;color:#2c2115">Shipping Fees</h4>
-  <ul style="padding-left:18px;margin:0"><li>Standard delivery: AED 30</li></ul>`},
+  <ul style="padding-left:18px;margin:0"><li>Standard delivery: {DC_EN}</li></ul>`},
  refund:{title:"Refund Policy",body:`
   <p>We want you to love your coffee. If something isn't right, we're here to help.</p>
   <h4 style="margin:18px 0 8px;color:#2c2115">Eligibility</h4>
@@ -1233,9 +1235,9 @@ const POLICIES_AR={
   <h4 style="margin:18px 0 8px;color:#2c2115">مدة التوصيل</h4>
   <p>تتم معالجة الطلبات خلال 1–2 يوم عمل، وعادةً ما يتم التوصيل خلال 2–4 أيام عمل.</p>
   <h4 style="margin:18px 0 8px;color:#2c2115">رسوم التوصيل</h4>
-  <ul style="padding-right:18px;margin:0"><li>التوصيل العادي: 30 د.إ</li></ul>
+  <ul style="padding-right:18px;margin:0"><li>التوصيل العادي: {DC_AR}</li></ul>
   <h4 style="margin:18px 0 8px;color:#2c2115">الدفع</h4>
-  <p>نقبل حاليًا الدفع عند الاستلام لجميع الطلبات.</p>`},
+  <p>{PAY_AR}</p>`},
  returns:{title:"سياسة الإرجاع",body:`
   <p>نريدك أن تحب قهوتك. وإذا لم يكن هناك شيء على ما يرام، فنحن هنا لمساعدتك.</p>
   <h4 style="margin:18px 0 8px;color:#2c2115">شروط الإرجاع</h4>
@@ -1247,7 +1249,7 @@ const POLICIES_AR={
   <h4 style="margin:18px 0 8px;color:#2c2115">مدة التوصيل</h4>
   <p>تتم معالجة الطلبات خلال 1–2 يوم عمل، وعادةً ما تصل خلال 2–4 أيام عمل.</p>
   <h4 style="margin:18px 0 8px;color:#2c2115">رسوم الشحن</h4>
-  <ul style="padding-right:18px;margin:0"><li>التوصيل العادي: 30 د.إ</li></ul>`},
+  <ul style="padding-right:18px;margin:0"><li>التوصيل العادي: {DC_AR}</li></ul>`},
  refund:{title:"سياسة الاسترداد",body:`
   <p>نريدك أن تحب قهوتك. وإذا لم يكن هناك شيء على ما يرام، فنحن هنا لمساعدتك.</p>
   <h4 style="margin:18px 0 8px;color:#2c2115">شروط الاسترداد</h4>
@@ -1270,8 +1272,19 @@ const POLICIES_AR={
 function openPolicy(key){
  const p=(isAr()&&POLICIES_AR[key])||POLICIES[key];if(!p)return;
  document.getElementById("policyTitle").textContent=p.title;
- document.getElementById("policyContent").innerHTML=p.body;
+ let card=typeof cardPayAvailable==="function"&&cardPayAvailable();
+ document.getElementById("policyContent").innerHTML=p.body
+  .split("{DC_EN}").join("AED "+Number(DELIVERY_CHARGE).toFixed(2))
+  .split("{DC_AR}").join(Number(DELIVERY_CHARGE).toFixed(2)+" د.إ")
+  .split("{PAY_EN}").join(card?"We accept Cash on Delivery and card payments (Visa, Mastercard, Apple Pay).":"We currently accept Cash on Delivery for all orders.")
+  .split("{PAY_AR}").join(card?"نقبل الدفع عند الاستلام والدفع بالبطاقة (Visa وMastercard وApple Pay).":"نقبل حاليًا الدفع عند الاستلام لجميع الطلبات.");
  document.getElementById("policyOverlay").style.display="block";
+}
+// Everywhere the delivery charge is written out on the page
+function updateDeliveryTexts(){
+ let n=document.getElementById("cartDeliveryNote");if(n)n.textContent=t("Delivery Charges: {amt}",{amt:money(DELIVERY_CHARGE)});
+ let co=document.getElementById("checkoutOverlay");
+ if(co&&co.style.display==="block"&&document.getElementById("checkoutSummary"))try{renderCheckout()}catch(e){}
 }
 function closePolicy(){document.getElementById("policyOverlay").style.display="none"}
 window.openPolicy=openPolicy;window.closePolicy=closePolicy;
