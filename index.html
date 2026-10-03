@@ -108,11 +108,16 @@ header{border-bottom:1px solid var(--line);background:var(--glass)!important;pos
 .collection{background:rgba(248,242,233,.56)!important;backdrop-filter:blur(8px)}
 .collection-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .collection-card{height:210px;position:relative;overflow:hidden;background:#ddd;display:block;border-radius:20px!important;border:1px solid rgba(255,255,255,.7)!important;box-shadow:0 15px 40px rgba(68,46,27,.10)!important}
-.collection-card img{width:100%;height:100%;object-fit:cover;filter:brightness(.72)}
+.collection-card img{width:100%;height:100%;object-fit:cover}
+/* tagline over the photo: only the bottom is darkened so the photo stays bright */
+.coll-cap{position:absolute;left:0;right:0;bottom:0;padding:44px 22px 18px;background:linear-gradient(180deg,rgba(28,20,14,0) 0%,rgba(28,20,14,.55) 55%,rgba(28,20,14,.78) 100%);color:#fbf5ec;display:flex;flex-direction:column;gap:4px;pointer-events:none}
+.coll-cap b{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:21px;letter-spacing:3px;text-transform:uppercase;line-height:1.1;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.coll-cap i{font-family:Georgia,serif;font-style:italic;font-size:13px;opacity:.88;line-height:1.3}
+html[dir=rtl] .coll-cap b{letter-spacing:0;text-transform:none}
 .collection-item{display:block}
 .collection-name{margin-top:12px;text-align:center;font-family:Georgia,serif;font-size:24px;color:#2c2115;letter-spacing:.5px}
 .collection-card.active{box-shadow:0 0 0 3px var(--accent) inset}
-.collection-card.active img{filter:brightness(.55)}
+.collection-card.active img{filter:brightness(.8)}
 .collection-products-wrap{margin-top:34px}
 .collection-products-wrap.hide{display:none}
 .contact-us{background:var(--cream);padding:70px 22px}
@@ -1089,7 +1094,18 @@ function submitContactForm(e){
 }
 // Tapping a collection shows just its coffees in the Featured list below.
 // Tap the same collection again (or "Show all") to see everything.
-function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<div class="collection-item${activeStoreFilter===c.name?" is-active":""}"><a class="collection-card${activeStoreFilter===c.name?" active":""}" href="#store" onclick="event.preventDefault();setStoreFilter(activeStoreFilter==='${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}'?null:'${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}')"><img src="${c.img}" loading="lazy" alt="${esc(arField(c,"name"))}"></a><div class="collection-name">${esc(arField(c,"name"))}</div></div>`).join("")}
+// Tagline shown on the collection photo (set in Admin → Collections; these are the starting words)
+const COLL_TAG_DEFAULT={
+ brazil:["Taste of Smooth","Smooth. Balanced. Naturally sweet.","طعم النعومة","ناعمة. متوازنة. حلوة بطبيعتها."],
+ ethiopia:["Real Classic","Wild origins. Exceptional flavour.","كلاسيكي أصيل","أصول برّية. نكهة استثنائية."],
+ forever:["Forever Roast","More than coffee. It's a forever feeling.","تحميص للأبد","أكثر من مجرد قهوة. إنه شعور يدوم."]};
+function collCap(c){
+ let d=COLL_TAG_DEFAULT[String(c.name||"").trim().toLowerCase()]||[],ar=isAr();
+ let tag=(ar&&c.tagline_ar)||c.tagline||(ar?d[2]:d[0])||"",sub=(ar&&c.subline_ar)||c.subline||(ar?d[3]:d[1])||"";
+ if(c.tagline==="-")return ""; // admin can turn the words off with a single dash
+ return tag?`<span class="coll-cap"><b>${esc(tag)}</b>${sub?`<i>${esc(sub)}</i>`:""}</span>`:"";
+}
+function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<div class="collection-item${activeStoreFilter===c.name?" is-active":""}"><a class="collection-card${activeStoreFilter===c.name?" active":""}" href="#store" onclick="event.preventDefault();setStoreFilter(activeStoreFilter==='${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}'?null:'${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}')"><img src="${c.img}" loading="lazy" alt="${esc(arField(c,"name"))}">${collCap(c)}</a><div class="collection-name">${esc(arField(c,"name"))}</div></div>`).join("")}
 // Clicking a collection card opens an inline panel with just that category's
 // products, directly below the collection cards. The main store grid above
 // is never touched by this.
@@ -2088,6 +2104,7 @@ button{min-height:44px}
   .collection-item{flex:0 0 42%;scroll-snap-align:start}
   .collection-card{height:96px!important;border-radius:14px!important}
   .collection-name{font-size:14px!important;margin-top:7px}
+  .coll-cap{padding:22px 10px 8px}.coll-cap b{font-size:11px;letter-spacing:1.5px}.coll-cap i{display:none}
   #store{padding-top:26px!important}
   /* ===== 12 · cart bar ===== */
   .m-cart-bar{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:45;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 16px;min-height:56px;border:0;border-radius:18px!important;background:#2b2119;color:#fff;box-shadow:0 14px 34px rgba(30,20,12,.35);transform:translateY(140%);transition:transform .3s ease!important;cursor:pointer;font:inherit;text-align:left}
