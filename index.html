@@ -118,6 +118,7 @@ header{border-bottom:1px solid var(--line);background:var(--glass)!important;pos
 html[dir=rtl] .coll-cap u s{letter-spacing:0;font-size:10.5px}
 html[dir=rtl] .coll-cap b{letter-spacing:0;text-transform:none}
 .collection-item{display:block}
+.coll-notes{display:none}
 .collection-name{margin-top:12px;text-align:center;font-family:Georgia,serif;font-size:24px;color:#2c2115;letter-spacing:.5px}
 .collection-card.active{box-shadow:0 0 0 3px var(--accent) inset}
 .collection-card.active img{filter:brightness(.8)}
@@ -1102,6 +1103,8 @@ const COLL_TAG_DEFAULT={
  brazil:["Taste of Smooth","Smooth. Balanced. Naturally sweet.","طعم النعومة","ناعمة. متوازنة. حلوة بطبيعتها.","Chocolate, Hazelnut, Caramel, Almond","شوكولاتة، بندق، كراميل، لوز"],
  ethiopia:["Real Classic","Wild origins. Exceptional flavour.","كلاسيكي أصيل","أصول برّية. نكهة استثنائية.","Red berries, Citrus, Jasmine, Peach","توت أحمر، حمضيات، ياسمين، خوخ"],
  forever:["Forever Roast","More than coffee. It's a forever feeling.","تحميص للأبد","أكثر من مجرد قهوة. إنه شعور يدوم.","Wild berry, Mango, Coconut, Peach","توت بري، مانجو، جوز الهند، خوخ"]};
+function collNotesList(c){let d=COLL_TAG_DEFAULT[String(c.name||"").trim().toLowerCase()]||[],ar=isAr();if(c.notes==="-")return [];return ((ar&&c.notes_ar)||c.notes||(ar?d[5]:d[4])||"").split(/[,،·•|]/).map(x=>x.trim()).filter(Boolean).slice(0,5)}
+function collNotes(c){let n=collNotesList(c).slice(0,3);return n.length?`<div class="coll-notes">${n.map(x=>`<span>${esc(x)}</span>`).join("&nbsp;<b>·</b> ")}</div>`:""}
 function collCap(c){
  let d=COLL_TAG_DEFAULT[String(c.name||"").trim().toLowerCase()]||[],ar=isAr();
  let tag=(ar&&c.tagline_ar)||c.tagline||(ar?d[2]:d[0])||"",sub=(ar&&c.subline_ar)||c.subline||(ar?d[3]:d[1])||"";
@@ -1110,7 +1113,7 @@ function collCap(c){
  if(c.notes==="-")notes=[];
  return tag?`<span class="coll-cap"><b>${esc(tag)}</b>${sub?`<i>${esc(sub)}</i>`:""}${notes.length?`<u>${notes.map(n=>`<s>${esc(n)}</s>`).join("")}</u>`:""}</span>`:"";
 }
-function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<div class="collection-item${activeStoreFilter===c.name?" is-active":""}"><a class="collection-card${activeStoreFilter===c.name?" active":""}" href="#store" onclick="event.preventDefault();setStoreFilter(activeStoreFilter==='${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}'?null:'${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}')"><img src="${c.img}" loading="lazy" alt="${esc(arField(c,"name"))}">${collCap(c)}</a><div class="collection-name">${esc(arField(c,"name"))}</div></div>`).join("")}
+function renderCollections(){let grid=document.getElementById("collectionsGrid");if(!grid)return;grid.innerHTML=collections.map(c=>`<div class="collection-item${activeStoreFilter===c.name?" is-active":""}"><a class="collection-card${activeStoreFilter===c.name?" active":""}" href="#store" onclick="event.preventDefault();setStoreFilter(activeStoreFilter==='${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}'?null:'${esc(String(c.name).replace(/\\/g,"\\\\").replace(/'/g,"\\'"))}')"><img src="${c.img}" loading="lazy" alt="${esc(arField(c,"name"))}">${collCap(c)}</a><div class="collection-name">${esc(arField(c,"name"))}</div>${collNotes(c)}</div>`).join("")}
 // Clicking a collection card opens an inline panel with just that category's
 // products, directly below the collection cards. The main store grid above
 // is never touched by this.
@@ -2106,11 +2109,14 @@ button{min-height:44px}
   .collection .section-title{margin-bottom:14px!important}
   .collection-grid{display:flex!important;overflow-x:auto;gap:10px!important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:6px;margin:0 -12px;padding-left:12px;padding-right:12px}
   .collection-grid::-webkit-scrollbar{display:none}
-  .collection-item{flex:0 0 78%;scroll-snap-align:start}
-  .collection-card{height:168px!important;border-radius:16px!important}
+  .collection-item{flex:0 0 46%;min-width:0;scroll-snap-align:start}
+  .collection-card{height:auto!important;aspect-ratio:16/10.5;border-radius:14px!important}
+  .collection-card img{width:100%;height:100%;object-fit:cover}
   .collection-name{font-size:14px!important;margin-top:7px}
-  .coll-cap{padding:30px 13px 11px;gap:3px}.coll-cap b{font-size:15px;letter-spacing:2px}.coll-cap i{font-size:11px}
-  .coll-cap u{gap:4px;margin-top:4px}.coll-cap u s{font-size:7.5px;letter-spacing:.5px;padding:3px 6px}
+  .coll-cap{padding:18px 8px 7px;gap:1px}.coll-cap b{font-size:10px;letter-spacing:1.2px}.coll-cap i{font-size:7.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .coll-cap u{gap:3px;margin-top:3px;flex-wrap:nowrap;overflow:hidden}.coll-cap u s{font-size:5.6px;letter-spacing:.3px;padding:2.5px 4px;white-space:nowrap}
+  .coll-cap u s:nth-child(n+4){display:none}
+  .coll-notes{display:none!important}
   #store{padding-top:26px!important}
   /* ===== 12 · cart bar ===== */
   .m-cart-bar{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:45;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 16px;min-height:56px;border:0;border-radius:18px!important;background:#2b2119;color:#fff;box-shadow:0 14px 34px rgba(30,20,12,.35);transform:translateY(140%);transition:transform .3s ease!important;cursor:pointer;font:inherit;text-align:left}
