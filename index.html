@@ -2309,5 +2309,99 @@ body.layer-lock header{z-index:1!important}
  window.addEventListener("resize",function(){if(window.innerWidth>760&&hdr)hdr.classList.remove("hdr-hide")});
 })();
 </script>
+<script id="ga4-key-events">
+/* GA4 key-event tracking (added) */
+(function(){
+ "use strict";
+ function track(name,params){
+  try{ if(typeof window.gtag==="function") window.gtag("event",name,params||{}); }catch(e){}
+ }
+ function num(v){ var n=parseFloat(String(v||"").replace(/[^0-9.]/g,"")); return isNaN(n)?0:n; }
+
+ /* 1. Add to cart */
+ try{
+  if(typeof window.addVariantToCart==="function"){
+   var _add=window.addVariantToCart;
+   window.addVariantToCart=function(p,s,qty){
+    var r=_add.apply(this,arguments);
+    if(r){
+     try{
+      var q=qty||1,price=(s&&s.price)||0;
+      track("add_to_cart",{currency:"AED",value:price*q,items:[{item_id:String(p&&p.id||""),item_name:String(p&&(p.name||p.title)||""),item_variant:String(s&&(s.label||s.key)||""),price:price,quantity:q}]});
+     }catch(e){}
+    }
+    return r;
+   };
+  }
+ }catch(e){}
+
+ /* 2. Begin checkout */
+ try{
+  if(typeof window.checkout==="function"){
+   var _co=window.checkout;
+   window.checkout=function(){
+    var r=_co.apply(this,arguments);
+    try{
+     var box=document.getElementById("checkoutOverlay");
+     if(box&&box.style.display==="block"){
+      var total=0; try{ total=(typeof cart!=="undefined"?cart:[]).reduce(function(a,i){return a+(i.price||0)*(i.qty||1)},0);}catch(e){}
+      track("begin_checkout",{currency:"AED",value:total});
+     }
+    }catch(e){}
+    return r;
+   };
+  }
+ }catch(e){}
+
+ /* 3. Order placed (cash on delivery or card) - watch for the confirmation screen */
+ try{
+  var seen={};
+  var cc=document.getElementById("checkoutContent");
+  if(cc&&window.MutationObserver){
+   new MutationObserver(function(){
+    try{
+     if(!cc.querySelector(".cod-badge")) return;
+     var st=cc.querySelector("strong[dir=ltr]");
+     var no=st?st.textContent.replace(/[^A-Za-z0-9\-]/g,""):"";
+     var key=no||"order";
+     if(seen[key]) return;
+     seen[key]=1;
+     var av=cc.querySelector(".ac-value");
+     var paid=/card/i.test((cc.querySelector(".cod-badge")||{}).textContent||"");
+     track("purchase",{transaction_id:no||("ord_"+Date.now()),currency:"AED",value:av?num(av.textContent):0,payment_type:paid?"card":"cash_on_delivery"});
+    }catch(e){}
+   }).observe(cc,{childList:true,subtree:true});
+  }
+ }catch(e){}
+
+ /* 4. Contact form sent */
+ try{
+  var cs=document.getElementById("contactSuccess");
+  if(cs&&window.MutationObserver){
+   var sent=false;
+   new MutationObserver(function(){
+    try{
+     if(cs.classList.contains("show")){ if(!sent){ sent=true; track("generate_lead",{method:"contact_form"}); } }
+     else sent=false;
+    }catch(e){}
+   }).observe(cs,{attributes:true,attributeFilter:["class"]});
+  }
+ }catch(e){}
+
+ /* 5. WhatsApp / phone / email clicks (works for dynamically added links too) */
+ try{
+  document.addEventListener("click",function(ev){
+   try{
+    var a=ev.target&&ev.target.closest?ev.target.closest("a[href]"):null;
+    if(!a) return;
+    var h=a.getAttribute("href")||"";
+    if(h.indexOf("wa.me")>-1||h.indexOf("whatsapp.com")>-1) track("whatsapp_click",{link_url:h.split("?")[0]});
+    else if(h.indexOf("tel:")===0) track("phone_click",{link_url:h});
+    else if(h.indexOf("mailto:")===0) track("email_click",{link_url:h});
+   }catch(e){}
+  },true);
+ }catch(e){}
+})();
+</script>
 </body>
 </html>
