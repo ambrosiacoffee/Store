@@ -19,4 +19,10 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://ambrosiacoffee.store/?lang=ar"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://ambrosiacoffee.store/"/>
   </url>
+  <url>
+    <loc>https://ambrosiacoffee.store/returns.html</loc>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>
