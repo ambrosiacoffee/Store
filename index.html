@@ -492,7 +492,27 @@ const AR_TEXT=new Map(Object.entries({
  "Promo code":"رمز الخصم","Apply":"تطبيق","applied":"مُطبَّق","Discount":"الخصم",
  "This promo code isn't valid.":"رمز الخصم هذا غير صالح.","This promo code has expired.":"انتهت صلاحية رمز الخصم هذا.",
  "This code needs an order of at least {min}.":"يتطلب هذا الرمز طلبًا بقيمة {min} على الأقل.",
- "of this coffee":"من هذه القهوة","one item":"أحد المنتجات","Customer":"عميلنا العزيز"
+ "of this coffee":"من هذه القهوة","one item":"أحد المنتجات","Customer":"عميلنا العزيز",
+ // fresh roast · flavour · limited lot
+ "Roasted today":"محمّصة اليوم","Roasted yesterday":"محمّصة أمس","Roasted {n} days ago":"محمّصة قبل {n} أيام",
+ "Sweetness":"الحلاوة","Acidity":"الحموضة","Body":"القوام",
+ "Only {n} bags roasted":"حُمّصت {n} عبوة فقط","{n} left":"بقي {n}","Small lot · when it's gone, it's gone":"دفعة صغيرة · عندما تنفد، تنفد",
+ // quiz
+ "Find your coffee in 30 seconds":"اعثر على قهوتك في 30 ثانية","3 quick questions — we'll pick the right beans for you.":"3 أسئلة سريعة — وسنختار لك الحبوب المناسبة.",
+ "How do you make your coffee?":"كيف تحضّر قهوتك؟","Espresso machine":"آلة إسبريسو","Filter / V60":"فلتر / V60","French press / Moka":"فرنش برس / موكا",
+ "Do you add milk?":"هل تضيف الحليب؟","With milk":"مع الحليب","Black":"بدون حليب",
+ "Which flavour do you love?":"ما النكهة التي تحبها؟","Chocolate & nutty":"شوكولاتة ومكسرات","Fruity & bright":"فواكه ومنعشة","Sweet & tropical":"حلوة واستوائية",
+ "Your perfect match":"اختيارك المثالي","View coffee":"عرض القهوة","Start again":"ابدأ من جديد","Back":"رجوع","Close":"إغلاق",
+ "Smooth & chocolatey":"ناعمة وغنية بالشوكولاتة","Bright & fruity":"منعشة وفاكهية","Sweet & tropical notes":"نكهات حلوة واستوائية",
+ "great with milk":"رائعة مع الحليب","lovely black":"رائعة بدون حليب","☕ Find your coffee":"☕ اعثر على قهوتك",
+ // free gift + gift mode
+ "Add {amt} more and get a FREE coffee of your choice":"أضف {amt} واحصل على قهوة مجانية من اختيارك","{cur} of {min}":"{cur} من {min}",
+ "You've unlocked a free coffee! 🎉":"لقد حصلت على قهوة مجانية! 🎉","Choose your free coffee":"اختر قهوتك المجانية",
+ "Your free gift":"هديتك المجانية","Change":"تغيير","Free gift":"هدية مجانية","FREE":"مجانًا",
+ "Choose your free coffee (200g or 250g)":"اختر قهوتك المجانية (200 غ أو 250 غ)","Pick any coffee — it's on us.":"اختر أي قهوة — على حسابنا.",
+ "Your order gets a free coffee. Choose it now?":"طلبك يحصل على قهوة مجانية. هل تريد اختيارها الآن؟",
+ "🎁 This is a gift":"🎁 هذا الطلب هدية","No prices in the box. Add a message:":"لا أسعار داخل العلبة. أضف رسالة:",
+ "Your message (optional)":"رسالتك (اختياري)"
 }));
 // Arabic defaults for the text the admin edits in "Store Content".
 // The admin's own Arabic text (Store Content → Arabic) wins over these.
@@ -578,7 +598,7 @@ function setLang(l){
  if(l==="ar")window.loadArabicFonts();
  // redraw everything that is built from data, in the new language
  try{if(window.__fbCache&&window.__fbCache.settings)applySettings(window.__fbCache.settings)}catch(e){}
- try{renderProducts();renderBestSellers();renderNewArrivals();renderCollections();renderStoreFilterBar();renderCart();updateCart()}catch(e){}
+ try{renderProducts();renderBestSellers();renderNewArrivals();renderCollections();renderStoreFilterBar();renderCart();updateCart();renderQuiz()}catch(e){}
  try{if(selectedDetail&&document.getElementById("productDetailOverlay").style.display==="block"){let id=selectedDetail.product.id;openProductDetail(id)}}catch(e){}
  try{if(document.getElementById("checkoutSummary"))renderCheckout()}catch(e){}
  try{if(document.getElementById("searchOverlay").classList.contains("open"))renderSearchResults(document.getElementById("searchInput").value)}catch(e){}
@@ -753,7 +773,113 @@ html[dir=rtl] :is(.fd p,.fd dd,.fd-steps span,.fd-goal,.fd-h,.fd-tags span){unic
 .quick-view-btn{position:absolute;left:50%;bottom:14px;transform:translate(-50%,10px);opacity:0;background:rgba(33,23,16,.88);color:#fff;border:0;padding:10px 20px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:opacity .25s ease,transform .25s ease;backdrop-filter:blur(6px);z-index:3}
 .product:hover .quick-view-btn{opacity:1;transform:translate(-50%,0)}
 @media(max-width:900px){.quick-view-btn{opacity:1;transform:translate(-50%,0);bottom:10px;padding:8px 16px;font-size:11px}}
-</style></head>
+</style>
+<style id="ideas-2026-11">
+/* badge colours */
+.badge.b-best{background:linear-gradient(135deg,#e7bf74,#b9823f)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 6px 14px rgba(185,130,63,.3)}
+.badge.b-new{background:#2f6b4f!important;color:#fff!important;border-color:transparent!important}
+.badge.b-sale{background:#b3412c!important;color:#fff!important;border-color:transparent!important}
+.badge.b-lim{background:#211710!important;color:#f3e2c4!important;border-color:transparent!important}
+/* fresh roast */
+.fresh-tag{position:absolute;left:10px;bottom:10px;z-index:2;background:rgba(255,255,255,.94);border-radius:999px;padding:6px 11px;font:600 11px/1.2 Inter,Arial,sans-serif;color:#9a4a1c;box-shadow:0 6px 16px rgba(0,0,0,.08);white-space:nowrap;transition:opacity .2s}
+.fresh-tag i{font-style:normal}
+.product:hover .fresh-tag{opacity:0}
+@media (hover:none){.product:hover .fresh-tag{opacity:1}}
+.fresh-tag.d{position:static;display:inline-block;margin:0 0 14px;background:#fff4ea;box-shadow:none;border:1px solid #f1d8c2;font-size:12.5px}
+html[dir=rtl] .fresh-tag{left:auto;right:10px}
+/* flavour bars */
+.flv{display:grid;grid-template-columns:auto 1fr;column-gap:10px;row-gap:5px;align-items:center;margin:2px 0 8px;font-size:11.5px;color:#6d5f52}
+.flv-d{display:flex;gap:3px}.flv-d s{width:14px;height:6px;border-radius:3px;background:#e7dccd;text-decoration:none}.flv-d s.on{background:#b9823f}
+.detail-extras .flv{font-size:13px;max-width:260px;margin:0 0 16px}.detail-extras .flv-d s{width:22px;height:7px}
+/* limited lot */
+.lot{background:#f6ede2;border-radius:12px;padding:9px 11px;margin:2px 0 10px}
+.lot-t{display:flex;justify-content:space-between;gap:6px;font-size:11.5px;font-weight:600;color:#5b4632}.lot-t em{font-style:normal;color:#a3452f;white-space:nowrap}
+.lot-bar{height:6px;border-radius:4px;background:#e7dccd;margin-top:6px;overflow:hidden}.lot-bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#c2462f,#e08a45)}
+.lot small{display:block;font-size:11px;color:#8a7866;margin-top:6px}
+.detail-extras .lot{max-width:420px;margin:0 0 22px;padding:12px 14px}.detail-extras .lot-t{font-size:13px}
+@media(max-width:760px){.flv{font-size:9.5px;column-gap:6px;row-gap:3px}.flv-d{gap:2px}.flv-d s{width:9px;height:5px}.lot{padding:7px 8px}.lot-t{font-size:9.5px;flex-direction:column;gap:1px}.fresh-tag{font-size:9px;padding:4px 7px;left:6px;bottom:6px}html[dir=rtl] .fresh-tag{right:6px}.detail-extras .lot-t{flex-direction:row;font-size:13px}}
+
+/* quiz */
+.quiz-open{display:none}
+.quiz{z-index:3}
+.qz-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.qz-h{font:500 23px/1.2 Georgia,serif;margin:0;color:#2b2119}
+.qz-x{display:none;border:0!important;background:#f2ece2!important;width:34px;height:34px;min-height:34px!important;border-radius:50%!important;font-size:20px;line-height:1;color:#4a3c2e;cursor:pointer;flex:none;padding:0}
+.qz-s{font-size:12.5px;color:#7a6b5d;margin:6px 0 14px}
+.qz-steps{display:flex;gap:6px;margin-bottom:14px}.qz-steps i{flex:1;height:4px;border-radius:3px;background:#e5d6c2}.qz-steps i.on{background:#b9823f}
+.qz-q{font-weight:600;font-size:14px;margin:0 0 10px;color:#2b2119}
+.qz-opts{display:grid;gap:9px}.qz-opts.n3{grid-template-columns:repeat(3,1fr)}.qz-opts.n2{grid-template-columns:repeat(2,1fr)}
+.qz-opts button{background:#fff;border:1.5px solid #e6d6c1!important;border-radius:14px!important;padding:12px 6px;font:600 12px/1.25 Inter,Arial,sans-serif;color:#2b2119;cursor:pointer;min-height:84px}
+.qz-opts button b{display:block;font-size:24px;font-weight:400;margin-bottom:5px}
+.qz-opts button:hover,.qz-opts button.on{border-color:#b9823f!important;background:#fffaf2;box-shadow:0 0 0 3px rgba(185,130,63,.14)}
+.qz-back{border:0!important;background:none!important;color:#8a6a45;font-size:12.5px;font-weight:600;cursor:pointer;margin-top:10px;padding:4px 0;min-height:0!important;box-shadow:none!important}
+.qz-res{display:flex;gap:14px;align-items:center;background:#fff;border-radius:16px;padding:12px;border:1px solid #ecdcc6}
+.qz-res img{width:92px;height:104px;object-fit:cover;border-radius:12px;background:#f4ede4;flex:none}
+.qz-k{font:700 10px Inter,Arial,sans-serif;letter-spacing:1.3px;color:#2c7a56;text-transform:uppercase}
+.qz-n{font:500 20px Georgia,serif;margin:3px 0 2px;color:#2b2119}.qz-w{font-size:12px;color:#7a6b5d;margin-bottom:9px}
+.qz-btns{display:flex;gap:7px;flex-wrap:wrap}
+.qz-add{background:#211710!important;color:#fff!important;border:0!important;padding:9px 14px;font:700 11.5px Inter,Arial,sans-serif;cursor:pointer;min-height:36px!important}
+.qz-view{background:#fff!important;color:#211710;border:1px solid #d8c8b5!important;padding:9px 12px;font:600 11.5px Inter,Arial,sans-serif;cursor:pointer;min-height:36px!important}
+html[dir=rtl] .qz-h,html[dir=rtl] .qz-n{font-family:'Amiri',serif}
+.hero .quiz button{background:#fff!important;color:#2b2119!important;box-shadow:none;letter-spacing:0;text-transform:none}
+.hero .quiz .qz-opts button.on,.hero .quiz .qz-opts button:hover{background:#fffaf2!important;box-shadow:0 0 0 3px rgba(185,130,63,.14)}
+.hero .quiz .qz-add{background:#211710!important;color:#fff!important}
+.hero .quiz .qz-x{background:#f2ece2!important;color:#4a3c2e!important}
+.hero .quiz .qz-back{background:none!important;color:#8a6a45!important}
+.hero .quiz .qz-view{background:#fff!important;color:#211710!important}
+@media(min-width:1051px){
+ .hero.has-quiz .quiz{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:min(390px,30vw);background:rgba(255,251,245,.84);backdrop-filter:blur(18px) saturate(130%);-webkit-backdrop-filter:blur(18px) saturate(130%);border:1px solid rgba(255,255,255,.9);border-radius:24px;padding:22px 22px 18px;box-shadow:0 26px 60px rgba(74,49,29,.16)}
+ .hero.has-quiz h1,.hero.has-quiz>p{max-width:min(620px,52vw)!important}
+ html[dir=rtl] .hero.has-quiz .quiz{right:auto;left:5%}
+ .quiz-back{display:none}
+}
+@media(max-width:1050px){
+ .hero.has-quiz .quiz-open{display:inline-flex;align-items:center;justify-content:center;margin-top:10px;width:max-content;border:1px solid rgba(150,110,70,.35)!important;background:rgba(255,255,255,.7)!important;color:#5b3d1c!important;font:700 12.5px Inter,Arial,sans-serif;letter-spacing:.3px;padding:11px 20px;cursor:pointer;position:relative;z-index:2;backdrop-filter:blur(8px);box-shadow:none}
+ .quiz{position:fixed;left:0;right:0;bottom:0;z-index:1300;background:#fffaf3;border-radius:22px 22px 0 0;padding:20px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -20px 50px rgba(40,25,12,.25);transform:translateY(110%);transition:transform .32s cubic-bezier(.4,0,.2,1);max-height:88vh;overflow:auto;text-align:left}
+ html[dir=rtl] .quiz{text-align:right}
+ body.quiz-on .quiz{transform:none}
+ .quiz-back{position:fixed;inset:0;z-index:1290;background:rgba(44,32,23,.35);display:none}
+ body.quiz-on .quiz-back{display:block}
+ .qz-x{display:flex;align-items:center;justify-content:center}
+}
+@media(max-width:760px){.hero.has-quiz .quiz-open{width:100%;margin-top:10px}.qz-opts button{min-height:78px;font-size:11.5px}}
+
+/* free gift bar (cart) */
+.gift-bar{margin:14px 0 4px;background:linear-gradient(135deg,#fff6e7,#fbecd6);border:1px solid #f0d9b4;border-radius:16px;padding:13px 15px}
+.gift-bar .gb-t{font-size:13px;font-weight:600;color:#5b3d1c;line-height:1.45}.gift-bar .gb-t b{color:#9a4a1c}
+.gb-track{height:9px;border-radius:6px;background:#f1e1c8;margin:9px 0 6px;overflow:hidden}.gb-track i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#c49351,#e2a64f);transition:width .4s}
+.gift-bar small{font-size:11px;color:#8a6a45}
+.gift-bar.done{background:linear-gradient(135deg,#eef7f1,#e1f0e6);border-color:#bfdcc9;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.gift-bar.done .gb-t{color:#24543b}
+.gb-btn{border:0!important;background:#2f5d57!important;color:#fff!important;font:700 12px Inter,Arial,sans-serif;padding:9px 14px;cursor:pointer;min-height:38px!important}
+.gb-link{border:0!important;background:none!important;color:#8d3e32;text-decoration:underline;font-size:12px;cursor:pointer;padding:0 4px;min-height:0!important;box-shadow:none!important}
+.summary-item.gift-line{background:#f1f8f3;border-radius:10px;padding:10px;border-bottom:0;margin:6px 0;align-items:center}
+.summary-item.gift-line strong{color:#2c7a3c}
+.summary-item.gift-line.muted{background:#fbf3e6;color:#7a5530}
+.summary-item.gift-line .gb-btn{width:100%}
+/* gift picker (above the cart and checkout windows) */
+#giftOverlay{z-index:80!important}
+.gift-drawer{background:#fffcf7!important}
+.gift-drawer h3{font-size:20px!important}
+.gp-sub{color:#7a6b5d;font-size:13px;margin:10px 0 6px}
+.gp-item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid #efe4d5}
+.gp-item img{width:56px;height:62px;object-fit:cover;border-radius:10px;background:#f4ede4;flex:none}
+.gp-txt{flex:1;min-width:0}.gp-txt b{display:block;font:500 16px Georgia,serif}.gp-txt small{font-size:11.5px;color:#8a7866}
+.gp-sizes{display:flex;gap:6px;flex:none}
+.gp-sizes button{border:1.5px solid #ddccb8!important;background:#fff!important;color:#2b2119;font:700 12px Inter,Arial,sans-serif;padding:8px 11px;cursor:pointer;min-height:38px!important}
+.gp-sizes button.on,.gp-sizes button:hover{border-color:#2f5d57!important;background:#f3faf8!important}
+.gp-sizes button:disabled{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+/* gift mode */
+.gift-mode{border:1px solid #e3d6c4;border-radius:14px;padding:12px 14px;margin:4px 0 14px;background:#fffdf9}
+.gift-mode .gm-head{display:flex;gap:10px;align-items:center;font-weight:700;font-size:14px;cursor:pointer;text-transform:none;letter-spacing:0;margin:0}
+.gift-mode .gm-head input{width:18px;height:18px;accent-color:#2f5d57;margin:0}
+.gift-mode .gm-body{display:none;margin-top:10px}
+.gift-mode.on{border-color:#2f5d57;background:#f3faf8;box-shadow:0 0 0 2px rgba(47,93,87,.12)}
+.gift-mode.on .gm-body{display:block}
+.gift-mode small{display:block;font-size:12px;color:#5f6f6b;margin-bottom:6px}
+.gift-mode textarea{width:100%;min-height:70px;border:1px dashed #9cbab4;border-radius:12px;padding:10px;font:15px Georgia,serif;resize:vertical;background:#fff}
+</style>
+</head>
 <body class="ambrosia-premium">
 <div id="siteLoader"><img src="ambrosia_logo.webp" alt="Ambrosia"><div class="loader-spinner"></div><div class="loader-text">Loading…</div></div>
 <div class="topbar">FRESHLY ROASTED COFFEE • UAE DELIVERY</div>
@@ -774,6 +900,9 @@ html[dir=rtl] :is(.fd p,.fd dd,.fd-steps span,.fd-goal,.fd-h,.fd-tags span){unic
 <h1>Fresh Coffee Beans<br>Roasted With <span style="color:#b9823f">Passion</span></h1>
 <p>Discover premium single origin and signature blends,<br class="hero-break"> roasted to perfection and delivered fresh to your door.</p>
 <a class="hero-shop" href="#store">SHOP NOW <span>→</span></a>
+<button type="button" class="quiz-open" id="quizOpen" onclick="openQuiz()">☕ Find your coffee</button>
+<div class="quiz-back" id="quizBack" onclick="closeQuiz()"></div>
+<div class="quiz" id="quiz" role="dialog" aria-label="Find your coffee" data-no-i18n></div>
 </section>
 
 <section class="features">
@@ -894,9 +1023,10 @@ html[dir=rtl] :is(.fd p,.fd dd,.fd-steps span,.fd-goal,.fd-h,.fd-tags span){unic
 <div class="share-toast" id="shareToast" role="status" aria-live="polite"></div>
 <div id="detailContent"></div>
 </div>
-</div></div><div class="overlay" id="sizeOverlay" onclick="if(event.target===this)closeSizePicker()"><div class="drawer" style="max-width:520px"><div class="drawer-head"><h3 id="sizePickerTitle">Choose Size</h3><button class="close" onclick="closeSizePicker()">×</button></div><div id="sizePickerProduct"></div><div id="sizeOptions" style="display:grid;gap:10px;margin-top:16px"></div></div></div><div class="overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
+</div></div><div class="overlay" id="giftOverlay" onclick="if(event.target===this)closeGiftPicker()"><div class="drawer gift-drawer"><div class="drawer-head"><h3>Choose your free coffee (200g or 250g)</h3><button class="close" onclick="closeGiftPicker()">×</button></div><p class="gp-sub">Pick any coffee — it's on us.</p><div id="giftList"></div></div></div><div class="overlay" id="sizeOverlay" onclick="if(event.target===this)closeSizePicker()"><div class="drawer" style="max-width:520px"><div class="drawer-head"><h3 id="sizePickerTitle">Choose Size</h3><button class="close" onclick="closeSizePicker()">×</button></div><div id="sizePickerProduct"></div><div id="sizeOptions" style="display:grid;gap:10px;margin-top:16px"></div></div></div><div class="overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()">
 <div class="drawer">
 <div class="drawer-head"><h3>Your Cart</h3><button class="close" onclick="closeCart()">×</button></div>
+<div id="giftBar" class="gift-bar" style="display:none"></div>
 <div id="cartItems"></div>
 <div class="total"><span>Subtotal</span><strong id="cartTotal">AED 0.00</strong></div>
 <div id="cartDeliveryNote" style="font-size:12px;color:#8a7a6a;margin:8px 0 14px;text-align:right">Delivery Charges: AED 30.00</div>
@@ -920,6 +1050,10 @@ html[dir=rtl] :is(.fd p,.fd dd,.fd-steps span,.fd-goal,.fd-h,.fd-tags span){unic
 // Values used while drawing product cards. Declared first because Firebase data
 // can arrive (and cards get drawn) before the rest of this script has run.
 var LOW_STOCK=5;
+// Free gift: an order of at least GIFT_MIN (goods, after any discount) gets one free 200g/250g coffee.
+// Set in Admin → Store Content → Free gift. 0 = switched off.
+var GIFT_MIN=0, GIFT_SIZES=["g200","g250"], giftChoice=null, QUIZ_ON=true;
+try{giftChoice=JSON.parse(sessionStorage.getItem("ambrosia_gift")||"null")}catch(e){giftChoice=null}
 var DELIVERY_CHARGE=30; // replaced by settings.deliveryCharge from the admin
 var SPEC_KEYS={origin:"Origin",region:"Region",country:"Country",variety:"Variety",varietal:"Varietal",varieties:"Varieties",process:"Process",processing:"Process",altitude:"Altitude",elevation:"Elevation",grade:"Grade",score:"Score","sca score":"SCA Score",producer:"Producer",farm:"Farm",harvest:"Harvest",roast:"Roast","roast level":"Roast Level"};
 var TAG_KEYS=["profile","tasting notes","notes","flavour","flavor","flavours","flavors"];
@@ -977,6 +1111,8 @@ function applySettings(s){
  if(!s)return;
  {let dc=Number(s.deliveryCharge);if(s.deliveryCharge!==undefined&&s.deliveryCharge!==""&&isFinite(dc)&&dc>=0&&dc<=500&&dc!==DELIVERY_CHARGE){DELIVERY_CHARGE=Math.round(dc*100)/100;try{updateDeliveryTexts()}catch(e){}}}
  CARD_PAY=String(s.cardpay||"off");try{updatePayOptions()}catch(e){}
+ {let g=Number(s.giftMin);let ng=(isFinite(g)&&g>0&&g<10000)?Math.round(g*100)/100:0;let nq=String(s.quiz||"on")!=="off";
+  if(ng!==GIFT_MIN||nq!==QUIZ_ON){GIFT_MIN=ng;QUIZ_ON=nq;try{renderCart();renderQuiz();let co=document.getElementById("checkoutOverlay");if(co&&co.style.display==="block"&&document.getElementById("checkoutSummary"))renderCheckout()}catch(e){}}}
  {let raw=s;s=Object.assign({},raw);if(isAr())Object.keys(AR_SETTINGS).forEach(k=>s[k]=pickSetting(raw,k));}
  const q=(sel,t)=>{let e=document.querySelector(sel);if(e)e.textContent=t};
  q(".topbar",s.topbar);q(".eyebrow",s.eyebrow);
@@ -1075,6 +1211,7 @@ function handleProductsSnapshot(v){
  renderBestSellers();renderNewArrivals();
  if(activeCollectionCategory)renderCollectionProducts();
  updateProductSchema();
+ try{if(quizStep>=QUIZ_Q.length)renderQuiz()}catch(e){}
  hideSiteLoader();
  openDeepLinkedProduct();
 }
@@ -1473,7 +1610,17 @@ function cardPriceHTML(p){
 }
 // Size chips; a sold-out size is crossed out.
 function cardSizesHTML(p){let sizes=getSizes(p);if(sizes.length<2&&!(p.sizes))return "";return `<div class="card-sizes">${sizes.map(s=>`<span class="${sizeInStock(p,s)?"":"off"}" title="${sizeInStock(p,s)?"":"Out of stock"}">${s.label}</span>`).join("")}</div>`}
-function productCardHTML(p){let oos=isOutOfStock(p);return `<article class="product${oos?" oos":""}" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge">${p.badge}</span>`:""}${oos?`<span class="oos-badge">Out of Stock</span>`:(()=>{let lw=lowStockInfo(p);return lw?`<span class="oos-badge low">${esc(t("Only {n} left",{n:lw.n}))}${lw.many?" · "+esc(t(lw.size.label)):""}</span>`:""})()}<img src="${p.img}" alt="${esc(arField(p,"name"))}" loading="lazy"><button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info">${cardOriginHTML(p)}<div class="name">${arField(p,"name")}</div>${cardFlavourHTML(p)}<div class="rating${reviewCount(p)?"":" empty"}">${stars(p.rating)} <span>(${reviewCount(p)})</span></div>${cardPriceHTML(p)}${cardSizesHTML(p)}${oos?`<button class="add" disabled>Out of Stock</button>`:`<button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button>`}</div></article>`}
+// ---- Card extras: fresh roast date · flavour bars · limited lot · badge colours ----
+// Roast date (Admin → product → "Roasted on") shows for 21 days, then hides itself.
+function roastDaysAgo(p){let d=String(p&&p.roastDate||"").trim();if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return null;let r=new Date(d+"T00:00:00"),n=new Date();n.setHours(0,0,0,0);if(isNaN(r))return null;let days=Math.round((n-r)/864e5);return days>=0&&days<=21?days:null}
+function freshHTML(p,cls){let d=roastDaysAgo(p);if(d===null)return "";let txt=d===0?t("Roasted today"):d===1?t("Roasted yesterday"):t("Roasted {n} days ago",{n:d});return `<span class="${cls||"fresh-tag"}"><i aria-hidden="true">🔥</i> ${esc(txt)}</span>`}
+function lvl(v){v=Math.round(Number(v)||0);return v>=1&&v<=5?v:0}
+function flavourHTML(p){let rows=[["Sweetness",p.sweet],["Acidity",p.acid],["Body",p.body]].filter(r=>lvl(r[1]));if(!rows.length)return "";return `<div class="flv">${rows.map(([k,v])=>`<span>${esc(t(k))}</span><span class="flv-d" role="img" aria-label="${esc(t(k))} ${lvl(v)}/5">${[1,2,3,4,5].map(i=>`<s class="${i<=lvl(v)?"on":""}"></s>`).join("")}</span>`).join("")}</div>`}
+// Limited lot: "Only 20 bags roasted · 14 left" — uses the real stock of every size.
+function lotInfo(p){let lot=Math.floor(Number(p.lotSize)||0);if(lot<1)return null;let sz=getSizes(p),left=0;if(!sz.length)return null;for(const z of sz){let n=packsLeft(p.id,z.key);if(!isFinite(n))return null;left+=n}return {lot,left:Math.min(left,lot)}}
+function lotHTML(p,big){let l=lotInfo(p);if(!l||l.left<1)return "";let pct=Math.max(4,Math.round(l.left/l.lot*100));return `<div class="lot"><div class="lot-t"><span>${esc(t("Only {n} bags roasted",{n:l.lot}))}</span><em>${esc(t("{n} left",{n:l.left}))}</em></div><div class="lot-bar"><i style="width:${pct}%"></i></div>${big?`<small>${esc(t("Small lot · when it's gone, it's gone"))}</small>`:""}</div>`}
+function badgeClass(b){b=String(b||"").toUpperCase();if(b.includes("BEST"))return " b-best";if(b.includes("NEW"))return " b-new";if(b.includes("LIMIT"))return " b-lim";if(b.includes("SALE")||b.includes("OFF")||b.includes("%"))return " b-sale";return ""}
+function productCardHTML(p){let oos=isOutOfStock(p);return `<article class="product${oos?" oos":""}" onclick="openProductDetail('${String(p.id).replace(/'/g,"\\'")}')"><div class="product-img">${p.badge?`<span class="badge${badgeClass(p.badge)}">${esc(p.badge)}</span>`:""}${oos?`<span class="oos-badge">Out of Stock</span>`:(()=>{let lw=lotInfo(p)?null:lowStockInfo(p);return lw?`<span class="oos-badge low">${esc(t("Only {n} left",{n:lw.n}))}${lw.many?" · "+esc(t(lw.size.label)):""}</span>`:""})()}<img src="${p.img}" alt="${esc(arField(p,"name"))}" loading="lazy">${oos?"":freshHTML(p)}<button class="quick-view-btn" onclick="event.stopPropagation();openProductDetail('${String(p.id).replace(/'/g,"\\'")}')">Quick View</button></div><div class="product-info">${cardOriginHTML(p)}<div class="name">${arField(p,"name")}</div>${cardFlavourHTML(p)}${flavourHTML(p)}<div class="rating${reviewCount(p)?"":" empty"}">${stars(p.rating)} <span>(${reviewCount(p)})</span></div>${oos?"":lotHTML(p)}${cardPriceHTML(p)}${cardSizesHTML(p)}${oos?`<button class="add" disabled>Out of Stock</button>`:`<button class="add" onclick="event.stopPropagation();addToCart('${String(p.id).replace(/'/g,"\\'")}')">Add to Cart</button>`}</div></article>`}
 function renderProducts(){let grid=document.getElementById("productsGrid")||document.getElementById("productGrid");if(!grid)return;if(!productsLoaded){grid.innerHTML='<div style="padding:40px;text-align:center;color:#9a8a78">Loading products…</div>';return}if(!products.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">No products found yet.</div>`;return}let list=activeStoreFilter?products.filter(p=>(p.cat||"")===activeStoreFilter):products;if(!list.length){grid.innerHTML=`<div style="padding:40px;text-align:center;color:#9a8a78;grid-column:1/-1">${esc(t('No products found in "{c}" yet.',{c:catLabel(activeStoreFilter)}))}</div>`;return}grid.innerHTML=list.map(productCardHTML).join("")}
 function renderStoreFilterBar(){
  let bar=document.getElementById("storeFilterBar");if(!bar)return;
@@ -1505,6 +1652,7 @@ function openProductDetail(id){
  <div id="detailPrice" class="detail-price">${money(first.price)}</div>
  <div id="detailLowStock" class="low-stock-note"></div>
  <div class="detail-notes">${arField(p,"tastingShort")||p.shortDescription||p.notes||""}</div>
+ ${oos?"":`<div class="detail-extras">${freshHTML(p,"fresh-tag d")}${flavourHTML(p)}${lotHTML(p,true)}</div>`}
  ${oos?`<div class="stock-note">Out of Stock — please check back soon.</div>`:""}
  <div class="detail-size-title">Weight</div>
  <div class="detail-size-options">${sizes.map(s=>`<button data-key="${s.key}" class="${s.key===first.key&&!oos?"active":""}" ${sizeInStock(p,s)?"":"disabled title=\"Out of stock\""} onclick="selectDetailSize('${s.key}')">${s.label}</button>`).join("")}</div>
@@ -1592,7 +1740,7 @@ function detailQty(n){if(!selectedDetail)return;let q=Math.max(1,selectedDetail.
 function detailAdd(){if(!selectedDetail)return;if(addVariantToCart(selectedDetail.product,selectedDetail.size,selectedDetail.qty))closeProductDetail()}
 function detailBuy(){if(!selectedDetail)return;let d=selectedDetail;if(!canAddPacks(d.product.id,d.size.key,d.qty)){noStockMsg(d.product,d.size.label);return}{let x=cart.find(i=>String(i.id)===String(d.product.id)&&i.size===d.size.key);if(x)x.qty+=d.qty;else cart.push({id:d.product.id,size:d.size.key,sizeLabel:d.size.label,price:d.size.price,qty:d.qty});}save();closeProductDetail();checkout()}
 function showDetailTab(id,btn){document.querySelectorAll(".detail-panel").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".detail-tab").forEach(x=>x.classList.remove("active"));document.getElementById("panel-"+id).classList.add("active");btn.classList.add("active")}
-function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=linePrice(i,p);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${arField(p,"name")}</h4><div style="color:#7a6b5d">${size.label}</div><div>${money(unit)}</div>${cartPacks(p.id,i.size)>packsLeft(p.id,i.size)?`<div class="stock-warn">${packsLeft(p.id,i.size)<1?"Now out of stock — please remove":"Not enough stock — please reduce quantity"}</div>`:""}<div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal)}
+function renderCart(){let box=document.getElementById("cartItems");if(!box)return;pruneCart();if(!cart.length){box.innerHTML='<p style="color:#777;padding:25px 0">Your cart is empty.</p>';document.getElementById("cartTotal").textContent=money(0);renderGiftBar();return}let subtotal=0;box.innerHTML=cart.map((i,idx)=>{let p=products.find(x=>String(x.id)===String(i.id));if(!p)return "";let size=getSizes(p).find(s=>s.key===i.size)||{label:i.sizeLabel||"1 Kg",price:Number(i.price||p.price)};let unit=linePrice(i,p);subtotal+=unit*i.qty;return `<div class="cart-item"><img src="${p.img}"><div style="flex:1"><h4>${arField(p,"name")}</h4><div style="color:#7a6b5d">${size.label}</div><div>${money(unit)}</div>${cartPacks(p.id,i.size)>packsLeft(p.id,i.size)?`<div class="stock-warn">${packsLeft(p.id,i.size)<1?"Now out of stock — please remove":"Not enough stock — please reduce quantity"}</div>`:""}<div class="qty"><button onclick="changeQty(${idx},-1)">−</button><span>${i.qty}</span><button onclick="changeQty(${idx},1)">+</button><span class="remove" onclick="removeItem(${idx})">Remove</span></div></div></div>`}).join("");document.getElementById("cartTotal").textContent=money(subtotal);renderGiftBar()}
 function changeQty(index,n){let x=cart[index];if(!x)return;if(n>0&&!canAddPacks(x.id,x.size,n)){noStockMsg(products.find(p=>String(p.id)===String(x.id)),x.sizeLabel);return}x.qty+=n;if(x.qty<=0)cart.splice(index,1);save();renderCart()}
 function removeItem(index){cart.splice(index,1);save();renderCart()}
 let CHECKOUT_TEMPLATE=null;
@@ -1601,8 +1749,9 @@ function renderCheckout(){let subtotal=cart.reduce((s,i)=>s+linePrice(i)*i.qty,0
  let promoNote="";
  if(appliedPromo&&appliedPromo.minSubtotal&&subtotal<appliedPromo.minSubtotal){promoNote=t("This code needs an order of at least {min}.",{min:money(appliedPromo.minSubtotal)});appliedPromo=null}
  let discount=promoDiscount(appliedPromo,subtotal),total=round2(subtotal-discount+DELIVERY_CHARGE);
+ let giftRow=giftSummaryHTML(subtotal-discount);
  let promoBox=appliedPromo?`<div class="promo-applied"><span>🏷️ <b dir="ltr">${esc(appliedPromo.code)}</b> <span>applied</span></span><button type="button" onclick="removePromo()">Remove</button></div>`:`<div class="promo-row"><input id="promoInput" autocomplete="off" autocapitalize="characters" placeholder="Promo code" onkeydown="if(event.key==='Enter'){event.preventDefault();applyPromo()}"><button type="button" onclick="applyPromo(this)">Apply</button></div><div class="promo-msg${promoNote?" show":""}" id="promoMsg">${esc(promoNote)}</div>`;
- document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${arField(p,"name")} — <span>${i.sizeLabel||"1 Kg"}</span> × ${i.qty}</span><strong>${money(linePrice(i,p)*i.qty)}</strong></div>`:""}).join("")+`<div class="promo-box">${promoBox}</div><div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div>${discount>0?`<div class="summary-item promo-line"><span><span>Discount</span> (<span dir="ltr">${esc(appliedPromo.code)}</span>)</span><strong>−${money(discount)}</strong></div>`:""}<div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
+ document.getElementById("checkoutSummary").innerHTML=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?`<div class="summary-item"><span>${arField(p,"name")} — <span>${i.sizeLabel||"1 Kg"}</span> × ${i.qty}</span><strong>${money(linePrice(i,p)*i.qty)}</strong></div>`:""}).join("")+giftRow+`<div class="promo-box">${promoBox}</div><div class="summary-item"><span>Subtotal</span><strong>${money(subtotal)}</strong></div>${discount>0?`<div class="summary-item promo-line"><span><span>Discount</span> (<span dir="ltr">${esc(appliedPromo.code)}</span>)</span><strong>−${money(discount)}</strong></div>`:""}<div class="summary-item"><span>Delivery Charges</span><strong>${money(DELIVERY_CHARGE)}</strong></div><div class="summary-total"><span>Total</span><strong>${money(total)}</strong></div>`}
 function closeCheckout(){document.getElementById("checkoutOverlay").style.display="none"}
 function backToCart(){closeCheckout();openCart()}
 function goShopping(target){closeCart();closeCheckout();let el=document.getElementById(target);if(el)el.scrollIntoView({behavior:"smooth"})}
@@ -1642,8 +1791,8 @@ async function applyPromo(btn){
 function removePromo(){appliedPromo=null;renderCheckout()}
 window.applyPromo=applyPromo;window.removePromo=removePromo;
 // Pre-filled WhatsApp message so the customer can confirm with one tap.
-function orderWhatsAppLink(orderNo,items,total,form,promo,discount,payLabel){
- let lines=[`Hi Ambrosia Coffee! I just placed order #${orderNo}.`,"",...items.map(i=>`• ${i.name} ${i.size} × ${i.qty}`),"",...(promo?[`Promo code: ${promo.code} (−${money(discount)})`]:[]),`Total: ${money(total)} (${payLabel||"Cash on Delivery"})`,`Name: ${form.get("fullname")||""}`,`Area: ${[form.get("city"),form.get("emirate")].filter(Boolean).join(", ")}`,"","Please confirm my order. Thank you!"];
+function orderWhatsAppLink(orderNo,items,total,form,promo,discount,payLabel,gift,giftOrder){
+ let lines=[`Hi Ambrosia Coffee! I just placed order #${orderNo}.`,"",...items.map(i=>`• ${i.name} ${i.size} × ${i.qty}`),...(gift?[`🎁 Free gift: ${gift.name} ${gift.size}`]:[]),...(giftOrder?["🎁 This order is a gift"]:[]),"",...(promo?[`Promo code: ${promo.code} (−${money(discount)})`]:[]),`Total: ${money(total)} (${payLabel||"Cash on Delivery"})`,`Name: ${form.get("fullname")||""}`,`Area: ${[form.get("city"),form.get("emirate")].filter(Boolean).join(", ")}`,"","Please confirm my order. Thank you!"];
  return "https://wa.me/"+waDigits+"?text="+encodeURIComponent(lines.join("\n"));
 }
 // e.g. AMB-260924-7K3Q  (date + 4 random characters). The old number was the
@@ -1751,6 +1900,7 @@ async function placeOrder(e){
  const payMethod=(form.get("paymethod")==="card"&&cardPayAvailable())?"card":"cod";form.delete("paymethod");
  const items=cart.map(i=>{let p=products.find(x=>String(x.id)===String(i.id));return p?{id:p.id,name:p.name,size:i.sizeLabel||"1 Kg",sizeKey:i.size||"kg1",price:linePrice(i,p),qty:i.qty}:null}).filter(Boolean);
  const subtotal=items.reduce((s,i)=>s+i.price*i.qty,0);let promo=null,discount=0,total=subtotal+DELIVERY_CHARGE;
+ const giftOrder=form.get("isGift")==="yes",giftMessage=String(form.get("giftMessage")||"").trim().slice(0,150);form.delete("isGift");form.delete("giftMessage");
  const btn=document.querySelector("#checkoutForm .place-order");
  placingOrder=true;if(btn){btn.disabled=true;btn.textContent=t("Placing order…")}
  const done=()=>{placingOrder=false;if(btn){btn.disabled=false;btn.textContent=t("Place Order")}};
@@ -1759,9 +1909,17 @@ async function placeOrder(e){
   if(!r.ok){appliedPromo=null;renderCheckout();done();alert(r.msg);return}
   promo={code:r.promo.code,type:r.promo.type,value:r.promo.value};discount=r.discount;total=round2(subtotal-discount+DELIVERY_CHARGE);
  }
+ // Free gift: the order qualifies on goods after discount. If no coffee was picked yet, offer the picker.
+ let gift=null;
+ if(giftEligible(subtotal-discount)){
+  let g=validGift();
+  if(!g){done();if(confirm(t("Your order gets a free coffee. Choose it now?"))){openGiftPicker();return}}
+  else gift={id:g.p.id,name:g.p.name,size:g.s.label,sizeKey:g.s.key,qty:1,price:0};
+ }
+ placingOrder=true;if(btn){btn.disabled=true;btn.textContent=t("Placing order…")}
  // Reserve stock first. Each product is a Firebase transaction, so if two
  // customers try to buy the last pack at the same moment only one succeeds.
- let need={};items.forEach(it=>{let k=it.id+"\u0001"+it.sizeKey;need[k]=(need[k]||0)+it.qty});
+ let need={};items.concat(gift?[gift]:[]).forEach(it=>{let k=it.id+"\u0001"+it.sizeKey;need[k]=(need[k]||0)+it.qty});
  let taken=[];
  try{
   for(const [k,n] of Object.entries(need)){
@@ -1784,12 +1942,104 @@ async function placeOrder(e){
   console.error("Stock update failed, placing order without deducting stock:",err);
   await returnStock(taken);taken=[];
  }
- const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,...(promo?{promo,discount}:{}),status:"New",lang:window.LANG||"en",created:new Date().toISOString(),paymentMethod:payMethod,...(payMethod==="card"?{paymentStatus:"unpaid"}:{}),...(window.__fbUid?{uid:window.__fbUid}:{}),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
+ const order={orderNo,customer:Object.fromEntries(form.entries()),items,total,subtotal,deliveryCharge:DELIVERY_CHARGE,...(promo?{promo,discount}:{}),...(gift?{gift}:{}),...(giftOrder?{giftOrder:true,...(giftMessage?{giftMessage}:{})}:{}),status:"New",lang:window.LANG||"en",created:new Date().toISOString(),paymentMethod:payMethod,...(payMethod==="card"?{paymentStatus:"unpaid"}:{}),...(window.__fbUid?{uid:window.__fbUid}:{}),stockDeducted:taken.length>0,stockTaken:taken.reduce((m,[id,key,n])=>{(m[id]=m[id]||{})[key]=n;return m},{})};
  try{const oref=await db.ref("orders").push(order);done();cart=[];appliedPromo=null;save();
- if(payMethod==="card"){rememberCardOrder(oref.key,orderNo,total,form.get("fullname"),orderWhatsAppLink(orderNo,items,total,form,promo,discount,"Card payment"));startCardPayment(oref.key);return}
- document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>${t("Thank you, {name}.",{name:esc(form.get("fullname")||t("Customer"))})}</p><p>${t("Your order {no} has been received.",{no:`<strong dir="ltr">#${orderNo}</strong>`})}</p><div class="cod-badge">💵&nbsp; <span>Cash on Delivery</span></div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><a class="wa-confirm" href="${orderWhatsAppLink(orderNo,items,total,form,promo,discount)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Z"/></svg>Confirm on WhatsApp</a><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert(t("Order could not be sent. Please try again."));console.error(err)}
+ clearGift();
+ if(payMethod==="card"){rememberCardOrder(oref.key,orderNo,total,form.get("fullname"),orderWhatsAppLink(orderNo,items,total,form,promo,discount,"Card payment",gift,giftOrder));startCardPayment(oref.key);return}
+ document.getElementById("checkoutContent").innerHTML=`<div class="success"><div class="success-icon">✓</div><h2>Order Confirmed</h2><p>${t("Thank you, {name}.",{name:esc(form.get("fullname")||t("Customer"))})}</p><p>${t("Your order {no} has been received.",{no:`<strong dir="ltr">#${orderNo}</strong>`})}</p><div class="cod-badge">💵&nbsp; <span>Cash on Delivery</span></div><div class="amount-callout"><span class="ac-label">Order Total</span><span class="ac-value">${money(total)}</span></div><div class="keep-ready">Please keep your phone nearby — our delivery team may call to confirm your address before arrival.</div><a class="wa-confirm" href="${orderWhatsAppLink(orderNo,items,total,form,promo,discount,"",gift,giftOrder)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.29-.15-1.7-.84-1.97-.93-.26-.1-.46-.15-.65.15-.2.29-.75.93-.92 1.12-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.71-1.6-2-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.48.1-.2.05-.37-.02-.51-.08-.15-.65-1.57-.9-2.15-.24-.57-.48-.5-.65-.5-.17-.01-.36-.01-.56-.01s-.51.08-.78.37c-.26.29-1.02 1-1.02 2.43s1.05 2.82 1.19 3.01c.15.2 2.06 3.14 4.99 4.4.7.3 1.24.48 1.67.61.7.22 1.33.19 1.84.12.56-.08 1.7-.7 1.94-1.37.24-.68.24-1.26.17-1.37-.07-.12-.26-.19-.55-.34z"/><path d="M12.02 2C6.5 2 2.03 6.44 2.03 11.9c0 1.87.52 3.63 1.44 5.14L2 22l5.13-1.34a10.05 10.05 0 0 0 4.89 1.24h.01c5.52 0 9.99-4.44 9.99-9.9C22 6.44 17.54 2 12.02 2Z"/></svg>Confirm on WhatsApp</a><button class="checkout" onclick="closeCheckout()">Continue Shopping</button></div>`}catch(err){await returnStock(taken);done();alert(t("Order could not be sent. Please try again."));console.error(err)}
 }
-renderProducts();renderCollections();renderStoreFilterBar();updateCart();
+// ================= Free gift =================
+function cartSubtotal(){return cart.reduce((a,i)=>a+linePrice(i)*i.qty,0)}
+function giftEligible(goods){return GIFT_MIN>0&&goods>=GIFT_MIN-0.001}
+function giftPacksFree(p,key){let n=packsLeft(p.id,key);return n===Infinity?Infinity:n-cartPacks(p.id,key)}
+function giftOptions(){let out=[];products.forEach(p=>{let sz=getSizes(p).filter(z=>GIFT_SIZES.includes(z.key));if(!sz.length)return;out.push({p,sizes:sz.map(z=>({s:z,ok:giftPacksFree(p,z.key)>=1}))})});return out}
+function validGift(){if(!giftChoice)return null;let p=products.find(x=>String(x.id)===String(giftChoice.id));if(!p)return null;let z=getSizes(p).find(x=>x.key===giftChoice.size&&GIFT_SIZES.includes(x.key));if(!z||giftPacksFree(p,z.key)<1)return null;return {p,s:z}}
+function setGift(id,key){giftChoice={id:String(id),size:key};try{sessionStorage.setItem("ambrosia_gift",JSON.stringify(giftChoice))}catch(e){}closeGiftPicker();renderCart();try{if(document.getElementById("checkoutSummary")&&document.getElementById("checkoutOverlay").style.display==="block")renderCheckout()}catch(e){}}
+function clearGift(){giftChoice=null;try{sessionStorage.removeItem("ambrosia_gift")}catch(e){}}
+function renderGiftBar(){
+ let el=document.getElementById("giftBar");if(!el)return;
+ if(!GIFT_MIN||!cart.length){el.style.display="none";el.innerHTML="";return}
+ let sub=cartSubtotal();el.style.display="";
+ if(!giftEligible(sub)){
+  let pct=Math.max(3,Math.min(100,Math.round(sub/GIFT_MIN*100)));
+  el.className="gift-bar";
+  el.innerHTML=`<div class="gb-t">🎁 ${t("Add {amt} more and get a FREE coffee of your choice",{amt:`<b>${money(GIFT_MIN-sub)}</b>`})}</div><div class="gb-track"><i style="width:${pct}%"></i></div><small>${esc(t("{cur} of {min}",{cur:money(sub),min:money(GIFT_MIN)}))} · 200g / 250g</small>`;
+  return;
+ }
+ let g=validGift();el.className="gift-bar done";
+ el.innerHTML=g?`<div class="gb-t">🎁 ${esc(t("Your free gift"))}: <b>${esc(arField(g.p,"name"))} · ${esc(t(g.s.label))}</b></div><button type="button" class="gb-link" onclick="openGiftPicker()">${esc(t("Change"))}</button>`
+  :`<div class="gb-t">${esc(t("You've unlocked a free coffee! 🎉"))}</div><button type="button" class="gb-btn" onclick="openGiftPicker()">${esc(t("Choose your free coffee"))} →</button>`;
+}
+function giftSummaryHTML(goods){
+ if(!GIFT_MIN)return "";
+ if(!giftEligible(goods))return `<div class="summary-item gift-line muted"><span>🎁 ${t("Add {amt} more and get a FREE coffee of your choice",{amt:money(GIFT_MIN-goods)})}</span></div>`;
+ let g=validGift();
+ return g?`<div class="summary-item gift-line"><span>🎁 ${esc(t("Free gift"))}: ${esc(arField(g.p,"name"))} — <span>${esc(t(g.s.label))}</span> <button type="button" class="gb-link" onclick="openGiftPicker()">${esc(t("Change"))}</button></span><strong>${esc(t("FREE"))}</strong></div>`
+  :`<div class="summary-item gift-line"><button type="button" class="gb-btn" onclick="openGiftPicker()">🎁 ${esc(t("Choose your free coffee"))} →</button></div>`;
+}
+function openGiftPicker(){
+ let ov=document.getElementById("giftOverlay");if(!ov)return;
+ let list=giftOptions();
+ document.getElementById("giftList").innerHTML=list.map(({p,sizes})=>`<div class="gp-item"><img src="${p.img}" alt=""><div class="gp-txt"><b>${esc(arField(p,"name"))}</b><small>${esc(arField(p,"tastingShort")||"")}</small></div><div class="gp-sizes">${sizes.map(({s:z,ok})=>`<button type="button" ${ok?"":"disabled"} class="${giftChoice&&String(giftChoice.id)===String(p.id)&&giftChoice.size===z.key?"on":""}" onclick="setGift('${String(p.id).replace(/'/g,"\\'")}','${z.key}')">${esc(t(z.label))}</button>`).join("")}</div></div>`).join("")||`<p style="color:#8a7866">${esc(t("Out of Stock"))}</p>`;
+ ov.style.display="block";
+}
+function closeGiftPicker(){let ov=document.getElementById("giftOverlay");if(ov)ov.style.display="none"}
+window.openGiftPicker=openGiftPicker;window.closeGiftPicker=closeGiftPicker;window.setGift=setGift;
+
+// ================= Find your coffee (quiz) =================
+// 3 questions → the best matching coffee in stock. Uses each coffee's flavour bars
+// (Admin → Sweetness / Acidity / Body) and the words in its flavour line / collection.
+var quizStep=0,quizAns={};
+const QUIZ_Q=[
+ {k:"brew",q:"How do you make your coffee?",o:[["espresso","☕","Espresso machine"],["filter","🫖","Filter / V60"],["press","🫙","French press / Moka"]]},
+ {k:"milk",q:"Do you add milk?",o:[["milk","🥛","With milk"],["black","⚫","Black"]]},
+ {k:"taste",q:"Which flavour do you love?",o:[["choc","🍫","Chocolate & nutty"],["fruit","🍓","Fruity & bright"],["trop","🥭","Sweet & tropical"]]}
+];
+const QUIZ_WORDS={
+ choc:["chocolate","cocoa","caramel","hazelnut","nut","almond","toffee","brown sugar","cake","brazil","شوكولاتة","كراميل","بندق"],
+ fruit:["berry","berries","cherry","citrus","lemon","orange","floral","jasmine","peach","bergamot","grape","ethiopia","kenya","فراول","توت","حمضيات","ياسمين"],
+ trop:["mango","tropical","coconut","pineapple","passion","banana","papaya","lychee","forever","co-ferment","مانجو","استوائي","جوز الهند"]
+};
+function quizText(p){return [p.name,p.cat,p.tastingShort,p.tastingNotes,p.description,p.tastingShort_ar].filter(Boolean).join(" ").toLowerCase()}
+function quizScore(p,a){
+ let txt=quizText(p),hit=k=>QUIZ_WORDS[k].reduce((n,w)=>n+(txt.includes(w)?1:0),0);
+ let sw=lvl(p.sweet)||3,ac=lvl(p.acid)||3,bo=lvl(p.body)||3;
+ let sc=hit(a.taste)*4-(["choc","fruit","trop"].filter(k=>k!==a.taste).reduce((n,k)=>n+hit(k),0))*1.2;
+ if(a.taste==="choc")sc+=sw*.6+bo*.6-ac*.6;
+ if(a.taste==="fruit")sc+=ac*1.1;
+ if(a.taste==="trop")sc+=sw*.9;
+ if(a.milk==="milk")sc+=bo*.8-ac*.3;else sc+=ac*.4;
+ if(a.brew==="espresso")sc+=bo*.5;else if(a.brew==="filter")sc+=ac*.6;else sc+=bo*.4;
+ if(String(p.badge||"").toUpperCase().includes("BEST"))sc+=.5;
+ return sc;
+}
+function quizPick(a){let list=products.filter(p=>p&&p.name&&!isOutOfStock(p));if(!list.length)return null;return list.map(p=>({p,sc:quizScore(p,a)})).sort((x,y)=>y.sc-x.sc)[0].p}
+function quizWhy(a){return [a.taste==="choc"?t("Smooth & chocolatey"):a.taste==="fruit"?t("Bright & fruity"):t("Sweet & tropical notes"),a.milk==="milk"?t("great with milk"):t("lovely black")].join(" · ")}
+function renderQuiz(){
+ let el=document.getElementById("quiz"),btn=document.getElementById("quizOpen");if(!el)return;
+ document.querySelector(".hero").classList.toggle("has-quiz",QUIZ_ON);
+ if(!QUIZ_ON){el.innerHTML="";return}
+ if(btn)btn.textContent=t("☕ Find your coffee");
+ let head=`<div class="qz-top"><div class="qz-h">${esc(t("Find your coffee in 30 seconds"))}</div><button type="button" class="qz-x" onclick="closeQuiz()" aria-label="${esc(t("Close"))}">×</button></div><div class="qz-s">${esc(t("3 quick questions — we'll pick the right beans for you."))}</div><div class="qz-steps">${QUIZ_Q.map((_,i)=>`<i class="${i<=quizStep?"on":""}"></i>`).join("")}</div>`;
+ if(quizStep<QUIZ_Q.length){
+  let q=QUIZ_Q[quizStep];
+  el.innerHTML=head+`<div class="qz-q">${quizStep+1}. ${esc(t(q.q))}</div><div class="qz-opts n${q.o.length}">${q.o.map(([v,ic,lab])=>`<button type="button" class="${quizAns[q.k]===v?"on":""}" onclick="quizAnswer('${q.k}','${v}')"><b aria-hidden="true">${ic}</b>${esc(t(lab))}</button>`).join("")}</div>${quizStep?`<button type="button" class="qz-back" onclick="quizStep--;renderQuiz()">← ${esc(t("Back"))}</button>`:""}`;
+  return;
+ }
+ if(!productsLoaded){el.innerHTML=head+`<div class="qz-s">${esc(t("Loading products…"))}</div>`;return}
+ let p=quizPick(quizAns);
+ if(!p){el.innerHTML=head+`<div class="qz-s">${esc(t("No products found yet."))}</div><button type="button" class="qz-back" onclick="quizReset()">↺ ${esc(t("Start again"))}</button>`;return}
+ let id=String(p.id).replace(/'/g,"\\'");
+ el.innerHTML=head+`<div class="qz-res"><img src="${p.img}" alt="${esc(arField(p,"name"))}"><div><div class="qz-k">✓ ${esc(t("Your perfect match"))}</div><div class="qz-n">${esc(arField(p,"name"))}</div><div class="qz-w">${esc(quizWhy(quizAns))}</div><div class="qz-btns"><button type="button" class="qz-add" onclick="closeQuiz();addToCart('${id}')">${esc(t("Add to Cart"))} →</button><button type="button" class="qz-view" onclick="closeQuiz();openProductDetail('${id}')">${esc(t("View coffee"))}</button></div></div></div><button type="button" class="qz-back" onclick="quizReset()">↺ ${esc(t("Start again"))}</button>`;
+ try{if(typeof gtag==="function")gtag("event","quiz_result",{item_id:String(p.id),item_name:String(p.name)})}catch(e){}
+}
+function quizAnswer(k,v){quizAns[k]=v;quizStep++;renderQuiz()}
+function quizReset(){quizAns={};quizStep=0;renderQuiz()}
+function openQuiz(){document.body.classList.add("quiz-on");renderQuiz()}
+function closeQuiz(){document.body.classList.remove("quiz-on")}
+window.quizAnswer=quizAnswer;window.quizReset=quizReset;window.openQuiz=openQuiz;window.closeQuiz=closeQuiz;window.renderQuiz=renderQuiz;
+
+renderProducts();renderCollections();renderStoreFilterBar();updateCart();renderQuiz();
 // (renderProducts() above will show a "Loading products…" placeholder until the
 // first real Firebase snapshot arrives — this prevents any flash of fake demo
 // data being replaced a moment later by the real product list.)
@@ -1810,6 +2060,7 @@ try{replayFirebaseCache()}catch(e){console.error(e)}
 <div class="field"><label>City</label><input name="city" required autocomplete="address-level2" placeholder="Al Ain / Abu Dhabi / Dubai"></div>
 <div class="field"><label>Emirate</label><select name="emirate" required><option value="">Select</option><option value="Abu Dhabi">Abu Dhabi</option><option value="Dubai">Dubai</option><option value="Sharjah">Sharjah</option><option value="Ajman">Ajman</option><option value="Umm Al Quwain">Umm Al Quwain</option><option value="Ras Al Khaimah">Ras Al Khaimah</option><option value="Fujairah">Fujairah</option></select></div>
 </div>
+<div class="gift-mode"><label class="gm-head"><input type="checkbox" name="isGift" value="yes" onchange="this.closest('.gift-mode').classList.toggle('on',this.checked)"><span>🎁 This is a gift</span></label><div class="gm-body"><small>No prices in the box. Add a message:</small><textarea name="giftMessage" maxlength="150" placeholder="Your message (optional)"></textarea></div></div>
 <div class="payment pay-methods"><strong>Payment Method</strong>
 <label class="pay-opt"><input type="radio" name="paymethod" value="cod" checked onchange="payMethodChanged()"><span class="po-ico">💵</span><span class="po-txt"><b>Cash on Delivery</b><small>Pay when your coffee arrives</small></span></label>
 <label class="pay-opt" id="payCardOpt" style="display:none"><input type="radio" name="paymethod" value="card" onchange="payMethodChanged()"><span class="po-ico">💳</span><span class="po-txt"><b>Pay by Card / Apple Pay</b><small>Secure payment by Ziina</small><span class="po-brands"><i class="pl pl-visa" role="img" aria-label="Visa"></i><i class="pl pl-mastercard" role="img" aria-label="Mastercard"></i><i class="pl pl-applepay" role="img" aria-label="Apple Pay"></i><i class="pl pl-gpay" role="img" aria-label="Google Pay"></i></span></span></label>
@@ -2324,6 +2575,7 @@ body.layer-lock header{z-index:1!important}
  // Back button closes the window instead of leaving the site. While any window
  // is open the page behind is frozen in place, and put back exactly where it was.
  var LAYERS=[
+  ["giftOverlay",function(){closeGiftPicker()}],
   ["imageViewOverlay",function(){closeImageView()}],
   ["sizeOverlay",function(){closeSizePicker()}],
   ["policyOverlay",function(){closePolicy()}],
