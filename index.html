@@ -989,9 +989,6 @@ html[dir=rtl] .gc-to,html[dir=rtl] .gc-m,html[dir=rtl] .gc-fr{font-family:'Amiri
 <h1>Fresh Coffee Beans<br>Roasted With <span style="color:#b9823f">Passion</span></h1>
 <p>Discover premium single origin and signature blends,<br class="hero-break"> roasted to perfection and delivered fresh to your door.</p>
 <a class="hero-shop" href="#store">SHOP NOW <span>→</span></a>
-<button type="button" class="quiz-open" id="quizOpen" onclick="openQuiz()">☕ Find your coffee</button>
-<div class="quiz-back" id="quizBack" onclick="closeQuiz()"></div>
-<div class="quiz" id="quiz" role="dialog" aria-label="Find your coffee" data-no-i18n></div>
 </section>
 
 <section class="features">
@@ -1142,7 +1139,7 @@ html[dir=rtl] .gc-to,html[dir=rtl] .gc-m,html[dir=rtl] .gc-fr{font-family:'Amiri
 var LOW_STOCK=5;
 // Free gift: an order of at least GIFT_MIN (goods, after any discount) gets one free 200g/250g coffee.
 // Set in Admin → Store Content → Free gift. 0 = switched off.
-var GIFT_MIN=0, GIFT_SIZES=["g200","g250"], giftChoice=null, QUIZ_ON=true, BREW_F=null, ORIG_F=null, ORIGIN_ON=true, ORIGIN_ORDER=[], ORIGIN_LINES={};
+var GIFT_MIN=0, GIFT_SIZES=["g200","g250"], giftChoice=null, QUIZ_ON=false, BREW_F=null, ORIG_F=null, ORIGIN_ON=true, ORIGIN_ORDER=[], ORIGIN_LINES={};
 try{giftChoice=JSON.parse(sessionStorage.getItem("ambrosia_gift")||"null")}catch(e){giftChoice=null}
 var DELIVERY_CHARGE=30; // replaced by settings.deliveryCharge from the admin
 var SPEC_KEYS={origin:"Origin",region:"Region",country:"Country",variety:"Variety",varietal:"Varietal",varieties:"Varieties",process:"Process",processing:"Process",altitude:"Altitude",elevation:"Elevation",grade:"Grade",score:"Score","sca score":"SCA Score",producer:"Producer",farm:"Farm",harvest:"Harvest",roast:"Roast","roast level":"Roast Level"};
@@ -1204,7 +1201,7 @@ function applySettings(s){
  try{applyHomeOrder(s.homeOrder)}catch(e){}
  {let on=String(s.originGroups||"on")!=="off",ord=String(s.originOrder||"").split("|").map(x=>x.trim()).filter(Boolean),ln={};try{let o=JSON.parse(s.originLines||"{}");if(o&&typeof o==="object")ln=o}catch(e){}
   if(on!==ORIGIN_ON||ord.join("|")!==ORIGIN_ORDER.join("|")||JSON.stringify(ln)!==JSON.stringify(ORIGIN_LINES)){ORIGIN_ON=on;ORIGIN_ORDER=ord;ORIGIN_LINES=ln;try{renderProducts()}catch(e){}}}
- {let g=Number(s.giftMin);let ng=(isFinite(g)&&g>0&&g<10000)?Math.round(g*100)/100:0;let nq=String(s.quiz||"on")!=="off";
+ {let g=Number(s.giftMin);let ng=(isFinite(g)&&g>0&&g<10000)?Math.round(g*100)/100:0;let nq=false;
   if(ng!==GIFT_MIN||nq!==QUIZ_ON){GIFT_MIN=ng;QUIZ_ON=nq;try{renderCart();renderQuiz();let co=document.getElementById("checkoutOverlay");if(co&&co.style.display==="block"&&document.getElementById("checkoutSummary"))renderCheckout()}catch(e){}}}
  {let raw=s;s=Object.assign({},raw);if(isAr())Object.keys(AR_SETTINGS).forEach(k=>s[k]=pickSetting(raw,k));}
  const q=(sel,t)=>{let e=document.querySelector(sel);if(e)e.textContent=t};
