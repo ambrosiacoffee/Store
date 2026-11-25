@@ -1387,14 +1387,15 @@ function submitContactForm(e){
 // Tapping a collection shows just its coffees in the Featured list below.
 // Tap the same collection again (or "Show all") to see everything.
 // Tagline shown on the collection photo (set in Admin → Collections; these are the starting words)
+function collDefault(c){let n=String(c&&c.name||"").trim().toLowerCase();if(COLL_TAG_DEFAULT[n])return COLL_TAG_DEFAULT[n];let k=Object.keys(COLL_TAG_DEFAULT).find(k=>n.split(/[^a-z]+/).includes(k));return k?COLL_TAG_DEFAULT[k]:[]}
 const COLL_TAG_DEFAULT={
  brazil:["Taste of Smooth","Smooth. Balanced. Naturally sweet.","طعم النعومة","ناعمة. متوازنة. حلوة بطبيعتها.","Chocolate, Hazelnut, Caramel, Almond","شوكولاتة، بندق، كراميل، لوز"],
  ethiopia:["Real Classic","Wild origins. Exceptional flavour.","كلاسيكي أصيل","أصول برّية. نكهة استثنائية.","Red berries, Citrus, Jasmine, Peach","توت أحمر، حمضيات، ياسمين، خوخ"],
  forever:["Forever Roast","More than coffee. It's a forever feeling.","تحميص للأبد","أكثر من مجرد قهوة. إنه شعور يدوم.","Wild berry, Mango, Coconut, Peach","توت بري، مانجو، جوز الهند، خوخ"]};
-function collNotesList(c){let d=COLL_TAG_DEFAULT[String(c.name||"").trim().toLowerCase()]||[],ar=isAr();if(c.notes==="-")return [];return ((ar&&c.notes_ar)||c.notes||(ar?d[5]:d[4])||"").split(/[,،·•|]/).map(x=>x.trim()).filter(Boolean).slice(0,5)}
+function collNotesList(c){let d=collDefault(c),ar=isAr();if(c.notes==="-")return [];return ((ar&&c.notes_ar)||c.notes||(ar?d[5]:d[4])||"").split(/[,،·•|]/).map(x=>x.trim()).filter(Boolean).slice(0,5)}
 function collNotes(c){let n=collNotesList(c).slice(0,3);return n.length?`<div class="coll-notes">${n.map(x=>`<span>${esc(x)}</span>`).join("&nbsp;<b>·</b> ")}</div>`:""}
 function collCap(c){
- let d=COLL_TAG_DEFAULT[String(c.name||"").trim().toLowerCase()]||[],ar=isAr();
+ let d=collDefault(c),ar=isAr();
  let tag=(ar&&c.tagline_ar)||c.tagline||(ar?d[2]:d[0])||"",sub=(ar&&c.subline_ar)||c.subline||(ar?d[3]:d[1])||"";
  if(c.tagline==="-")return ""; // admin can turn the words off with a single dash
  let notes=((ar&&c.notes_ar)||c.notes||(ar?d[5]:d[4])||"").split(/[,،·•|]/).map(x=>x.trim()).filter(Boolean).slice(0,5);
@@ -2908,11 +2909,11 @@ body.layer-lock header{z-index:1!important}
  html body .coll-cap u s{font-size:9px!important;padding:5px 9px!important}
  html body .collection-name{font-size:16px!important;margin-top:9px!important}
 }
-/* Style A · Strong & sharp (phone + desktop) */
-html body .coll-cap{background:linear-gradient(180deg,rgba(15,9,5,0) 0%,rgba(15,9,5,.72) 45%,rgba(15,9,5,.93) 100%)!important;color:#fff!important}
-html body .coll-cap b{font-weight:700!important;color:#fff!important;text-shadow:0 2px 10px rgba(0,0,0,.7)!important}
-html body .coll-cap i{opacity:1!important;color:#f3e6d2!important;text-shadow:0 1px 6px rgba(0,0,0,.7)!important}
-html body .coll-cap u s{font-weight:700!important;color:#fff!important;background:rgba(0,0,0,.55)!important;border:1px solid rgba(255,255,255,.75)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+/* Style C · Gold & cream (phone + desktop) */
+html body .coll-cap{background:linear-gradient(180deg,rgba(20,13,8,0) 0%,rgba(20,13,8,.7) 50%,rgba(20,13,8,.9) 100%)!important;color:#fff!important}
+html body .coll-cap b{font-weight:700!important;color:#f2cf8f!important;text-shadow:0 2px 10px rgba(0,0,0,.6)!important}
+html body .coll-cap i{opacity:1!important;color:#fff!important;text-shadow:0 1px 6px rgba(0,0,0,.6)!important}
+html body .coll-cap u s{font-weight:700!important;color:#3a2614!important;background:#f2cf8f!important;border:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 html[dir=rtl] body .coll-cap b{letter-spacing:0!important}
 </style>
 </body>
